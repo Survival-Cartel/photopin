@@ -5,26 +5,6 @@ import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DateRangeSlider(
-              startDate: DateTime(2025, 4, 1),
-              endDate: DateTime(2025, 6, 2),
-              onChanged: (s, e) {
-                print('$s ~ $e ');
-              },
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
 
 class DateRangeSlider extends StatefulWidget {
   final DateTime startDate;
