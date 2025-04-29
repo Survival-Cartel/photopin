@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-abstract class TextStyles {
+abstract class AppFonts {
   // Bold TextStyles (Poppins)
   static final TextStyle titleTextBold = GoogleFonts.poppins(
     fontSize: 50,
