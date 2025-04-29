@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// size 의 경우 반지름으로 적용되기 때문에 일반적인 크기보다 반으로 줄여서 입력해주세요.
 class BaseIcon extends StatelessWidget {
   final Color iconColor;
   final IconData iconData;
