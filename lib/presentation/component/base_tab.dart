@@ -30,47 +30,49 @@ class _BaseTabState extends State<BaseTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity, // ✅ 가로 전체를 차지
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final tabCount = widget.labels.length;
-          final availableWidth = constraints.maxWidth;
-          final tabWidth = availableWidth / tabCount; // ✅ 탭당 넓이 자동 계산
-
-          return AnimatedToggleSwitch<int>.size(
-            textDirection: TextDirection.ltr,
-            current: currentIndex,
-            values: List.generate(tabCount, (index) => index),
-            iconOpacity: 1.0,
-            indicatorSize: Size(tabWidth, 40), // ✅ 자동으로 계산된 사이즈 적용
-            iconBuilder: (index) => _textBuilder(index),
-            borderWidth: 2.0,
-            iconAnimationType: AnimationType.onHover,
-            style: ToggleStyle(
-              borderColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: Offset(0, 1.5),
+    return Row(
+      children: [
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final tabCount = widget.labels.length;
+              final availableWidth = constraints.maxWidth;
+              final tabWidth = availableWidth / tabCount;
+              return AnimatedToggleSwitch<int>.size(
+                textDirection: TextDirection.ltr,
+                current: currentIndex,
+                values: List.generate(tabCount, (index) => index),
+                iconOpacity: 1.0,
+                indicatorSize: Size(tabWidth, 40),
+                iconBuilder: (index) => _textBuilder(index),
+                borderWidth: 2.0,
+                iconAnimationType: AnimationType.onHover,
+                style: ToggleStyle(
+                  borderColor: Colors.transparent,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: Offset(0, 1.5),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            styleBuilder: (index) => ToggleStyle(
-              indicatorColor: _colorBuilder(index),
-            ),
-            onChanged: (index) {
-              setState(() {
-                currentIndex = index;
-              });
-              widget.onToggle?.call(index);
+                styleBuilder: (index) => ToggleStyle(
+                  indicatorColor: _colorBuilder(index),
+                ),
+                onChanged: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                  widget.onToggle?.call(index);
+                },
+              );
             },
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 
