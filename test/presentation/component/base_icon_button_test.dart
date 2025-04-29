@@ -23,7 +23,7 @@ void main() {
       expect(finder, findsOneWidget);
       expect(find.text('Edit'), findsOneWidget);
     });
-    testWidgets('', (WidgetTester tester) async {
+    testWidgets('아이콘 버튼이 클릭되어야 한다', (WidgetTester tester) async {
       int count = 0;
 
       await tester.pumpWidget(
