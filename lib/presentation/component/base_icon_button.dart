@@ -13,7 +13,7 @@ void main() {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             BaseIconButton(
-                buttonType: ButtonType.medium,
+                buttonType: ButtonType.small,
                 iconName: Icons.edit,
                 buttonName: 'Edit',
                 onClick: () {
@@ -57,13 +57,13 @@ class BaseIconButton extends StatelessWidget {
           children: [
             Icon(iconName,
               color: AppColors.white,
-              size: 20,
+              size: 16,
             ),
             SizedBox(
               width: 8,
             ),
             Text(buttonName,
-              style: AppFonts.largeTextRegular.copyWith(
+              style: AppFonts.mediumTextRegular.copyWith(
                 color: AppColors.white
               ),
             )
