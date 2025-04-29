@@ -4,30 +4,6 @@ import 'package:photopin/core/styles/app_font.dart';
 
 import '../../core/styles/app_color.dart';
 
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            BaseIconButton(
-                buttonType: ButtonType.small,
-                iconName: Icons.edit,
-                buttonName: 'Edit',
-                onClick: () {
-                },
-                buttonColor: AppColors.primary100
-            ),
-          ],
-        ),
-      )
-    )
-  );
-
-}
-
 
 
 class BaseIconButton extends StatelessWidget {
