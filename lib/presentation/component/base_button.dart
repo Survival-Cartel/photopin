@@ -18,21 +18,17 @@ class BaseButton extends StatelessWidget {
       onTap: () {
         onClick();
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Container(
-          width: buttonType.width,
-          height: buttonType.height,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.primary100,
-          ),
-          child: Center(
-            child: Text(buttonName,
-              style: AppFonts.normalTextBold.copyWith(
-                color: AppColors.white,
-              ),
+      child: Container(
+        width: buttonType.width,
+        height: buttonType.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.primary100,
+        ),
+        child: Center(
+          child: Text(buttonName,
+            style: AppFonts.normalTextBold.copyWith(
+              color: AppColors.white,
             ),
           ),
         ),
