@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 
-class ShareJourneyCard extends StatelessWidget {
+class JourneyCardImage extends StatelessWidget {
   final String imageUrl;
   final String journeyTitle;
-  final int photoCount;
-  final int markerCount;
+  final String description;
 
-  const ShareJourneyCard({
+  const JourneyCardImage({
     super.key,
     required this.imageUrl,
     required this.journeyTitle,
-    required this.photoCount,
-    required this.markerCount,
+    required this.description,
   });
 
   @override
@@ -59,7 +57,7 @@ class ShareJourneyCard extends StatelessWidget {
                 style: AppFonts.normalTextBold.copyWith(color: AppColors.white),
               ),
               Text(
-                '$photoCount photos · $markerCount locations',
+                description,
                 style: AppFonts.smallerTextRegular.copyWith(
                   color: AppColors.white,
                 ),
