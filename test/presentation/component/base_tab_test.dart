@@ -182,5 +182,28 @@ void main() {
       // 두 번째 탭(Unread)이면 marker90 색상이어야 함
       expect(updatedIndicatorColor, AppColors.marker90);
     });
+
+    testWidgets('BaseTab의 라벨 길이가 activeColors와 다를 때 예외 발생', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      const labels = ['All', 'Unread'];
+      final activeColors = [
+        AppColors.marker100,
+        AppColors.marker90,
+        AppColors.marker80,
+      ];
+
+      // Act & Assert
+      expect(
+        () => BaseTab(
+          activeColors: activeColors,
+          labels: labels,
+          initialIndex: 0,
+          onToggle: (index) {},
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
   });
 }
