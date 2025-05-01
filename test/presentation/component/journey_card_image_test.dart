@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:photopin/presentation/component/share_journey_card.dart';
+import 'package:photopin/presentation/component/journey_card_image.dart';
 
 void main() {
   group('share journey card 컴포넌트 테스트', () {
@@ -13,11 +13,10 @@ void main() {
       await mockNetworkImagesFor(
         () async => await tester.pumpWidget(
           MaterialApp(
-            home: ShareJourneyCard(
+            home: JourneyCardImage(
               imageUrl: '',
               journeyTitle: journeyTitle,
-              photoCount: photoCount,
-              markerCount: markerCount,
+              description: '$photoCount photos, $markerCount locations',
             ),
           ),
         ),
