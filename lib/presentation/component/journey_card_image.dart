@@ -6,12 +6,14 @@ class JourneyCardImage extends StatelessWidget {
   final String imageUrl;
   final String journeyTitle;
   final String description;
+  final bool bottomRadius;
 
   const JourneyCardImage({
     super.key,
     required this.imageUrl,
     required this.journeyTitle,
     required this.description,
+    this.bottomRadius = true,
   });
 
   @override
@@ -22,7 +24,10 @@ class JourneyCardImage extends StatelessWidget {
         Container(
           height: 192,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(12),
+              bottom: bottomRadius ? Radius.circular(12) : Radius.zero,
+            ),
             image: DecorationImage(
               image: NetworkImage(imageUrl),
               fit: BoxFit.cover,
@@ -42,9 +47,8 @@ class JourneyCardImage extends StatelessWidget {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+            borderRadius: BorderRadius.vertical(
+              bottom: bottomRadius ? Radius.circular(12) : Radius.zero,
             ),
           ),
           child: Column(
