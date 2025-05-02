@@ -35,6 +35,17 @@ extension DatetimeExtension on DateTime {
     return a[m - 1];
   }
 
+  String formatDateTimeString() {
+    // 시간 (12시간제)
+    int hour12 = hour % 12;
+    if (hour12 == 0) hour12 = 12; // 0시는 12시로 표시
+
+    // 분 (항상 2자리로)
+    final minute = this.minute.toString().padLeft(2, '0');
+
+    return '${_monthAbbr(month)} $day, $year • $hour12:$minute ${formMeridiem()}';
+  }
+
   /// 인자로 들어오는 값은 해당 값보다 이후의 날이어야합니다.
   String formatDateRange(DateTime after) {
     // after가 현재 날짜보다 이전이면 예외 발생
