@@ -93,32 +93,32 @@ extension DatetimeExtension on DateTime {
 
     if (days >= 365) {
       final value = days ~/ 365;
-      final unit  = value == 1 ? 'year'  : 'years';
+      final unit = value == 1 ? 'year' : 'years';
       return '$value $unit ago';
     }
     if (days >= 30) {
       final value = days ~/ 30;
-      final unit  = value == 1 ? 'month' : 'months';
+      final unit = value == 1 ? 'month' : 'months';
       return '$value $unit ago';
     }
     if (days >= 7) {
       final value = days ~/ 7;
-      final unit  = value == 1 ? 'week'  : 'weeks';
+      final unit = value == 1 ? 'week' : 'weeks';
       return '$value $unit ago';
     }
     if (days >= 1) {
       final value = days;
-      final unit  = value == 1 ? 'day'   : 'days';
+      final unit = value == 1 ? 'day' : 'days';
       return '$value $unit ago';
     }
     if (hours >= 1) {
       final value = hours;
-      final unit  = value == 1 ? 'hour'  : 'hours';
+      final unit = value == 1 ? 'hour' : 'hours';
       return '$value $unit ago';
     }
     if (minutes >= 1) {
       final value = minutes;
-      final unit  = value == 1 ? 'minute': 'minutes';
+      final unit = value == 1 ? 'minute' : 'minutes';
       return '$value $unit ago';
     }
     return 'just now';

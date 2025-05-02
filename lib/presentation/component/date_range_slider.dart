@@ -5,7 +5,6 @@ import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-
 class DateRangeSlider extends StatefulWidget {
   final DateTime startDate;
   final DateTime endDate;
@@ -123,14 +122,20 @@ class _RangeSliderState extends State<DateRangeSlider> {
             dateIntervalType: DateIntervalType.days,
             onChanged: (SfRangeValues values) {
               final fullStart = values.start as DateTime;
-              final fullEnd   = values.end   as DateTime;
+              final fullEnd = values.end as DateTime;
 
-              final dayStart = DateTime(fullStart.year, fullStart.month, fullStart.day);
-              final dayEnd   = DateTime(fullEnd.year,   fullEnd.month,   fullEnd.day);
+              final dayStart = DateTime(
+                fullStart.year,
+                fullStart.month,
+                fullStart.day,
+              );
+              final dayEnd = DateTime(fullEnd.year, fullEnd.month, fullEnd.day);
 
               setState(() {
-                _startOffset = dayStart.difference(widget.startDate).inDays.toDouble();
-                _endOffset   = dayEnd.difference(widget.startDate).inDays.toDouble();
+                _startOffset =
+                    dayStart.difference(widget.startDate).inDays.toDouble();
+                _endOffset =
+                    dayEnd.difference(widget.startDate).inDays.toDouble();
               });
 
               _debounce?.cancel();

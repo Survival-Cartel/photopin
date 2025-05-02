@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:photopin/core/enums/button_type.dart';
 import 'package:photopin/presentation/component/base_button.dart';
 
-
 void main() {
   group('base button 컴포넌트 테스트', () {
     testWidgets('버튼 생성이 되어야 한다', (WidgetTester tester) async {
@@ -11,12 +10,10 @@ void main() {
         MaterialApp(
           home: BaseButton(
             buttonName: 'Share',
-            onClick: () {
-
-            },
+            onClick: () {},
             buttonType: ButtonType.big,
-          )
-        )
+          ),
+        ),
       );
       final Finder finder = find.byType(BaseButton);
 
@@ -27,15 +24,15 @@ void main() {
       int count = 0;
 
       await tester.pumpWidget(
-          MaterialApp(
-              home: BaseButton(
-                buttonName: 'Share',
-                onClick: () {
-                  count++;
-                },
-                buttonType: ButtonType.big,
-              )
-          )
+        MaterialApp(
+          home: BaseButton(
+            buttonName: 'Share',
+            onClick: () {
+              count++;
+            },
+            buttonType: ButtonType.big,
+          ),
+        ),
       );
       expect(count, equals(0));
 
