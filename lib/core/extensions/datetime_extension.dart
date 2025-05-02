@@ -91,13 +91,36 @@ extension DatetimeExtension on DateTime {
     final int hours = diff.inHours;
     final int minutes = diff.inMinutes;
 
-    if (days >= 365) return '${days ~/ 365} years ago';
-    if (days >= 30) return '${days ~/ 30} months ago';
-    if (days >= 7) return '${days ~/ 7} weeks ago';
-    if (days >= 1) return '$days days ago';
-    if (hours >= 1) return '$hours hours ago';
-    if (minutes >= 1) return '$minutes minutes ago';
-
+    if (days >= 365) {
+      final value = days ~/ 365;
+      final unit  = value == 1 ? 'year'  : 'years';
+      return '$value $unit ago';
+    }
+    if (days >= 30) {
+      final value = days ~/ 30;
+      final unit  = value == 1 ? 'month' : 'months';
+      return '$value $unit ago';
+    }
+    if (days >= 7) {
+      final value = days ~/ 7;
+      final unit  = value == 1 ? 'week'  : 'weeks';
+      return '$value $unit ago';
+    }
+    if (days >= 1) {
+      final value = days;
+      final unit  = value == 1 ? 'day'   : 'days';
+      return '$value $unit ago';
+    }
+    if (hours >= 1) {
+      final value = hours;
+      final unit  = value == 1 ? 'hour'  : 'hours';
+      return '$value $unit ago';
+    }
+    if (minutes >= 1) {
+      final value = minutes;
+      final unit  = value == 1 ? 'minute': 'minutes';
+      return '$value $unit ago';
+    }
     return 'just now';
   }
 }

@@ -32,7 +32,7 @@ void main() {
       },
     );
     testWidgets(
-      '현재 시간을 기준으로  31일 전과 비교하여 dateTime 인스턴스 변수가 "1 months ago"가 되는지 확인한다',
+      '현재 시간을 기준으로  31일 전과 비교하여 dateTime 인스턴스 변수가 "1 month ago"가 되는지 확인한다',
       (WidgetTester tester) async {
         final now = DateTime.now();
         final oneMonthAgo = now.subtract(Duration(days: 31));
@@ -50,7 +50,7 @@ void main() {
         );
         await tester.pump();
 
-        expect(find.text('1 months ago'), findsOneWidget);
+        expect(find.text('1 month ago'), findsOneWidget);
       },
     );
   });
