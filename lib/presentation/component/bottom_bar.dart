@@ -2,19 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-import 'package:photopin/presentaion/component/date_range_slider.dart';
-import 'package:photopin/presentation/component/base_button.dart';
-import 'package:photopin/presentation/component/base_icon_button.dart';
-
-import '../../core/enums/button_type.dart';
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: BottomBar(),
-    )
-  );
-}
 
 
 class BottomBar extends StatefulWidget {
@@ -53,9 +40,6 @@ class _BottomBarState extends State<BottomBar> {
             Icon(
               icon, color: isSelected ? activeColor : AppColors.gray2,
             ),
-            // SizedBox(
-            //   height: 4
-            // ),
             Text(label,
               style: AppFonts.smallerTextRegular.copyWith(
                 color: isSelected ? activeColor : AppColors.gray2,
@@ -77,41 +61,6 @@ class _BottomBarState extends State<BottomBar> {
       appBar: AppBar(
         title: Text('포토 핀'),
         centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              BaseButton(
-                buttonName: '은렬',
-                onClick: () {},
-                buttonType: ButtonType.big
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              BaseIconButton(
-                buttonType: ButtonType.small,
-                iconName: Icons.edit,
-                buttonName: '공부하세요',
-                onClick: () {} ,
-                buttonColor: AppColors.secondary80
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              DateRangeSlider(
-                startDate: DateTime(2025, 3, 25),
-                endDate: DateTime(2025, 6, 3),
-                onChanged: (DateTime sd, DateTime ed) {},
-              ),
-              SizedBox(
-                height: 8,
-              ),
-            ],
-          ),
-        ),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 8,
