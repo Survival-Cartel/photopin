@@ -39,6 +39,7 @@ dependencies:
   toggle_switch: ^2.3.0
   syncfusion_flutter_sliders: ^29.1.39
   network_image_mock: ^2.1.1
+  google_maps_flutter: ^2.12.1
 
 
 dev_dependencies:
