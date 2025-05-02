@@ -1,10 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart'; // 🔑 권한 패키지 추가
+import 'package:permission_handler/permission_handler.dart';
 
+// todo: 모델 클래스 생성 후 업데이트
+/// [initialZoomLevel] 의 경우 맵이 생성 될 때의 줌 정도를 나타냅니다. 값이 클 수록 확대가 됩니다.
+/// 현재 map 의 경우 모델 클래스가 없어 복잡한 인자를 받지 못하는 상태입니다.
+/// 모델 클래스 생성 후 업데이트 될 예정입니다.
 class MapSample extends StatefulWidget {
-  const MapSample({super.key});
+  final LatLng initialLocation;
+  final double initialZoomLevel;
+  final Set<Marker> markers;
+  final Map<String, List<LatLng>> polylines;
+  final Color polyLineColor;
+
+  const MapSample({
+    super.key,
+    required this.initialLocation,
+    required this.initialZoomLevel,
+    required this.markers,
+    required this.polylines,
+    required this.polyLineColor,
+  });
 
   @override
   State<MapSample> createState() => MapSampleState();
@@ -14,22 +31,10 @@ class MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  static const CameraPosition _kSeoulCenter = CameraPosition(
-    target: LatLng(37.5665, 126.9780), // 서울시청
-    zoom: 14.0,
-  );
-
-  static const CameraPosition _kLotteTower = CameraPosition(
-    bearing: 90.0,
-    target: LatLng(37.5130, 127.1025), // 잠실 롯데타워
-    tilt: 45.0,
-    zoom: 17.0,
-  );
-
   @override
   void initState() {
     super.initState();
-    _requestLocationPermission(); // ✅ 위치 권한 요청
+    _requestLocationPermission();
   }
 
   Future<void> _requestLocationPermission() async {
@@ -44,23 +49,26 @@ class MapSampleState extends State<MapSample> {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: _kSeoulCenter,
-        myLocationEnabled: true,        // ✅ 내 위치 파란 점
-        myLocationButtonEnabled: true,  // ✅ 오른쪽 버튼 표시
+        initialCameraPosition: CameraPosition(
+          target: widget.initialLocation,
+          zoom: widget.initialZoomLevel,
+        ),
+        myLocationEnabled: true, // ✅ 내 위치 파란 점
+        myLocationButtonEnabled: true, // ✅ 오른쪽 버튼 표시
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToLotteTower,
-        label: const Text('Go to Lotte Tower'),
-        icon: const Icon(Icons.location_city),
+        buildingsEnabled: false,
+        polylines:
+            widget.polylines.keys.map((id) {
+              return Polyline(
+                polylineId: PolylineId(id),
+                points: widget.polylines[id]!,
+                color: widget.polyLineColor,
+              );
+            }).toSet(),
+        markers: widget.markers,
       ),
     );
-  }
-
-  Future<void> _goToLotteTower() async {
-    final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newCameraPosition(_kLotteTower));
   }
 }
