@@ -55,4 +55,8 @@ extension DatetimeExtension on DateTime {
   String formDateString() {
     return '${_monthAbbr(month)} $day';
   }
+
+  String formMeridiem() {
+    return hour >= 12 ? 'PM' : 'AM';
+  }
 }
