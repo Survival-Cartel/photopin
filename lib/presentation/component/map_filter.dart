@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 
-/// [labels]와 [icons]의 요소의 개수는 같아야 합니다.
+/// [labels]와 [icons] 리스트의 각 요소는 1:1로 매칭되어야 하며, 그렇지 않을 경우 ArgumentError가 발생합니다.
+/// 즉, [labels]의 길이와 [icons]의 길이가 같아야 합니다.
 class MapFilter extends StatefulWidget {
   final List<Icon> icons;
   final List<String> labels;
