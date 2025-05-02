@@ -7,6 +7,7 @@ import '../../core/styles/app_font.dart';
 class RecentActivityTile extends StatelessWidget {
   final String title;
   final DateTime dateTime;
+  final IconData iconData;
   final VoidCallback onTap;
 
   const RecentActivityTile({
@@ -14,6 +15,7 @@ class RecentActivityTile extends StatelessWidget {
     required this.title,
     required this.dateTime,
     required this.onTap,
+    required this.iconData,
   });
 
   @override
@@ -40,7 +42,7 @@ class RecentActivityTile extends StatelessWidget {
               ),
               child: BaseIcon(
                 iconColor: AppColors.primary100,
-                iconData: Icons.link,
+                iconData: iconData,
                 size: 18,
               ),
             ),
@@ -51,7 +53,7 @@ class RecentActivityTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Link shared: $title',
+                    title,
                     style: AppFonts.smallTextBold.copyWith(
                       color: AppColors.black,
                     ),
