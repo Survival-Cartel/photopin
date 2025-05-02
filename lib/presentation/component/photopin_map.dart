@@ -7,14 +7,14 @@ import 'package:permission_handler/permission_handler.dart';
 /// [initialZoomLevel] 의 경우 맵이 생성 될 때의 줌 정도를 나타냅니다. 값이 클 수록 확대가 됩니다.
 /// 현재 map 의 경우 모델 클래스가 없어 복잡한 인자를 받지 못하는 상태입니다.
 /// 모델 클래스 생성 후 업데이트 될 예정입니다.
-class MapSample extends StatefulWidget {
+class PhotoPinMap extends StatefulWidget {
   final LatLng initialLocation;
   final double initialZoomLevel;
   final Set<Marker> markers;
   final Map<String, List<LatLng>> polylines;
   final Color polyLineColor;
 
-  const MapSample({
+  const PhotoPinMap({
     super.key,
     required this.initialLocation,
     required this.initialZoomLevel,
@@ -24,10 +24,10 @@ class MapSample extends StatefulWidget {
   });
 
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<PhotoPinMap> createState() => PhotoPinMapState();
 }
 
-class MapSampleState extends State<MapSample> {
+class PhotoPinMapState extends State<PhotoPinMap> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
