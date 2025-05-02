@@ -112,7 +112,7 @@ class _IconText extends StatelessWidget {
     return Row(
       spacing: 8,
       children: [
-        Icon(iconData, color: color, size: 12),
+        Icon(iconData, color: color, size: 20),
         Text(timeMessage, style: AppFonts.smallTextRegular),
       ],
     );
