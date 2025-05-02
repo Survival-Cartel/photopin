@@ -70,4 +70,34 @@ extension DatetimeExtension on DateTime {
   String formMeridiem() {
     return hour >= 12 ? 'PM' : 'AM';
   }
+
+  /// DateTime 인스턴스를 현재 시간과 비교하여 다음과 같은 형식의 문자열로 반환합니다.
+  /// - 'just now' : 현재 시간과 1분 이내의 차이
+  /// - 'X minutes ago' : 현재 시간과 1시간 이내의 차이
+  /// - 'X hours ago' : 현재 시간과 1일 이내의 차이
+  /// - 'X days ago' : 현재 시간과 1달 이내의 차이
+  /// - 'X months ago' : 현재 시간과 1년 이내의 차이
+  /// - 'X years ago' : 현재 시간과 1년 이상의 차이
+  String timeAgoFromNow() {
+    final now = DateTime.now();
+
+    if (isAfter(now)) {
+      throw ArgumentError('미래 시간은 허용되지 않습니다.');
+    }
+
+    final Duration diff = now.difference(this);
+
+    final int days = diff.inDays;
+    final int hours = diff.inHours;
+    final int minutes = diff.inMinutes;
+
+    if (days >= 365) return '${days ~/ 365} years ago';
+    if (days >= 30) return '${days ~/ 30} months ago';
+    if (days >= 7) return '${days ~/ 7} weeks ago';
+    if (days >= 1) return '$days days ago';
+    if (hours >= 1) return '$hours hours ago';
+    if (minutes >= 1) return '$minutes minutes ago';
+
+    return 'just now';
+  }
 }
