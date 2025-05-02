@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photopin/presentaion/component/date_range_slider.dart';
+import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 void main() {
