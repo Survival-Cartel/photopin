@@ -8,10 +8,10 @@ void main() {
   group('photopin map component 테스트 : ', () {
     testWidgets('제대로 생성되어야 한다.', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: PhotoPinMap(
-              key: const ValueKey('testKey'),
+              key: ValueKey('testKey'),
               initialLocation: LatLng(37.5125, 127.1025),
               initialZoomLevel: 10,
               markers: {},
@@ -29,15 +29,15 @@ void main() {
           home: Scaffold(
             body: PhotoPinMap(
               key: const ValueKey('testKey'),
-              initialLocation: LatLng(37.5125, 127.1025),
+              initialLocation: const LatLng(37.5125, 127.1025),
               initialZoomLevel: 10,
               markers: {
-                Marker(
+                const Marker(
                   markerId: MarkerId('testMarker'),
                   position: LatLng(37.5125, 127.1025),
                 ),
               },
-              polylines: {},
+              polylines: const {},
               polyLineColor: AppColors.marker50,
             ),
           ),
@@ -60,15 +60,15 @@ void main() {
           home: Scaffold(
             body: PhotoPinMap(
               key: const ValueKey('testKey'),
-              initialLocation: LatLng(37.5125, 127.1025),
+              initialLocation: const LatLng(37.5125, 127.1025),
               initialZoomLevel: 10,
               markers: {
-                Marker(
+                const Marker(
                   markerId: MarkerId('testMarker'),
                   position: LatLng(37.5125, 127.1025),
                 ),
               },
-              polylines: {
+              polylines: const {
                 'testPolyline': [
                   LatLng(37.5125, 127.1025),
                   LatLng(37.5123, 127.1021),
