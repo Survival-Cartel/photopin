@@ -63,7 +63,7 @@ class _BaseTabState extends State<BaseTab> {
           currentIndex = index;
         });
 
-        widget.onToggle?.call(index);
+        widget.onToggle.call(index);
       },
     );
   }

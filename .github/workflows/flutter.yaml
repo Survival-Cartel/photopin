@@ -1,0 +1,33 @@
+name: Flutter
+
+on:
+  pull_request:
+    branches: ["dev"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # PR 브랜치의 현재 상태를 checkout
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.29.0
+
+      - name: Update dart sdk
+        run: flutter upgrade
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Format project source
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze project source
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test -r github

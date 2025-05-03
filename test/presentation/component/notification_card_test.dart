@@ -57,7 +57,7 @@ void main() {
         ),
       );
 
-      Finder readChecker = find.byKey(Key('read_checker'));
+      Finder readChecker = find.byKey(const Key('read_checker'));
       Container readContainer = tester.firstWidget(readChecker) as Container;
       BoxDecoration decoration = readContainer.decoration as BoxDecoration;
 

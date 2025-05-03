@@ -162,86 +162,77 @@ void main() {
     expect(expandedWidgets, findsNWidgets(3));
   });
 
-  testWidgets(
-    '선택된 항목의 텍스트 색상과 선택되지 않은 항목의 텍스트 색상이 달라지는지 확인합니다.',
-    (WidgetTester tester) async {
-      // Arrange: 2개의 아이콘과 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
-      const icons = [
-        Icon(Icons.access_time),
-        Icon(Icons.local_fire_department),
-      ];
-      const labels = ['Time', 'Heat Map'];
+  testWidgets('선택된 항목의 텍스트 색상과 선택되지 않은 항목의 텍스트 색상이 달라지는지 확인합니다.', (
+    WidgetTester tester,
+  ) async {
+    // Arrange: 2개의 아이콘과 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
+    const icons = [Icon(Icons.access_time), Icon(Icons.local_fire_department)];
+    const labels = ['Time', 'Heat Map'];
 
-      // Act: MapFilter 위젯을 빌드합니다.
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: MapFilter(
-              icons: icons,
-              labels: labels,
-              initialIndex: 0,
-              onSelected: (index) {},
-            ),
+    // Act: MapFilter 위젯을 빌드합니다.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: MapFilter(
+            icons: icons,
+            labels: labels,
+            initialIndex: 0,
+            onSelected: (index) {},
           ),
         ),
-      );
+      ),
+    );
 
-      // Assert: 선택된 항목('Time')의 텍스트 색상이 Colors.white임을 확인합니다.
-      final selectedText = find.text('Time');
-      final selectedTextWidget = tester.widget<Text>(selectedText);
-      expect(selectedTextWidget.style?.color, Colors.white);
+    // Assert: 선택된 항목('Time')의 텍스트 색상이 Colors.white임을 확인합니다.
+    final selectedText = find.text('Time');
+    final selectedTextWidget = tester.widget<Text>(selectedText);
+    expect(selectedTextWidget.style?.color, Colors.white);
 
-      // Assert: 선택되지 않은 항목('Heat Map')의 텍스트 색상이 AppColors.gray1임을 확인합니다.
-      final unselectedText = find.text('Heat Map');
-      final unselectedTextWidget = tester.widget<Text>(unselectedText);
-      expect(unselectedTextWidget.style?.color, AppColors.gray1);
+    // Assert: 선택되지 않은 항목('Heat Map')의 텍스트 색상이 AppColors.gray1임을 확인합니다.
+    final unselectedText = find.text('Heat Map');
+    final unselectedTextWidget = tester.widget<Text>(unselectedText);
+    expect(unselectedTextWidget.style?.color, AppColors.gray1);
 
-      // Assert: 선택된 항목의 컨테이너 배경색이 AppColors.primary100이고, 선택되지 않은 항목의 컨테이너 배경색이 AppColors.gray4임을 확인합니다.
-      final containers = find.byWidgetPredicate((widget) {
-        if (widget is Container && widget.decoration is BoxDecoration) {
-          final decoration = widget.decoration as BoxDecoration;
-          return decoration.borderRadius != null;
-        }
-        return false;
-      });
+    // Assert: 선택된 항목의 컨테이너 배경색이 AppColors.primary100이고, 선택되지 않은 항목의 컨테이너 배경색이 AppColors.gray4임을 확인합니다.
+    final containers = find.byWidgetPredicate((widget) {
+      if (widget is Container && widget.decoration is BoxDecoration) {
+        final decoration = widget.decoration as BoxDecoration;
+        return decoration.borderRadius != null;
+      }
+      return false;
+    });
 
-      final containerWidgets =
-          tester.widgetList<Container>(containers).toList();
+    final containerWidgets = tester.widgetList<Container>(containers).toList();
 
-      Container? selectedContainer;
-      Container? unselectedContainer;
+    Container? selectedContainer;
+    Container? unselectedContainer;
 
-      for (final container in containerWidgets) {
-        if (container.decoration is BoxDecoration) {
-          final decoration = container.decoration as BoxDecoration;
-          if (decoration.color == AppColors.primary100) {
-            selectedContainer = container;
-          } else if (decoration.color == AppColors.gray4) {
-            unselectedContainer = container;
-          }
+    for (final container in containerWidgets) {
+      if (container.decoration is BoxDecoration) {
+        final decoration = container.decoration as BoxDecoration;
+        if (decoration.color == AppColors.primary100) {
+          selectedContainer = container;
+        } else if (decoration.color == AppColors.gray4) {
+          unselectedContainer = container;
         }
       }
+    }
 
-      expect(
-        selectedContainer != null,
-        true,
-        reason: '선택된 항목의 컨테이너가 존재해야 합니다.',
-      );
-      expect(
-        unselectedContainer != null,
-        true,
-        reason: '선택되지 않은 항목의 컨테이너가 존재해야 합니다.',
-      );
-      expect(
-        (selectedContainer!.decoration as BoxDecoration).color,
-        AppColors.primary100,
-        reason: '선택된 항목의 배경색이 AppColors.primary100이어야 합니다.',
-      );
-      expect(
-        (unselectedContainer!.decoration as BoxDecoration).color,
-        AppColors.gray4,
-        reason: '선택되지 않은 항목의 배경색이 AppColors.gray4이어야 합니다.',
-      );
-    },
-  );
+    expect(selectedContainer != null, true, reason: '선택된 항목의 컨테이너가 존재해야 합니다.');
+    expect(
+      unselectedContainer != null,
+      true,
+      reason: '선택되지 않은 항목의 컨테이너가 존재해야 합니다.',
+    );
+    expect(
+      (selectedContainer!.decoration as BoxDecoration).color,
+      AppColors.primary100,
+      reason: '선택된 항목의 배경색이 AppColors.primary100이어야 합니다.',
+    );
+    expect(
+      (unselectedContainer!.decoration as BoxDecoration).color,
+      AppColors.gray4,
+      reason: '선택되지 않은 항목의 배경색이 AppColors.gray4이어야 합니다.',
+    );
+  });
 }

@@ -27,7 +27,7 @@ class NotificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       height: 118,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -93,7 +93,7 @@ class NotificationCard extends StatelessWidget {
             children: [
               const SizedBox(height: 5.85),
               Container(
-                key: Key('read_checker'),
+                key: const Key('read_checker'),
                 height: 8,
                 width: 8,
                 decoration: BoxDecoration(
@@ -126,7 +126,7 @@ class _NotificationBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 2,
         children: [
-          Icon(Icons.link, size: 18, color: AppColors.gray1),
+          const Icon(Icons.link, size: 18, color: AppColors.gray1),
           Text(
             title,
             style: AppFonts.smallerTextRegular.copyWith(color: AppColors.gray1),

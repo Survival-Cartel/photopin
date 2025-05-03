@@ -12,7 +12,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,
@@ -47,7 +47,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,
@@ -86,7 +86,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,
@@ -158,8 +158,7 @@ void main() {
           .widget<AnimatedToggleSwitch<int>>(toggleFinder);
 
       // indicator 색상은 styleBuilder에서 정해지기 때문에 직접 계산
-      final indicatorColor =
-          activeColors[animatedToggleSwitchWidget.current ?? 0];
+      final indicatorColor = activeColors[animatedToggleSwitchWidget.current];
 
       // 우리가 예상한 색깔과 맞는지 검증
       expect(indicatorColor, AppColors.marker100);
@@ -177,7 +176,7 @@ void main() {
           .widget<AnimatedToggleSwitch<int>>(toggleFinder);
 
       final updatedIndicatorColor =
-          activeColors[updatedToggleSwitchWidget.current ?? 0];
+          activeColors[updatedToggleSwitchWidget.current];
 
       // 두 번째 탭(Unread)이면 marker90 색상이어야 함
       expect(updatedIndicatorColor, AppColors.marker90);

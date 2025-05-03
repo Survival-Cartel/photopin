@@ -78,7 +78,11 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                     onTap: () {
                       widget.onTapClose();
                     },
-                    child: Icon(Icons.close, size: 20, color: AppColors.gray2),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: AppColors.gray2,
+                    ),
                   ),
                 ],
               ),
@@ -101,7 +105,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                   Row(
                     spacing: 12,
                     children: [
-                      BaseIcon(
+                      const BaseIcon(
                         iconColor: AppColors.primary80,
                         size: 16,
                         iconData: Icons.calendar_month,
@@ -115,7 +119,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                   Row(
                     spacing: 12,
                     children: [
-                      BaseIcon(
+                      const BaseIcon(
                         iconColor: AppColors.secondary100,
                         size: 16,
                         iconData: Icons.location_on,
@@ -125,7 +129,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                   ),
                   Row(
                     children: [
-                      BaseIcon(
+                      const BaseIcon(
                         iconColor: AppColors.primary80,
                         size: 16,
                         iconData: Icons.comment,

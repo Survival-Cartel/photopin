@@ -12,7 +12,7 @@ void main() {
     testWidgets('제대로 생성되어야 한다.', (tester) async {
       await mockNetworkImagesFor(
         () async => await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: JourneyCardImage(
               imageUrl: '',
               journeyTitle: journeyTitle,

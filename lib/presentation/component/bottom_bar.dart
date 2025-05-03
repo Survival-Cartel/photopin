@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -21,31 +19,30 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Widget _buildNavItem(
-   IconData icon,
-   String label,
-   int index,
-   Color activeColor,
-  ){
+    IconData icon,
+    String label,
+    int index,
+    Color activeColor,
+  ) {
     final bool isSelected = _selectedIndex == index;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => _onItemTapped(index),
-      child:  Container(
+      child: SizedBox(
         width: 48,
         height: 56,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon, color: isSelected ? activeColor : AppColors.gray2,
-            ),
-            Text(label,
+            Icon(icon, color: isSelected ? activeColor : AppColors.gray2),
+            Text(
+              label,
               style: AppFonts.smallerTextRegular.copyWith(
                 color: isSelected ? activeColor : AppColors.gray2,
                 height: 1.0,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -55,49 +52,45 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     const double barHeight = 56.0;
-    const double fabSize   = 48.0;
+    const double fabSize = 48.0;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('포토 핀'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('포토 핀'), centerTitle: true),
       bottomNavigationBar: BottomAppBar(
         elevation: 8,
         color: AppColors.white,
         child: SizedBox(
           height: barHeight,
           child: Row(
-            mainAxisAlignment:  MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(Icons.home, 'Home', 0, AppColors.primary100),
-              _buildNavItem(Icons.map,  'Map',  1, AppColors.secondary100),
+              _buildNavItem(Icons.map, 'Map', 1, AppColors.secondary100),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => _onItemTapped(2),
                 child: Container(
                   width: fabSize,
                   height: fabSize,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.primary100,
                     shape: BoxShape.circle,
-                    boxShadow: const [BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                    )]
+                    boxShadow: [
+                      BoxShadow(color: Colors.black26, blurRadius: 4),
+                    ],
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.camera_alt,
                     size: 24,
                     color: AppColors.white,
                   ),
                 ),
               ),
-              _buildNavItem(Icons.photo,    'Photos',   3, AppColors.marker80),
+              _buildNavItem(Icons.photo, 'Photos', 3, AppColors.marker80),
               _buildNavItem(Icons.settings, 'Settings', 4, AppColors.marker100),
             ],
           ),
-        )
+        ),
       ),
     );
   }

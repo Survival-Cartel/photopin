@@ -45,7 +45,6 @@ void main() {
       await tester.pump();
 
       expect(count, equals(1));
-
     });
   });
 }

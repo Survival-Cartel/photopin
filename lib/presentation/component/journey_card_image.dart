@@ -25,8 +25,8 @@ class JourneyCardImage extends StatelessWidget {
           height: 192,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(12),
-              bottom: bottomRadius ? Radius.circular(12) : Radius.zero,
+              top: const Radius.circular(12),
+              bottom: bottomRadius ? const Radius.circular(12) : Radius.zero,
             ),
             image: DecorationImage(
               image: NetworkImage(imageUrl),
@@ -48,7 +48,7 @@ class JourneyCardImage extends StatelessWidget {
               end: Alignment.centerRight,
             ),
             borderRadius: BorderRadius.vertical(
-              bottom: bottomRadius ? Radius.circular(12) : Radius.zero,
+              bottom: bottomRadius ? const Radius.circular(12) : Radius.zero,
             ),
           ),
           child: Column(

@@ -36,7 +36,7 @@ class RecentActivityTile extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary40,
                 shape: BoxShape.circle,
               ),
@@ -46,8 +46,8 @@ class RecentActivityTile extends StatelessWidget {
                 size: 18,
               ),
             ),
-            SizedBox(width: 12),
-            Container(
+            const SizedBox(width: 12),
+            SizedBox(
               height: 40,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

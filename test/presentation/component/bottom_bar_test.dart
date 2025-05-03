@@ -8,7 +8,7 @@ void main() {
     testWidgets('홈 Icon 클릭시 홈버튼은 primary100 나머지는 gray2 색 이어야 한다', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MaterialApp(home: BottomBar()));
+      await tester.pumpWidget(const MaterialApp(home: BottomBar()));
       await tester.pump();
 
       final homeIconFinder = find.byIcon(Icons.home);
@@ -27,7 +27,7 @@ void main() {
     testWidgets('맵 Icon 클릭시 맵버튼은 secondary100 나머지는 gray2 색 이어야 한다', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MaterialApp(home: BottomBar()));
+      await tester.pumpWidget(const MaterialApp(home: BottomBar()));
       await tester.pump();
 
       await tester.tap(find.byIcon(Icons.map));
@@ -46,7 +46,7 @@ void main() {
     testWidgets('포토 Icon 클릭시 포토버튼은 marker80 나머지는 gray2 색 이어야 한다', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MaterialApp(home: BottomBar()));
+      await tester.pumpWidget(const MaterialApp(home: BottomBar()));
       await tester.pump();
 
       await tester.tap(find.byIcon(Icons.photo));
@@ -65,7 +65,7 @@ void main() {
     testWidgets('세팅 Icon 클릭시 세팅버튼은 marker100 나머지는 gray2 색 이어야 한다', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MaterialApp(home: BottomBar()));
+      await tester.pumpWidget(const MaterialApp(home: BottomBar()));
       await tester.pump();
 
       await tester.tap(find.byIcon(Icons.settings));
