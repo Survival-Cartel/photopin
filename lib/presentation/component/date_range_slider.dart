@@ -25,9 +25,6 @@ class _RangeSliderState extends State<DateRangeSlider> {
   double? _startOffset;
   double? _endOffset;
 
-  DateTime? _lastStartDay;
-  DateTime? _lastEndDay;
-
   Timer? _debounce;
 
   @override

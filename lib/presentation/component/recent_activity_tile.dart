@@ -47,7 +47,7 @@ class RecentActivityTile extends StatelessWidget {
               ),
             ),
             SizedBox(width: 12),
-            Container(
+            SizedBox(
               height: 40,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

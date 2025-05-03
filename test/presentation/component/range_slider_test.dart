@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photopin/presentaion/component/date_range_slider.dart';
+import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 void main() {
@@ -8,7 +8,6 @@ void main() {
     testWidgets('DateRangeSlider 생성되어야 한다', (tester) async {
       final start = DateTime(2025, 4, 1);
       final end = DateTime(2025, 6, 2);
-      DateTime? cbStart, cbEnd;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -16,11 +15,7 @@ void main() {
             body: DateRangeSlider(
               startDate: start,
               endDate: end,
-              onChanged: (s, e) {
-                cbStart = s;
-                cbEnd = e;
-                print('>>> onChanged fired: $s ~ $e');
-              },
+              onChanged: (s, e) {},
             ),
           ),
         ),
@@ -45,7 +40,6 @@ void main() {
               onChanged: (s, e) {
                 cbStart = s;
                 cbEnd = e;
-                print('>>> onChanged fired: $s ~ $e');
               },
             ),
           ),

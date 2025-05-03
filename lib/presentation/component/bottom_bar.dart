@@ -28,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => _onItemTapped(index),
-      child: Container(
+      child: SizedBox(
         width: 48,
         height: 56,
         child: Column(
