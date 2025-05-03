@@ -8,7 +8,7 @@ void main() {
   group('base icon 컴포넌트 테스트', () {
     testWidgets('제대로 생성되어야 한다.', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: BaseIcon(
             iconColor: AppColors.primary100,
             size: 20,

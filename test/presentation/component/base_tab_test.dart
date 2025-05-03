@@ -12,7 +12,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,
@@ -47,7 +47,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,
@@ -86,7 +86,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: BaseTab(
-              activeColors: [
+              activeColors: const [
                 AppColors.marker100,
                 AppColors.marker90,
                 AppColors.marker80,

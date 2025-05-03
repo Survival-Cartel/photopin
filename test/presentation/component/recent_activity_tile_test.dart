@@ -36,7 +36,7 @@ void main() {
       '현재 시간을 기준으로  30일 전과 비교하여 dateTime 인스턴스 변수가 "1 month ago"가 되는지 확인한다',
       (WidgetTester tester) async {
         final now = DateTime.now();
-        final oneMonthAgo = now.subtract(Duration(days: 30));
+        final oneMonthAgo = now.subtract(const Duration(days: 30));
 
         await tester.pumpWidget(
           MaterialApp(

@@ -37,7 +37,7 @@ class BaseIconButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(iconName, color: AppColors.white, size: 16),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               buttonName,
               style: AppFonts.mediumTextRegular.copyWith(

@@ -55,7 +55,7 @@ class _BottomBarState extends State<BottomBar> {
     const double fabSize = 48.0;
 
     return Scaffold(
-      appBar: AppBar(title: Text('포토 핀'), centerTitle: true),
+      appBar: AppBar(title: const Text('포토 핀'), centerTitle: true),
       bottomNavigationBar: BottomAppBar(
         elevation: 8,
         color: AppColors.white,
@@ -72,14 +72,14 @@ class _BottomBarState extends State<BottomBar> {
                 child: Container(
                   width: fabSize,
                   height: fabSize,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.primary100,
                     shape: BoxShape.circle,
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(color: Colors.black26, blurRadius: 4),
                     ],
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.camera_alt,
                     size: 24,
                     color: AppColors.white,

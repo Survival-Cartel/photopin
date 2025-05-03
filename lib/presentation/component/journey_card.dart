@@ -43,7 +43,7 @@ class JourneyCard extends StatelessWidget {
           Container(
             height: 40,
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(12),
