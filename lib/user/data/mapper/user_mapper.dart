@@ -6,7 +6,7 @@ extension UserMapper on UserDto {
     return UserModel(
       id: id ?? 'N/A',
       email: email ?? 'N/A',
-      profile_img: profile_img ?? 'N/A',
+      profileImg: profileImg ?? 'N/A',
       displayName: displayName ?? 'N/A',
     );
   }

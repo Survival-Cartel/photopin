@@ -8,7 +8,7 @@ abstract class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
     required String email,
-    required String profile_img,
+    required String profileImg,
     required String displayName,
   }) = _UserModel;
 

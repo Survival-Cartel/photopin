@@ -6,10 +6,10 @@ part 'user_dto.g.dart';
 class UserDto {
   final String? id;
   final String? email;
-  final String? profile_img;
+  final String? profileImg;
   final String? displayName;
 
-  const UserDto(this.id, this.email, this.profile_img, this.displayName);
+  const UserDto(this.id, this.email, this.profileImg, this.displayName);
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
