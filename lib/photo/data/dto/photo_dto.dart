@@ -1,7 +1,5 @@
-import 'dart:convert';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:photopin/location/data/dto/location_dto.dart';
 
 part 'photo_dto.g.dart';
 
@@ -12,8 +10,7 @@ class PhotoDto {
   final DateTime? dateTime;
   final String? journalId;
   final String? imageUrl;
-  @JsonKey(fromJson: LatLng.fromJson, toJson: jsonEncode)
-  final LatLng? location;
+  final LocationDto? location;
   final String? comment;
 
   const PhotoDto({

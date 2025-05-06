@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:photopin/location/domain/model/location_model.dart';
 
+part 'photo_model.g.dart';
 part 'photo_model.freezed.dart';
 
 @freezed
@@ -11,7 +12,7 @@ abstract class PhotoModel with _$PhotoModel {
     required DateTime dateTime,
     required String journalId,
     required String imageUrl,
-    required LatLng location,
+    required LocationModel location,
     required String comment,
   }) = _PhotoModel;
 }
