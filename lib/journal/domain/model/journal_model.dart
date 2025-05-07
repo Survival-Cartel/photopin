@@ -15,4 +15,7 @@ abstract class JournalModel with _$JournalModel {
     required List<PhotoModel> photos,
     required String comment,
   }) = _JournalModel;
+
+  factory JournalModel.fromJson(Map<String, dynamic> json) =>
+      _$JournalModelFromJson(json);
 }

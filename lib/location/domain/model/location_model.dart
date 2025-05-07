@@ -9,4 +9,7 @@ abstract class LocationModel with _$LocationModel {
     required double latitude,
     required double longitude,
   }) = _LocationModel;
+
+  factory LocationModel.fromJson(Map<String, dynamic> json) =>
+      _$LocationModelFromJson(json);
 }

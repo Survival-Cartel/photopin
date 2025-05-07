@@ -15,4 +15,7 @@ abstract class PhotoModel with _$PhotoModel {
     required LocationModel location,
     required String comment,
   }) = _PhotoModel;
+
+  factory PhotoModel.fromJson(Map<String, dynamic> json) =>
+      _$PhotoModelFromJson(json);
 }
