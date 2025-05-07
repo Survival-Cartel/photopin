@@ -44,6 +44,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   void dispose() {
     widget.onClosing?.call();
+    commentController.dispose();
+    journalController.dispose();
     super.dispose();
   }
 
