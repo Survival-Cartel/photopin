@@ -1,21 +1,35 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 
-part 'journal_model.freezed.dart';
-part 'journal_model.g.dart';
+class JournalModel {
+  final String id;
+  final String name;
+  final List<String> tripWith;
+  final DateTime startDate;
+  final DateTime endDate;
+  final List<PhotoModel> photos;
+  final String comment;
 
-@freezed
-abstract class JournalModel with _$JournalModel {
-  const factory JournalModel({
-    required String id,
-    required String name,
-    required List<String> tripWith,
-    required DateTime startDate,
-    required DateTime endDate,
-    required List<PhotoModel> photos,
-    required String comment,
-  }) = _JournalModel;
+  const JournalModel({
+    required this.id,
+    required this.name,
+    required this.tripWith,
+    required this.startDate,
+    required this.endDate,
+    required this.photos,
+    required this.comment,
+  });
 
-  factory JournalModel.fromJson(Map<String, dynamic> json) =>
-      _$JournalModelFromJson(json);
+  @override
+  String toString() {
+    return 'JournalModel(id: $id, name: $name, tripWith: $tripWith, startDate: $startDate, endDate: $endDate, photos: $photos, comment: $comment)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is JournalModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

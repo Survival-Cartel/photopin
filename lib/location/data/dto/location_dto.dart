@@ -1,8 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'location_dto.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class LocationDto {
   final double? latitude;
   final double? longitude;
@@ -10,7 +5,10 @@ class LocationDto {
   const LocationDto({this.latitude, this.longitude});
 
   factory LocationDto.fromJson(Map<String, dynamic> json) =>
-      _$LocationDtoFromJson(json);
+      LocationDto(latitude: json['latitude'], longitude: json['longitude']);
 
-  Map<String, dynamic> toJson() => _$LocationDtoToJson(this);
+  Map<String, dynamic> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
+  };
 }
