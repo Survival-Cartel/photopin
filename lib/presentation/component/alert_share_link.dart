@@ -22,16 +22,16 @@ class AlertShareLink extends StatelessWidget {
           children: [
             Row(
               children: [
-                BaseIcon(
+                const BaseIcon(
                   iconColor: AppColors.primary100,
                   iconData: Icons.link,
                   size: 16,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('Shareable Link', style: AppFonts.mediumTextRegular),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(

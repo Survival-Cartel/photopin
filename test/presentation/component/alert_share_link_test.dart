@@ -21,7 +21,7 @@ void main() {
                         ),
                   );
                 },
-                child: Text('Share'),
+                child: const Text('Share'),
               ),
             ),
           ),
@@ -71,7 +71,7 @@ void main() {
                         ),
                   );
                 },
-                child: Text('Share'),
+                child: const Text('Share'),
               ),
             ),
           ),
