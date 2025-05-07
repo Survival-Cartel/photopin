@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photopin/presentation/component/search_bar.dart'; 
+import 'package:photopin/presentation/component/search_bar.dart';
 
 void main() {
   group('SearchBarWidget 테스트', () {
