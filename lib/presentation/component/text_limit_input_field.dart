@@ -3,14 +3,12 @@ import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 
 class TextLimitInputField extends StatefulWidget {
-  final String value;
   final String hintText;
   final int maxLength;
   final TextEditingController controller;
 
   const TextLimitInputField({
     super.key,
-    required this.value,
     required this.controller,
     this.maxLength = 0,
     this.hintText = '',
@@ -21,23 +19,15 @@ class TextLimitInputField extends StatefulWidget {
 }
 
 class _TextLimitInputFieldState extends State<TextLimitInputField> {
-  late final TextEditingController _controller;
-
-  @override
-  initState() {
-    super.initState();
-    _controller = widget.controller;
-    _controller.value = TextEditingValue(text: widget.value);
-  }
-
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (String a) {
+      onChanged: (String value) {
+        // TextField 재빌드용 setState 호출
         setState(() {});
       },
       style: AppFonts.smallTextRegular,
-      controller: _controller,
+      controller: widget.controller,
       decoration: InputDecoration(
         hintText: widget.hintText,
         isDense: true,
