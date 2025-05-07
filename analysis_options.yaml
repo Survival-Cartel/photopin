@@ -27,13 +27,3 @@ linter:
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
-analyzer:
-  exclude:
-    - "**/*.g.dart"
-    - "**/*.freezed.dart"
-  errors:
-    uri_has_not_been_generated: ignore
-    uri_does_not_exist: ignore
-    undefined_method: ignore
-    redirect_to_non_class: ignore
-    invalid_annotation_target: ignore

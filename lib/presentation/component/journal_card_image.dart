@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 
-class JourneyCardImage extends StatelessWidget {
+class JournalCardImage extends StatelessWidget {
   final String imageUrl;
   final String journeyTitle;
   final String description;
   final bool bottomRadius;
 
-  const JourneyCardImage({
+  const JournalCardImage({
     super.key,
     required this.imageUrl,
     required this.journeyTitle,
@@ -52,7 +52,6 @@ class JourneyCardImage extends StatelessWidget {
             ),
           ),
           child: Column(
-            spacing: 2,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,6 +61,8 @@ class JourneyCardImage extends StatelessWidget {
               ),
               Text(
                 description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: AppFonts.smallerTextRegular.copyWith(
                   color: AppColors.white,
                 ),

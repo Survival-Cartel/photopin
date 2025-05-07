@@ -2,27 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:photopin/core/extensions/datetime_extension.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-import 'package:photopin/presentation/component/journey_card_image.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/journal_card_image.dart';
 
-class JourneyCard extends StatelessWidget {
-  final String imageUrl;
-  final String journeyTitle;
-  final DateTime startDate;
-  final DateTime endDate;
-  final int photoCount;
-  final int markerCount;
+class JournalCard extends StatelessWidget {
+  final JournalModel journal;
   final VoidCallback onTap;
 
-  const JourneyCard({
-    super.key,
-    required this.imageUrl,
-    required this.journeyTitle,
-    required this.photoCount,
-    required this.markerCount,
-    required this.startDate,
-    required this.endDate,
-    required this.onTap,
-  });
+  const JournalCard({super.key, required this.onTap, required this.journal});
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +20,10 @@ class JourneyCard extends StatelessWidget {
         children: [
           SizedBox(
             height: 144,
-            child: JourneyCardImage(
-              imageUrl: imageUrl,
-              journeyTitle: journeyTitle,
-              description: startDate.formatDateRange(endDate),
+            child: JournalCardImage(
+              imageUrl: journal.photos.first.imageUrl,
+              journeyTitle: journal.name,
+              description: journal.comment,
               bottomRadius: false,
             ),
           ),
@@ -53,15 +40,14 @@ class JourneyCard extends StatelessWidget {
             child: Row(
               children: [
                 _IconText(
-                  iconData: CupertinoIcons.photo,
-                  count: photoCount,
-                  title: 'photos',
+                  iconData: CupertinoIcons.calendar_today,
+                  title: journal.startDate.formatDateRange(journal.endDate),
                 ),
                 const Spacer(),
                 _IconText(
-                  iconData: CupertinoIcons.map_pin_ellipse,
-                  count: markerCount,
-                  title: 'locations',
+                  iconData: CupertinoIcons.photo,
+                  count: journal.photos.length,
+                  title: ' photos',
                 ),
               ],
             ),
@@ -74,25 +60,23 @@ class JourneyCard extends StatelessWidget {
 
 class _IconText extends StatelessWidget {
   final IconData iconData;
-  final int count;
+  final int? count;
   final String title;
 
-  const _IconText({
-    required this.iconData,
-    required this.count,
-    required this.title,
-  });
+  const _IconText({required this.iconData, this.count, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 8,
       children: [
         Icon(iconData, color: AppColors.gray3),
-        Text(
-          '$count',
-          style: AppFonts.smallTextRegular.copyWith(color: AppColors.gray3),
-        ),
+        const SizedBox(width: 8),
+        count != null
+            ? Text(
+              '$count',
+              style: AppFonts.smallTextRegular.copyWith(color: AppColors.gray3),
+            )
+            : const SizedBox(),
         Text(
           title,
           style: AppFonts.smallTextRegular.copyWith(color: AppColors.gray3),

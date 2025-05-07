@@ -3,7 +3,6 @@ class LocationModel {
   final double longitude;
 
   const LocationModel({required this.latitude, required this.longitude});
-
   @override
   String toString() {
     return 'LocationModel(latitude: $latitude, longitude: $longitude)';
