@@ -38,8 +38,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   final TextEditingController commentController = TextEditingController();
   final TextEditingController journalController = TextEditingController();
 
-  String _formattedDateTime() =>
-      '${widget.dateTime.formDateString()}, ${widget.dateTime.year} • ${widget.dateTime.hour}:${widget.dateTime.minute.toString().padLeft(2, '0')} ${widget.dateTime.formMeridiem()}';
+  String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
   @override
   void dispose() {
