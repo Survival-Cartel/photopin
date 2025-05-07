@@ -42,6 +42,7 @@ class TimeLineTile extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AppFonts.smallTextRegular),
