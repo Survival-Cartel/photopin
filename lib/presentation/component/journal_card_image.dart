@@ -52,7 +52,6 @@ class JournalCardImage extends StatelessWidget {
             ),
           ),
           child: Column(
-            spacing: 2,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,6 +61,8 @@ class JournalCardImage extends StatelessWidget {
               ),
               Text(
                 description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: AppFonts.smallerTextRegular.copyWith(
                   color: AppColors.white,
                 ),
