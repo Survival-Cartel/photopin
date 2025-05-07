@@ -41,6 +41,12 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
   @override
+  void initState() {
+    super.initState();
+    commentController.value = TextEditingValue(text: widget.comment);
+  }
+
+  @override
   void dispose() {
     widget.onClosing?.call();
     commentController.dispose();
@@ -126,7 +132,6 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       ),
                       Expanded(
                         child: TextLimitInputField(
-                          value: widget.comment,
                           controller: commentController,
                           hintText: 'Write Comment',
                           maxLength: 30,
