@@ -41,8 +41,8 @@ class SearchBarWidget extends StatelessWidget {
             child: const Icon(Icons.search, size: 16),
           ),
           border: InputBorder.none,
-          enabledBorder: InputBorder.none, 
-          focusedBorder: InputBorder.none, 
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 8,
