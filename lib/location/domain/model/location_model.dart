@@ -1,12 +1,22 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class LocationModel {
+  final double latitude;
+  final double longitude;
 
-part 'location_model.freezed.dart';
-part 'location_model.g.dart';
+  const LocationModel({required this.latitude, required this.longitude});
 
-@freezed
-abstract class LocationModel with _$LocationModel {
-  const factory LocationModel({
-    required double latitude,
-    required double longitude,
-  }) = _LocationModel;
+  @override
+  String toString() {
+    return 'LocationModel(latitude: $latitude, longitude: $longitude)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is LocationModel &&
+        other.latitude == latitude &&
+        other.longitude == longitude;
+  }
+
+  @override
+  int get hashCode => latitude.hashCode ^ longitude.hashCode;
 }

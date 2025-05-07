@@ -1,19 +1,15 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:photopin/photo/data/dto/photo_dto.dart';
 
-part 'journal_dto.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class JournalDto {
   final String? id;
   final String? name;
   final DateTime? startDate;
   final DateTime? endDate;
-  final List<String> tripWith;
-  final List<PhotoDto> photos;
+  final List<String>? tripWith;
+  final List<PhotoDto>? photos;
   final String? comment;
 
-  const JournalDto(
+  const JournalDto({
     this.id,
     this.name,
     this.tripWith,
@@ -21,10 +17,28 @@ class JournalDto {
     this.endDate,
     this.photos,
     this.comment,
+  });
+
+  factory JournalDto.fromJson(Map<String, dynamic> json) => JournalDto(
+    id: json['id'],
+    name: json['name'],
+    tripWith: json['tripWith'],
+    startDate: json['stastartDatert'],
+    endDate: json['endDate'],
+    photos:
+        (json['photos'] as List<Map<String, dynamic>>)
+            .map((e) => PhotoDto.fromJson(e))
+            .toList(),
+    comment: json['comment'],
   );
 
-  factory JournalDto.fromJson(Map<String, dynamic> json) =>
-      _$JournalDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$JournalDtoToJson(this);
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'tripWith': tripWith,
+    'startDate': startDate,
+    'endDate': endDate,
+    'photos': photos?.map((e) => e.toJson()).toList(),
+    'comment': comment,
+  };
 }
