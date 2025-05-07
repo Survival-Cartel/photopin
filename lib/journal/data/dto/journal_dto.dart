@@ -23,7 +23,7 @@ class JournalDto {
     id: json['id'],
     name: json['name'],
     tripWith: json['tripWith'],
-    startDate: json['stastartDatert'],
+    startDate: json['startDate'],
     endDate: json['endDate'],
     photos:
         (json['photos'] as List<Map<String, dynamic>>)
