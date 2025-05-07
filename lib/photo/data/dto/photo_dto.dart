@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:photopin/location/data/dto/location_dto.dart';
 
-part 'photo_dto.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class PhotoDto {
   final String? id;
   final String? name;
@@ -23,8 +19,23 @@ class PhotoDto {
     this.comment,
   });
 
-  factory PhotoDto.fromJson(Map<String, dynamic> json) =>
-      _$PhotoDtoFromJson(json);
+  factory PhotoDto.fromJson(Map<String, dynamic> json) => PhotoDto(
+    id: json['id'],
+    name: json['name'],
+    dateTime: json['dateTime'],
+    journalId: json['journalId'],
+    imageUrl: json['imageUrl'],
+    location: LocationDto.fromJson(json['location']),
+    comment: json['comment'],
+  );
 
-  Map<String, dynamic> toJson() => _$PhotoDtoToJson(this);
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'dateTime': dateTime,
+    'journalId': journalId,
+    'imageUrl': imageUrl,
+    'location': location?.toJson(),
+    'comment': comment,
+  };
 }
