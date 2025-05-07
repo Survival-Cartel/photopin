@@ -1,17 +1,27 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class UserModel {
+  final String id;
+  final String email;
+  final String profileImg;
+  final String displayName;
 
-part 'user_model.freezed.dart';
-part 'user_model.g.dart';
+  const UserModel({
+    required this.id,
+    required this.email,
+    required this.profileImg,
+    required this.displayName,
+  });
 
-@freezed
-abstract class UserModel with _$UserModel {
-  const factory UserModel({
-    required String id,
-    required String email,
-    required String profileImg,
-    required String displayName,
-  }) = _UserModel;
+  @override
+  String toString() {
+    return 'UserModel(id: $id, email: $email, profileImg: $profileImg, displayName: $displayName)';
+  }
 
-  factory UserModel.fromJson(Map<String, Object?> json) =>
-      _$UserModelFromJson(json);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is UserModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
