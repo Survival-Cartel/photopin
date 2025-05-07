@@ -1,3 +1,5 @@
+import 'package:photopin/core/enums/timeline_divide.dart';
+
 extension DatetimeExtension on DateTime {
   String _monthName(int m) {
     const full = [
@@ -69,6 +71,29 @@ extension DatetimeExtension on DateTime {
 
   String formMeridiem() {
     return hour >= 12 ? 'PM' : 'AM';
+  }
+
+  String formOnlyTime() {
+    // 시간 (12시간제)
+    int hour12 = hour % 12;
+    if (hour12 == 0) hour12 = 12; // 0시는 12시로 표시
+
+    // 분 (항상 2자리로)
+    final minute = this.minute.toString().padLeft(2, '0');
+    return '$hour12:$minute ${formMeridiem()}';
+  }
+
+  TimelineDivide formQuaterDivide() {
+    if (6 <= hour && hour <= 12) {
+      return TimelineDivide.morning;
+    } else if (12 < hour && hour <= 18) {
+      return TimelineDivide.day;
+    } else if (18 < hour && hour <= 23) {
+      return TimelineDivide.night;
+    } else if (0 <= hour && hour < 6) {
+      return TimelineDivide.dawn;
+    }
+    return TimelineDivide.unknown;
   }
 
   /// DateTime 인스턴스를 현재 시간과 비교하여 다음과 같은 형식의 문자열로 반환합니다.
