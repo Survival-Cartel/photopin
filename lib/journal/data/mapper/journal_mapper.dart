@@ -8,8 +8,8 @@ extension JournalMapper on JournalDto {
       id: id ?? 'N/A',
       startDate: startDate ?? DateTime(1999, 1, 1),
       endDate: endDate ?? DateTime(1999, 1, 1),
-      photos: photos.map((e) => e.toModel()).toList(),
-      tripWith: tripWith,
+      photos: photos?.map((e) => e.toModel()).toList() ?? [],
+      tripWith: tripWith ?? [],
       name: name ?? 'N/A',
       comment: comment ?? 'N/A',
     );
