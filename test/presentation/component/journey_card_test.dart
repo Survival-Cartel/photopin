@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/journey_card.dart';
 
 void main() {
@@ -13,7 +14,7 @@ void main() {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
           MaterialApp(
-            home: JourneyCard(
+            home: JournalCard(
               imageUrl: '',
               journeyTitle: cardTitle,
               markerCount: 12,
@@ -36,7 +37,7 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Center(
-                child: JourneyCard(
+                child: JournalCard(
                   imageUrl: '',
                   journeyTitle: cardTitle,
                   markerCount: 12,
@@ -53,7 +54,7 @@ void main() {
         );
       });
 
-      await tester.tap(find.byType(JourneyCard));
+      await tester.tap(find.byType(JournalCard));
       await tester.pump(); // 탭 이벤트 후 UI 갱신을 기다림
 
       expect(testValue, 1);

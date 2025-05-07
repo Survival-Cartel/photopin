@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:photopin/presentation/component/journal_card_image.dart';
 import 'package:photopin/presentation/component/journey_card_image.dart';
 
 void main() {
@@ -13,7 +14,7 @@ void main() {
       await mockNetworkImagesFor(
         () async => await tester.pumpWidget(
           const MaterialApp(
-            home: JourneyCardImage(
+            home: JournalCardImage(
               imageUrl: '',
               journeyTitle: journeyTitle,
               description: '$photoCount photos, $markerCount locations',
