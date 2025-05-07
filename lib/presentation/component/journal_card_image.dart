@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 
-class JourneyCardImage extends StatelessWidget {
+class JournalCardImage extends StatelessWidget {
   final String imageUrl;
   final String journeyTitle;
   final String description;
   final bool bottomRadius;
 
-  const JourneyCardImage({
+  const JournalCardImage({
     super.key,
     required this.imageUrl,
     required this.journeyTitle,

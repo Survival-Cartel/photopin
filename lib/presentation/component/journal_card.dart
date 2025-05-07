@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:photopin/core/extensions/datetime_extension.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-import 'package:photopin/presentation/component/journey_card_image.dart';
+import 'package:photopin/presentation/component/journal_card_image.dart';
 
-class JourneyCard extends StatelessWidget {
+class JournalCard extends StatelessWidget {
   final String imageUrl;
   final String journeyTitle;
   final DateTime startDate;
@@ -13,7 +13,7 @@ class JourneyCard extends StatelessWidget {
   final int markerCount;
   final VoidCallback onTap;
 
-  const JourneyCard({
+  const JournalCard({
     super.key,
     required this.imageUrl,
     required this.journeyTitle,
@@ -33,7 +33,7 @@ class JourneyCard extends StatelessWidget {
         children: [
           SizedBox(
             height: 144,
-            child: JourneyCardImage(
+            child: JournalCardImage(
               imageUrl: imageUrl,
               journeyTitle: journeyTitle,
               description: startDate.formatDateRange(endDate),
