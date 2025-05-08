@@ -18,3 +18,18 @@ extension PhotoMapper on PhotoDto {
     );
   }
 }
+
+extension ModelMapper on PhotoModel {
+  PhotoDto toDto() {
+    return PhotoDto(
+      id: id,
+      comment: comment,
+      dateTime: dateTime,
+      imageUrl: imageUrl,
+      journalId: journalId,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      name: name,
+    );
+  }
+}
