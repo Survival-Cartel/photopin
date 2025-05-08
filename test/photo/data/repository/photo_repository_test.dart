@@ -5,6 +5,7 @@ import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 
 import '../../fixtures/photo_dto_fixtures.dart';
+import '../../fixtures/photo_model_fixtures.dart';
 import 'fake_photo_data_source.dart';
 
 void main() {
