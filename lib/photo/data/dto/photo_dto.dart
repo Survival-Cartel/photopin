@@ -1,12 +1,11 @@
-import 'package:photopin/location/data/dto/location_dto.dart';
-
 class PhotoDto {
   final String? id;
   final String? name;
   final DateTime? dateTime;
   final String? journalId;
   final String? imageUrl;
-  final LocationDto? location;
+  final double? latitude;
+  final double? longitude;
   final String? comment;
 
   const PhotoDto({
@@ -15,7 +14,8 @@ class PhotoDto {
     this.dateTime,
     this.journalId,
     this.imageUrl,
-    this.location,
+    this.latitude,
+    this.longitude,
     this.comment,
   });
 
@@ -25,7 +25,8 @@ class PhotoDto {
     dateTime: json['dateTime'],
     journalId: json['journalId'],
     imageUrl: json['imageUrl'],
-    location: LocationDto.fromJson(json['location']),
+    latitude: json['latitude'],
+    longitude: json['longitude'],
     comment: json['comment'],
   );
 
@@ -35,7 +36,8 @@ class PhotoDto {
     'dateTime': dateTime,
     'journalId': journalId,
     'imageUrl': imageUrl,
-    'location': location?.toJson(),
+    'latitude': latitude,
+    'longitude': longitude,
     'comment': comment,
   };
 }
