@@ -27,13 +27,15 @@ void main() {
     List<UserModel> users = await repository.findAll();
 
     verify(() => dataSource.findUsers()).called(1);
-    expect(users.length, 2);
+    expect(users.length, userDtoFixtures.length);
   });
 
   test('findById를 호출하면 인자로 전달한 ID에 해당하는 UserModel을 반환해야한다.', () async {
     // GIVEN
-    when(() => dataSource.findUserById(any())).thenAnswer((invocation) async {
-      final String id = invocation.positionalArguments[0] as String;
+    when(() => dataSource.findUserById(any<String>())).thenAnswer((
+      invocation,
+    ) async {
+      final String id = invocation.positionalArguments.first as String;
       return userDtoFixtures.firstWhere((e) => e.id == id);
     });
 
@@ -46,7 +48,7 @@ void main() {
     verify(() => dataSource.findUserById(target.id!)).called(1);
     expect(user, isNotNull);
     expect(user?.id, target.id);
-    expect(user?.email, 'example1@example.com');
+    expect(user?.email, target.email);
   });
 
   test('findByFilter를 호출하면 인자로 전달한 조건에 해당하는 UserModel을 반환해야한다.', () async {
