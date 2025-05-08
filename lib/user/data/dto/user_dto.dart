@@ -19,4 +19,8 @@ class UserDto {
     'profileImg': profileImg,
     'displayName': displayName,
   };
+
+  @override
+  String toString() =>
+      'UserDto(id: $id, email: $email, profileImg: $profileImg, displayName: $displayName)';
 }
