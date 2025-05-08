@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
-import 'package:photopin/location/domain/model/location_model.dart';
-import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 
 void main() {
@@ -17,17 +15,6 @@ void main() {
       tripWith: ['유제환', '최준성', '최은렬', '최따이호'],
       startDate: startDate,
       endDate: endDate,
-      photos: [
-        PhotoModel(
-          id: 'testPhoto',
-          name: 'road to master',
-          dateTime: DateTime.now(),
-          journalId: 'testJournal',
-          imageUrl: '',
-          location: const LocationModel(latitude: 0, longitude: 0),
-          comment: '뭐',
-        ),
-      ],
       comment:
           'Breathtaking architecture! The light through the stained glass was magical.',
     );
@@ -35,7 +22,14 @@ void main() {
     testWidgets('제대로 생성되어야 한다.', (tester) async {
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
-          MaterialApp(home: JournalCard(journal: journal, onTap: () {})),
+          MaterialApp(
+            home: JournalCard(
+              journal: journal,
+              onTap: () {},
+              imageUrl: '',
+              photoCount: 1,
+            ),
+          ),
         );
       });
 
@@ -54,6 +48,8 @@ void main() {
                   onTap: () {
                     testValue += 1;
                   },
+                  imageUrl: '',
+                  photoCount: 1,
                 ),
               ),
             ),
