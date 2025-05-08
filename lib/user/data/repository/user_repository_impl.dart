@@ -16,15 +16,6 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<UserModel?> findByFilter(
-    bool Function(UserModel predicate) predicate,
-  ) async {
-    // TODO: 추후 조건으로 검색할 수 있게 DataSource 레벨에서부터 변경이 필요함
-    List<UserModel> users = await findAll();
-    return users.firstWhere(predicate);
-  }
-
-  @override
   Future<UserModel?> findOne(String id) async {
     UserDto dto = await _dataSource.findUserById(id);
     return dto.toModel();
