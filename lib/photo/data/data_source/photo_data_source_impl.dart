@@ -6,7 +6,7 @@ import 'package:photopin/photo/data/dto/photo_dto.dart';
 class PhotoDataSourceImpl implements PhotoDataSource {
   final CollectionReference<PhotoDto> photoStore;
 
-  PhotoDataSourceImpl({required this.photoStore});
+  const PhotoDataSourceImpl({required this.photoStore});
 
   @override
   Future<PhotoDto> findPhotoById(String id) async {
