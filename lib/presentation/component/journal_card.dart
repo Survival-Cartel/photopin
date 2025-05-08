@@ -8,8 +8,16 @@ import 'package:photopin/presentation/component/journal_card_image.dart';
 class JournalCard extends StatelessWidget {
   final JournalModel journal;
   final VoidCallback onTap;
+  final String imageUrl;
+  final int photoCount;
 
-  const JournalCard({super.key, required this.onTap, required this.journal});
+  const JournalCard({
+    super.key,
+    required this.onTap,
+    required this.journal,
+    required this.imageUrl,
+    required this.photoCount,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class JournalCard extends StatelessWidget {
           SizedBox(
             height: 144,
             child: JournalCardImage(
-              imageUrl: journal.photos.first.imageUrl,
+              imageUrl: imageUrl,
               journeyTitle: journal.name,
               description: journal.comment,
               bottomRadius: false,
@@ -46,7 +54,7 @@ class JournalCard extends StatelessWidget {
                 const Spacer(),
                 _IconText(
                   iconData: CupertinoIcons.photo,
-                  count: journal.photos.length,
+                  count: photoCount,
                   title: ' photos',
                 ),
               ],
