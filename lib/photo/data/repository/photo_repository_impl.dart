@@ -19,15 +19,6 @@ class PhotoRepositoryImpl implements PhotoRepository {
   }
 
   @override
-  Future<PhotoModel?> findByFilter(
-    bool Function(PhotoModel predicate) predicate,
-  ) async {
-    List<PhotoModel> photos = await findAll();
-
-    return photos.firstWhere(predicate);
-  }
-
-  @override
   Future<PhotoModel?> findOne(String id) async {
     return (await dataSource.findPhotoById(id)).toModel();
   }
