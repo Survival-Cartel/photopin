@@ -1,12 +1,9 @@
-import 'package:photopin/photo/data/dto/photo_dto.dart';
-
 class JournalDto {
   final String? id;
   final String? name;
   final DateTime? startDate;
   final DateTime? endDate;
   final List<String>? tripWith;
-  final List<PhotoDto>? photos;
   final String? comment;
 
   const JournalDto({
@@ -15,7 +12,6 @@ class JournalDto {
     this.tripWith,
     this.startDate,
     this.endDate,
-    this.photos,
     this.comment,
   });
 
@@ -25,10 +21,6 @@ class JournalDto {
     tripWith: json['tripWith'],
     startDate: json['startDate'],
     endDate: json['endDate'],
-    photos:
-        (json['photos'] as List<dynamic>)
-            .map((e) => PhotoDto.fromJson(e as Map<String, dynamic>))
-            .toList(),
     comment: json['comment'],
   );
 
@@ -38,7 +30,6 @@ class JournalDto {
     'tripWith': tripWith,
     'startDate': startDate,
     'endDate': endDate,
-    'photos': photos?.map((e) => e.toJson()).toList(),
     'comment': comment,
   };
 }

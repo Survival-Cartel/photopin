@@ -1,12 +1,9 @@
-import 'package:photopin/photo/domain/model/photo_model.dart';
-
 class JournalModel {
   final String id;
   final String name;
   final List<String> tripWith;
   final DateTime startDate;
   final DateTime endDate;
-  final List<PhotoModel> photos;
   final String comment;
 
   const JournalModel({
@@ -15,13 +12,12 @@ class JournalModel {
     required this.tripWith,
     required this.startDate,
     required this.endDate,
-    required this.photos,
     required this.comment,
   });
 
   @override
   String toString() {
-    return 'JournalModel(id: $id, name: $name, tripWith: $tripWith, startDate: $startDate, endDate: $endDate, photos: $photos, comment: $comment)';
+    return 'JournalModel(id: $id, name: $name, tripWith: $tripWith, startDate: $startDate, endDate: $endDate, comment: $comment)';
   }
 
   @override
