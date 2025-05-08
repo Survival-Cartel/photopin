@@ -24,7 +24,7 @@ void main() {
     final List<PhotoModel> photos = await repository.findAll();
 
     expect(photos.first, isA<PhotoModel>());
-    expect(photos.length, 4);
+    expect(photos.length, photoDtoFixtures.length);
   });
   test('findOne을 호출하면 id에 맞는 PhotoModel 형태로 반환해야한다.', () async {
     PhotoModel photo = (await repository.findOne('1'))!;
@@ -61,7 +61,7 @@ void main() {
     final List<PhotoModel> photos = await repository.findAll();
 
     expect(photos.first, isA<PhotoModel>());
-    expect(photos.length, 5);
+    expect(photos.length, photoDtoFixtures.length);
     expect(photos.any((photo) => photo.id == '5'), isTrue);
   });
   test('deletePhoto 호출하면 List<PhotoModel> 형태로 반환해야한다.', () async {
@@ -69,7 +69,7 @@ void main() {
     final List<PhotoModel> photos = await repository.findAll();
 
     expect(photos.first, isA<PhotoModel>());
-    expect(photos.length, 4);
+    expect(photos.length, photoDtoFixtures.length);
     expect(photos.any((photo) => photo.id == '5'), isFalse);
   });
 }
