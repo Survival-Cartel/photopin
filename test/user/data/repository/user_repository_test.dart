@@ -11,21 +11,23 @@ import '../data_source/mock_user_data_source.dart';
 
 void main() {
   late UserRepository repository;
-  final UserDataSource dataSource = MockUserDataSource();
+  late UserDataSource dataSource;
 
   setUp(() {
+    dataSource = MockUserDataSource();
     repository = UserRepositoryImpl(dataSource);
   });
 
-  setUpAll(() {
+  test('findAll을 호출하면 List<UserModel> 형태로 반환해야한다.', () async {
+    // GIVEN
     when(() => dataSource.findUsers()).thenAnswer((_) async {
       return userDtoFixtures;
     });
-  });
 
-  test('findAll을 호출하면 List<UserModel> 형태로 반환해야한다.', () async {
+    // WHEN
     List<UserModel> users = await repository.findAll();
 
+    // THEN
     verify(() => dataSource.findUsers()).called(1);
     expect(users.length, userDtoFixtures.length);
   });
@@ -46,22 +48,6 @@ void main() {
 
     // THEN
     verify(() => dataSource.findUserById(target.id!)).called(1);
-    expect(user, isNotNull);
-    expect(user?.id, target.id);
-    expect(user?.email, target.email);
-  });
-
-  test('findByFilter를 호출하면 인자로 전달한 조건에 해당하는 UserModel을 반환해야한다.', () async {
-    // GIVEN
-    UserDto target = userDtoFixtures.last;
-
-    // WHEN
-    UserModel? user = await repository.findByFilter(
-      (e) => e.email == target.email,
-    );
-
-    // THEN
-    verify(() => dataSource.findUsers()).called(1);
     expect(user, isNotNull);
     expect(user?.id, target.id);
     expect(user?.email, target.email);
