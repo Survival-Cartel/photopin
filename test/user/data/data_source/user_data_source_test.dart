@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/dto/user_dto.dart';
 
 import 'fake_user_data_source.dart';
 
 void main() {
-  late FakeUserDataSourceImpl dataSource;
+  late UserDataSource dataSource;
 
   final UserDto dto1 = const UserDto(
     id: '1',
