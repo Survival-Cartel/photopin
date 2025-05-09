@@ -24,4 +24,18 @@ class UserModel {
 
   @override
   int get hashCode => id.hashCode;
+
+  UserModel copyWith({
+    String? id,
+    String? email,
+    String? profileImg,
+    String? displayName,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      profileImg: profileImg ?? this.profileImg,
+      displayName: displayName ?? this.displayName,
+    );
+  }
 }

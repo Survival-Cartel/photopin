@@ -28,4 +28,22 @@ class JournalModel {
 
   @override
   int get hashCode => id.hashCode;
+
+  JournalModel copyWith({
+    String? id,
+    String? name,
+    List<String>? tripWith,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? comment,
+  }) {
+    return JournalModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      tripWith: tripWith ?? this.tripWith,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      comment: comment ?? this.comment,
+    );
+  }
 }

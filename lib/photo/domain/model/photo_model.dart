@@ -32,4 +32,24 @@ class PhotoModel {
 
   @override
   int get hashCode => id.hashCode;
+
+  PhotoModel copyWith({
+    String? id,
+    String? name,
+    DateTime? dateTime,
+    String? journalId,
+    String? imageUrl,
+    LocationModel? location,
+    String? comment,
+  }) {
+    return PhotoModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      dateTime: dateTime ?? this.dateTime,
+      journalId: journalId ?? this.journalId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      location: location ?? this.location,
+      comment: comment ?? this.comment,
+    );
+  }
 }
