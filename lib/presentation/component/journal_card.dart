@@ -7,7 +7,7 @@ import 'package:photopin/presentation/component/journal_card_image.dart';
 
 class JournalCard extends StatelessWidget {
   final JournalModel journal;
-  final VoidCallback onTap;
+  final Function(String journalId) onTap;
   final String imageUrl;
   final int photoCount;
 
@@ -22,7 +22,7 @@ class JournalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => onTap(journal.id),
       behavior: HitTestBehavior.opaque,
       child: Column(
         children: [

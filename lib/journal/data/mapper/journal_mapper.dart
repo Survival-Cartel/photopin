@@ -13,3 +13,16 @@ extension JournalMapper on JournalDto {
     );
   }
 }
+
+extension JournalModelMapper on JournalModel {
+  JournalDto toDto() {
+    return JournalDto(
+      id: id,
+      name: name,
+      startDate: startDate,
+      endDate: endDate,
+      tripWith: tripWith,
+      comment: comment,
+    );
+  }
+}

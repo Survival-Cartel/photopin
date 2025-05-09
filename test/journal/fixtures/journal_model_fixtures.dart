@@ -1,0 +1,36 @@
+import 'package:photopin/journal/domain/model/journal_model.dart';
+
+final List<JournalModel> journalModelFixtures = [
+  JournalModel(
+    id: '1',
+    name: 'Spain Sagrada Famillia',
+    comment: 'Nice',
+    startDate: DateTime(2025, 05, 04, 12, 11, 13),
+    endDate: DateTime(2025, 05, 05, 13, 34, 23),
+    tripWith: [],
+  ),
+  JournalModel(
+    id: '2',
+    name: 'Seoul',
+    comment: 'Nice',
+    startDate: DateTime(2025, 05, 06, 14, 25, 33),
+    endDate: DateTime(2025, 05, 08, 19, 27, 23),
+    tripWith: [],
+  ),
+  JournalModel(
+    id: '3',
+    name: 'Tokyo Trip',
+    comment: 'Nice',
+    startDate: DateTime(2025, 05, 09, 12),
+    endDate: DateTime(2025, 05, 09, 18),
+    tripWith: [],
+  ),
+  JournalModel(
+    id: '4',
+    name: 'Toronto Travel',
+    comment: 'Nice',
+    startDate: DateTime(2025, 05, 10, 18),
+    endDate: DateTime(2025, 05, 12, 22, 38, 20),
+    tripWith: [],
+  ),
+];

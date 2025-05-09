@@ -54,4 +54,9 @@ class AuthDataSourceImpl implements AuthDataSource {
     // Once signed in, return the UserCredential
     await auth.signInWithCredential(credential);
   }
+
+  @override
+  Future<void> logout() async {
+    await auth.signOut();
+  }
 }
