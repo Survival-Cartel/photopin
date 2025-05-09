@@ -121,7 +121,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             JournalCard(
-              onTap: () {
+              onTap: (value) {
                 print('journal로 넘어가게 구현하기');
               },
               journal: JournalModel(
