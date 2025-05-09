@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../domain/model/user_model.dart';
 import '../dto/user_dto.dart';
 
@@ -8,6 +10,17 @@ extension UserMapper on UserDto {
       email: email ?? 'N/A',
       profileImg: profileImg ?? 'N/A',
       displayName: displayName ?? 'N/A',
+    );
+  }
+}
+
+extension AuthMapper on User {
+  UserDto toDto() {
+    return UserDto(
+      id: uid,
+      email: email,
+      profileImg: photoURL,
+      displayName: displayName,
     );
   }
 }
