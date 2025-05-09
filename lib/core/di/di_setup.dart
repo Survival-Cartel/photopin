@@ -22,11 +22,12 @@ void di() {
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(
-    (userId, _) => PhotoDataSourceImpl(
-      photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
-    ),
+        (userId, _) =>
+        PhotoDataSourceImpl(
+          photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
+        ),
   );
   getIt.registerLazySingleton<PhotoRepository>(
-    () => PhotoRepositoryImpl(dataSource: getIt()),
+        () => PhotoRepositoryImpl(dataSource: getIt()),
   );
 }
