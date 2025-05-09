@@ -4,4 +4,5 @@ abstract interface class AuthDataSource {
   Future<void> login();
   Future<UserDto> findCurrentUser();
   Future<String> findCurrentUserId();
+  Future<void> logout();
 }
