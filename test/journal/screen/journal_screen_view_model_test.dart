@@ -66,86 +66,116 @@ void main() {
   });
 
   group('onAction()', () {
-    test('onAction(SearchJournal)은 search 메서드를 트리거 해야한다.', () async {
-      int listenerCallCount = 0;
-      List<JournalScreenState> states = [];
+    group('onAction(SearchJournal)', () {
+      test('onAction(SearchJournal)은 search 메서드를 트리거 해야한다.', () async {
+        int listenerCallCount = 0;
+        List<JournalScreenState> states = [];
 
-      viewModel.addListener(() {
-        listenerCallCount++;
-        states.add(viewModel.state);
+        viewModel.addListener(() {
+          listenerCallCount++;
+          states.add(viewModel.state);
+        });
+
+        await viewModel.onAction(
+          JournalScreenAction.searchJournal(
+            query: journalModelFixtures[0].name,
+          ),
+        );
+
+        expect(listenerCallCount, 2);
+        expect(states.first.isLoading, true);
+        expect(states.first.journals, isEmpty);
+
+        expect(states.last.isLoading, false);
+        expect(states.last.journals.length, 1);
+        expect(
+          states.last.journals.first.name,
+          contains(journalModelFixtures[0].name),
+        );
+
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
       });
 
-      await viewModel.onAction(
-        JournalScreenAction.searchJournal(query: journalModelFixtures[0].name),
-      );
+      test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
+        await viewModel.onAction(
+          JournalScreenAction.searchJournal(
+            query: journalModelFixtures[0].name,
+          ),
+        );
 
-      expect(listenerCallCount, 2);
-      expect(states.first.isLoading, true);
-      expect(states.first.journals, isEmpty);
-
-      expect(states.last.isLoading, false);
-      expect(states.last.journals.length, 1);
-      expect(
-        states.last.journals.first.name,
-        contains(journalModelFixtures[0].name),
-      );
-
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
-    });
-  });
-
-  group('search()', () {
-    test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
-      await viewModel.search(journalModelFixtures[0].name);
-
-      expect(viewModel.state.isLoading, false);
-      expect(viewModel.state.journals.length, 1);
-      expect(
-        viewModel.state.journals.first.name,
-        contains(journalModelFixtures[0].name),
-      );
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
-    });
-
-    test('존재하지 않는 저널 이름으로 검색 시 비어있는 저널로 상태를 업데이트해야한다.', () async {
-      await viewModel.search('NonExist');
-
-      expect(viewModel.state.isLoading, false);
-      expect(viewModel.state.journals.length, 0);
-      expect(viewModel.state.journals.isEmpty, true);
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
-    });
-
-    test('비어있는 문자열(Empty String)으로 검색 시 전체 리스트를 반환해야한다.', () async {
-      await viewModel.search('');
-
-      expect(viewModel.state.isLoading, false);
-      expect(viewModel.state.journals.length, journalModelFixtures.length);
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
-    });
-
-    test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
-      int listenerCallCount = 0;
-      List<JournalScreenState> states = [];
-
-      viewModel.addListener(() {
-        listenerCallCount++;
-        states.add(viewModel.state);
+        expect(viewModel.state.isLoading, false);
+        expect(viewModel.state.journals.length, 1);
+        expect(
+          viewModel.state.journals.first.name,
+          contains(journalModelFixtures[0].name),
+        );
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
       });
 
-      await viewModel.search(journalModelFixtures[0].name);
+      test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
+        await viewModel.onAction(
+          JournalScreenAction.searchJournal(
+            query: journalModelFixtures[0].name,
+          ),
+        );
 
-      expect(listenerCallCount, 2);
-      expect(states.first.isLoading, true);
+        expect(viewModel.state.isLoading, false);
+        expect(viewModel.state.journals.length, 1);
+        expect(
+          viewModel.state.journals.first.name,
+          contains(journalModelFixtures[0].name),
+        );
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
+      });
 
-      expect(states.last.isLoading, false);
-      expect(states.last.journals.length, 1);
-      expect(
-        states.last.journals.first.name,
-        contains(journalModelFixtures[0].name),
-      );
+      test('존재하지 않는 저널 이름으로 검색 시 비어있는 저널로 상태를 업데이트해야한다.', () async {
+        await viewModel.onAction(
+          const JournalScreenAction.searchJournal(query: 'NonExist'),
+        );
 
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
+        expect(viewModel.state.isLoading, false);
+        expect(viewModel.state.journals.length, 0);
+        expect(viewModel.state.journals.isEmpty, true);
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
+      });
+
+      test('비어있는 문자열(Empty String)으로 검색 시 전체 리스트를 반환해야한다.', () async {
+        await viewModel.onAction(
+          const JournalScreenAction.searchJournal(query: ''),
+        );
+
+        expect(viewModel.state.isLoading, false);
+        expect(viewModel.state.journals.length, journalModelFixtures.length);
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
+      });
+
+      test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
+        int listenerCallCount = 0;
+        List<JournalScreenState> states = [];
+
+        viewModel.addListener(() {
+          listenerCallCount++;
+          states.add(viewModel.state);
+        });
+
+        await viewModel.onAction(
+          JournalScreenAction.searchJournal(
+            query: journalModelFixtures[0].name,
+          ),
+        );
+
+        expect(listenerCallCount, 2);
+        expect(states.first.isLoading, true);
+
+        expect(states.last.isLoading, false);
+        expect(states.last.journals.length, 1);
+        expect(
+          states.last.journals.first.name,
+          contains(journalModelFixtures[0].name),
+        );
+
+        verify(() => mockGetJournalListUseCase.execute()).called(1);
+      });
     });
   });
 }
