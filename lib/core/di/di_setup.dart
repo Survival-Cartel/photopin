@@ -6,7 +6,6 @@ import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
-import 'package:photopin/journal/screen/journal_screen_view_model.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
