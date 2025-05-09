@@ -55,6 +55,7 @@ void di() {
 
   getIt.registerFactory<JournalScreenViewModel>(
     () => JournalScreenViewModel(getJournalListUseCase: getIt()),
+  );
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
