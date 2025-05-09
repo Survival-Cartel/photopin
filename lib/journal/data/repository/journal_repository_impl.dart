@@ -20,30 +20,21 @@ class JournalRepositoryImpl implements JournalRepository {
 
   @override
   Future<JournalModel> findJournalById(String id) async {
-    return (await dataSource.findJournalById(id));
+    return (await dataSource.findJournalById(id)).toModel();
   }
 
   @override
-  Future<JournalModel> findJournalByName(String name) {
-    // TODO: implement findJournalByName
-    throw UnimplementedError();
+  Future<List<JournalModel>> findJournals() async {
+    return (await dataSource.findJournals()).map((e) => e.toModel()).toList();
   }
 
   @override
-  Future<List<JournalModel>> findJournals() {
-    // TODO: implement findJournals
-    throw UnimplementedError();
+  Future<JournalModel?> findOne(String id) async {
+    return (await dataSource.findJournalById(id)).toModel();
   }
 
   @override
-  Future<JournalModel?> findOne(String id) {
-    // TODO: implement findOne
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> saveJournal(JournalModel model) {
-    // TODO: implement saveJournal
-    throw UnimplementedError();
+  Future<void> saveJournal(JournalModel model) async {
+    await dataSource.saveJournal(model.toDto());
   }
 }

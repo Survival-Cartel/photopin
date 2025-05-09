@@ -7,8 +7,6 @@ abstract interface class JournalRepository
     implements Repository<JournalModel, String, JournalDto> {
   Future<JournalModel> findJournalById(String id);
 
-  Future<JournalModel> findJournalByName(String name);
-
   Future<void> deleteJournal(String journalId);
 
   Future<void> saveJournal(JournalModel model);
