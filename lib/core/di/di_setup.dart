@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:photopin/auth/data/data_source/auth_data_source.dart';
+import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
+import 'package:photopin/auth/data/repository/auth_repository.dart';
+import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
@@ -25,6 +30,13 @@ void di() {
     (userId, _) => PhotoDataSourceImpl(
       photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
     ),
+  );
+  getIt.registerLazySingleton(() => FirebaseAuth.instance);
+  getIt.registerLazySingleton<AuthDataSource>(
+    () => AuthDataSourceImpl(auth: getIt()),
+  );
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(dataSource: getIt()),
   );
   getIt.registerLazySingleton<PhotoRepository>(
     () => PhotoRepositoryImpl(dataSource: getIt()),
