@@ -32,19 +32,14 @@ class HomeViewModel with ChangeNotifier {
       case ShareClick():
         break;
       case RecentActivityClick():
-        // TODO: Handle this case.
         throw UnimplementedError();
       case SeeAllClick():
-        // TODO: Handle this case.
         throw UnimplementedError();
       case ViewAllClick():
-        // TODO: Handle this case.
         throw UnimplementedError();
       case MyJounalClick():
-        // TODO: Handle this case.
         throw UnimplementedError();
       case FindJounals():
-        // TODO: Handle this case.
         throw UnimplementedError();
       case FindUser():
         _findUser();

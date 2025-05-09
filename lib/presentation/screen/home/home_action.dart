@@ -25,7 +25,7 @@ class ViewAllClick implements HomeAction {}
 class MyJounalClick implements HomeAction {
   final String id;
 
-  MyJounalClick(this.id);
+  const MyJounalClick(this.id);
 }
 
 class FindUser implements HomeAction {}

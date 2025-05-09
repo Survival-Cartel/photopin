@@ -18,7 +18,7 @@ class HomeScreenRoot extends StatelessWidget {
           onAction: (action) {
             switch (action) {
               case CameraClick():
-                print('gg');
+              // 수정
               case NewJournalClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
