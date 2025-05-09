@@ -48,10 +48,13 @@ class _AuthScreenRootState extends State<AuthScreenRoot> {
         return AuthScreen(
           state: widget.authViewModel.state,
           onAction: (action) {
-            if (action case OnClick()) {
-              // TODO : 화면 이동 로직 추가
-            } else {
-              widget.authViewModel.action(action);
+            switch (action) {
+              case Login():
+                widget.authViewModel.action(action);
+              case Logout():
+                widget.authViewModel.action(action);
+              case OnClick():
+              //TODO : 화면 이동 로직 추가
             }
           },
         );
