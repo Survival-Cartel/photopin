@@ -15,6 +15,7 @@ import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
