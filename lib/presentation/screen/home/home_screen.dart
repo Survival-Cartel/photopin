@@ -2,14 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/main_icon_card.dart';
 import 'package:photopin/presentation/component/recent_activity_tile.dart';
-import 'package:photopin/user/domain/model/user_model.dart';
+import 'package:photopin/presentation/screen/home/home_action.dart';
+import 'package:photopin/presentation/screen/home/home_state.dart';
 
 class HomeScreen extends StatelessWidget {
-  final UserModel userId;
+  final HomeState homeState;
+  final void Function(HomeAction) onAction;
 
-  const HomeScreen({super.key, required this.userId});
+  const HomeScreen({
+    super.key,
+    required this.homeState,
+    required this.onAction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 17),
             Text(
-              'Hello, ${userId.displayName}!',
+              'Hello, ${homeState.userName}!',
               style: AppFonts.headerTextBold.copyWith(
                 color: AppColors.textColor,
               ),
@@ -38,7 +46,9 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: MainIconCard(
-                    onTap: () => print('New Photo'),
+                    onTap: () {
+                      onAction(HomeAction.cameraClick());
+                    },
                     title: 'New Photo',
                     iconData: Icons.camera_alt,
                     iconColor: AppColors.primary100,
@@ -74,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                     print('See All tapped');
                   },
                   child: Text(
-                    'See All',
+                    'See all',
                     style: AppFonts.smallTextRegular.copyWith(
                       color: AppColors.primary100,
                     ),
@@ -90,6 +100,40 @@ class HomeScreen extends StatelessWidget {
                 print('viewmodel 만들고 수정하기');
               },
               iconData: CupertinoIcons.link,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Text('Your Journals', style: AppFonts.largeTextBold),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    print('See All tapped');
+                  },
+                  child: Text(
+                    'View all',
+                    style: AppFonts.smallTextRegular.copyWith(
+                      color: AppColors.primary100,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            JournalCard(
+              onTap: () {
+                print('journal로 넘어가게 구현하기');
+              },
+              journal: JournalModel(
+                id: '1',
+                name: 'name',
+                tripWith: ['a', 'b'],
+                startDate: DateTime(2000, 1, 1),
+                endDate: DateTime(2000, 1, 2),
+                comment: 'good',
+              ),
+              imageUrl: 'imageUrl',
+              photoCount: 2,
             ),
           ],
         ),
