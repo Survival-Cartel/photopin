@@ -36,10 +36,14 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<void> login() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      // Handle the case where the user cancels the sign-in process
+      throw FirestoreError.authenticationCanceledError;
+    }
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+        await googleUser.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
