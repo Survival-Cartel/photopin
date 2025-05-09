@@ -14,6 +14,8 @@ import 'package:photopin/photo/data/data_source/photo_data_source.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
+import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
@@ -25,9 +27,7 @@ final getIt = GetIt.instance;
 
 void di() {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
-
   getIt.registerLazySingleton<FirestoreSetup>(() => FirestoreSetup());
-
   getIt.registerSingleton<UserDataSource>(
     UserDataSourceImpl(userStore: getIt.get<FirestoreSetup>().userFirestore()),
   );
@@ -51,7 +51,13 @@ void di() {
     () => PhotoRepositoryImpl(dataSource: getIt()),
   );
 
+  getIt.registerFactory<HomeViewModel>(
+    () => HomeViewModel(getCurrentUserUseCase: getIt()),
+  );
   getIt.registerSingleton<GetJournalListUseCase>(GetJournalListUseCase());
+  getIt.registerSingleton<GetCurrentUserUseCase>(
+    GetCurrentUserUseCase(getIt()),
+  );
 
   getIt.registerFactory<JournalScreenViewModel>(
     () => JournalScreenViewModel(getJournalListUseCase: getIt()),
