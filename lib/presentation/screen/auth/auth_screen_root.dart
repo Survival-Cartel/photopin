@@ -25,7 +25,7 @@ class _AuthScreenRootState extends State<AuthScreenRoot> {
         if (error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${error.toString}'),
+              content: Text(error.toString()),
               backgroundColor: AppColors.warningBackground, // 필요에 따라 색상 지정
             ),
           );
