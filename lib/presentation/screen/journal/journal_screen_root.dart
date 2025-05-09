@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:photopin/journal/screen/journal_screen.dart';
-import 'package:photopin/journal/screen/journal_screen_action.dart';
-import 'package:photopin/journal/screen/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 
 class JournalScreenRoot extends StatefulWidget {
   final JournalScreenViewModel viewModel;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
-import 'package:photopin/journal/screen/journal_screen_action.dart';
-import 'package:photopin/journal/screen/journal_screen_state.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
 import 'package:photopin/presentation/component/base_tab.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/search_bar.dart';

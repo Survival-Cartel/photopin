@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
-import 'package:photopin/journal/screen/journal_screen_action.dart';
-import 'package:photopin/journal/screen/journal_screen_state.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
 
 class JournalScreenViewModel with ChangeNotifier {
   JournalScreenState _state = const JournalScreenState();
