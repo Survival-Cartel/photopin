@@ -25,7 +25,7 @@ void main() {
           MaterialApp(
             home: JournalCard(
               journal: journal,
-              onTap: () {},
+              onTap: (String journalId) {},
               imageUrl: '',
               photoCount: 1,
             ),
@@ -35,8 +35,8 @@ void main() {
 
       expect(find.text(journal.name), findsOneWidget);
     });
-    testWidgets('카드 클릭시 콜백이 작동되어야 한다.', (tester) async {
-      int testValue = 0;
+    testWidgets('카드 클릭시 onTap 콜백이 작동되어서 journal의 ID를 반환해야한다.', (tester) async {
+      String id = '';
 
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
@@ -45,9 +45,7 @@ void main() {
               body: Center(
                 child: JournalCard(
                   journal: journal,
-                  onTap: () {
-                    testValue += 1;
-                  },
+                  onTap: (String journalId) => id = journalId,
                   imageUrl: '',
                   photoCount: 1,
                 ),
@@ -60,7 +58,7 @@ void main() {
       await tester.tap(find.byType(JournalCard));
       await tester.pump(); // 탭 이벤트 후 UI 갱신을 기다림
 
-      expect(testValue, 1);
+      expect(id, 'testJournal');
     });
   });
 }
