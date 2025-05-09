@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/journal/screen/journal_screen_view_model.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
@@ -28,5 +30,11 @@ void di() {
   );
   getIt.registerLazySingleton<PhotoRepository>(
     () => PhotoRepositoryImpl(dataSource: getIt()),
+  );
+
+  getIt.registerSingleton<GetJournalListUseCase>(GetJournalListUseCase());
+
+  getIt.registerFactory<JournalScreenViewModel>(
+    () => JournalScreenViewModel(getJournalListUseCase: getIt()),
   );
 }
