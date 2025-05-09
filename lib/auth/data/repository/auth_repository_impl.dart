@@ -22,4 +22,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> login() async {
     await dataSource.login();
   }
+
+  @override
+  Future<void> logout() async {
+    await dataSource.logout();
+  }
 }
