@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:photopin/journal/screen/journal_screen_action.dart';
-import 'package:photopin/journal/screen/journal_screen_view_model.dart';
-import 'package:photopin/journal/screen/journal_screen_state.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 
 import '../fixtures/journal_model_fixtures.dart';
 
