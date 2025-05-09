@@ -17,14 +17,14 @@ class JournalScreenViewModel with ChangeNotifier {
   Future<void> onAction(JournalScreenAction action) async {
     switch (action) {
       case SearchJournal(:final String query):
-        await search(query);
+        await _search(query);
       case OnTapJournalCard():
         // 추후에 go_router로 화면 이동이 필요하기 때문에 구현하지 않음
         throw UnimplementedError();
     }
   }
 
-  Future<void> search(String query) async {
+  Future<void> _search(String query) async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
