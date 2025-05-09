@@ -57,7 +57,10 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: MainIconCard(
-                    onTap: () => print('New Journal'),
+                    onTap:
+                        () => {
+                          // 수정
+                        },
                     title: 'New Journal',
                     iconData: Icons.auto_stories,
                     iconColor: AppColors.secondary100,
@@ -66,7 +69,9 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: MainIconCard(
-                    onTap: () => print('Share'),
+                    onTap: () {
+                      // 수정
+                    },
                     title: 'Share',
                     iconData: Icons.share,
                     iconColor: AppColors.primary100,
@@ -81,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    print('See All tapped');
+                    // 수정
                   },
                   child: Text(
                     'See all',
@@ -97,7 +102,7 @@ class HomeScreen extends StatelessWidget {
               title: 'Link shared: Paris Trip',
               dateTime: DateTime.now(),
               onTap: () {
-                print('viewmodel 만들고 수정하기');
+                // 수정
               },
               iconData: CupertinoIcons.link,
             ),
@@ -108,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    print('See All tapped');
+                    // 수정
                   },
                   child: Text(
                     'View all',
@@ -122,7 +127,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
             JournalCard(
               onTap: (value) {
-                print('journal로 넘어가게 구현하기');
+                // 수정
               },
               journal: JournalModel(
                 id: '1',
