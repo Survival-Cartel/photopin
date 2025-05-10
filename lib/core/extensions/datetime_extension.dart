@@ -84,11 +84,11 @@ extension DatetimeExtension on DateTime {
   }
 
   TimelineDivide formQuaterDivide() {
-    if (6 <= hour && hour <= 12) {
+    if (6 <= hour && hour < 12) {
       return TimelineDivide.morning;
-    } else if (12 < hour && hour <= 18) {
+    } else if (12 <= hour && hour < 18) {
       return TimelineDivide.day;
-    } else if (18 < hour && hour <= 23) {
+    } else if (18 <= hour && hour <= 23) {
       return TimelineDivide.night;
     } else if (0 <= hour && hour < 6) {
       return TimelineDivide.dawn;
