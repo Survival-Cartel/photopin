@@ -1,13 +1,23 @@
+import 'package:photopin/user/domain/model/user_model.dart';
+
 class AuthState {
   final bool isLoading;
-  final String email;
+  final UserModel currentUser;
 
-  const AuthState({this.isLoading = false, this.email = ''});
+  const AuthState({
+    this.isLoading = false,
+    this.currentUser = const UserModel(
+      displayName: '',
+      email: '',
+      id: '',
+      profileImg: '',
+    ),
+  });
 
-  AuthState copyWith({bool? isLoading, String? email}) {
+  AuthState copyWith({UserModel? currentUser, bool? isLoading}) {
     return AuthState(
+      currentUser: currentUser ?? this.currentUser,
       isLoading: isLoading ?? this.isLoading,
-      email: email ?? this.email,
     );
   }
 }
