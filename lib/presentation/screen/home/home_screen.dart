@@ -10,17 +10,17 @@ import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 
 class HomeScreen extends StatelessWidget {
-  final HomeState homeState;
+  final HomeState state;
   final void Function(HomeAction) onAction;
 
-  const HomeScreen({
-    super.key,
-    required this.homeState,
-    required this.onAction,
-  });
+  const HomeScreen({super.key, required this.state, required this.onAction});
 
   @override
   Widget build(BuildContext context) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 17),
             Text(
-              'Hello, ${homeState.userName}!',
+              'Hello, ${state.currentUser.displayName}!',
               style: AppFonts.headerTextBold.copyWith(
                 color: AppColors.textColor,
               ),
@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    // 수정
+                    onAction(HomeAction.viewAllClick());
                   },
                   child: Text(
                     'View all',
