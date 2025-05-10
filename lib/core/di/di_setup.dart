@@ -18,6 +18,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
@@ -48,7 +49,7 @@ void di() {
     () => AuthRepositoryImpl(dataSource: getIt()),
   );
   getIt.registerLazySingleton<PhotoRepository>(
-    () => PhotoRepositoryImpl(dataSource: getIt()),
+    () => PhotoRepositoryImpl(dataSource: getIt<PhotoDataSource>()),
   );
 
   getIt.registerFactory<HomeViewModel>(
@@ -71,5 +72,9 @@ void di() {
   );
   getIt.registerLazySingleton<JournalRepository>(
     () => JournalRepositoryImpl(dataSource: getIt()),
+  );
+
+  getIt.registerFactory<MapViewModel>(
+    () => MapViewModel(getIt<PhotoRepository>()),
   );
 }
