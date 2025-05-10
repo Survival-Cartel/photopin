@@ -8,7 +8,7 @@ import 'package:photopin/presentation/component/journal_card_image.dart';
 class JournalCard extends StatelessWidget {
   final JournalModel journal;
   final Function(String journalId) onTap;
-  final String imageUrl;
+  final String? imageUrl;
   final int photoCount;
 
   const JournalCard({
@@ -29,7 +29,9 @@ class JournalCard extends StatelessWidget {
           SizedBox(
             height: 144,
             child: JournalCardImage(
-              imageUrl: imageUrl,
+              imageUrl:
+                  imageUrl ??
+                  'https://web.cau.ac.kr/_images/_board/skin/album/1//no_image.gif',
               journeyTitle: journal.name,
               description: journal.comment,
               bottomRadius: false,
