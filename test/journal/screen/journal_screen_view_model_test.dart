@@ -10,12 +10,12 @@ import '../fixtures/journal_model_fixtures.dart';
 class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
 void main() {
-  late JournalScreenViewModel viewModel;
+  late JournalViewModel viewModel;
   late GetJournalListUseCase mockGetJournalListUseCase;
 
   setUp(() {
     mockGetJournalListUseCase = MockGetJournalListUseCase();
-    viewModel = JournalScreenViewModel(
+    viewModel = JournalViewModel(
       getJournalListUseCase: mockGetJournalListUseCase,
     );
 

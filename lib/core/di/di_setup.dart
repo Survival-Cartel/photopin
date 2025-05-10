@@ -64,8 +64,8 @@ void di() {
     GetCurrentUserUseCase(getIt()),
   );
 
-  getIt.registerFactoryParam<JournalScreenViewModel, String, void>(
-    (userId, _) => JournalScreenViewModel(
+  getIt.registerFactoryParam<JournalViewModel, String, void>(
+    (userId, _) => JournalViewModel(
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
     ),
   );

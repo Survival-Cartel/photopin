@@ -4,12 +4,12 @@ import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
 
-class JournalScreenViewModel with ChangeNotifier {
+class JournalViewModel with ChangeNotifier {
   JournalScreenState _state = const JournalScreenState();
 
   final GetJournalListUseCase getJournalListUseCase;
 
-  JournalScreenViewModel({required this.getJournalListUseCase});
+  JournalViewModel({required this.getJournalListUseCase});
 
   JournalScreenState get state => _state;
   bool get isLoading => _state.isLoading;

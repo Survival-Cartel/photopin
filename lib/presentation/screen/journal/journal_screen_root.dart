@@ -4,7 +4,7 @@ import 'package:photopin/presentation/screen/journal/journal_screen_action.dart'
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 
 class JournalScreenRoot extends StatefulWidget {
-  final JournalScreenViewModel viewModel;
+  final JournalViewModel viewModel;
 
   const JournalScreenRoot({super.key, required this.viewModel});
 

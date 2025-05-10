@@ -8,23 +8,18 @@ import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/main/main_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.login,
   routes: <RouteBase>[
-    GoRoute(
-      path: Routes.home,
-      builder: (BuildContext context, GoRouterState state) {
-        return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
-      },
-    ),
     GoRoute(
       path: Routes.journal,
       builder: (BuildContext context, GoRouterState state) {
         final String userId = state.pathParameters['id']!;
 
         return JournalScreenRoot(
-          viewModel: getIt<JournalScreenViewModel>(param1: userId),
+          viewModel: getIt<JournalViewModel>(param1: userId),
         );
       },
     ),
@@ -33,6 +28,33 @@ final appRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return AuthScreenRoot(authViewModel: getIt<AuthViewModel>());
       },
+    ),
+    StatefulShellRoute.indexedStack(
+      builder:
+          (context, state, navigationSheel) =>
+              MainScreen(navigationShell: navigationSheel),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.home,
+              builder: (BuildContext context, GoRouterState state) {
+                return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.journal,
+              builder: (BuildContext context, GoRouterState state) {
+                return JournalScreenRoot(viewModel: getIt<JournalViewModel>());
+              },
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 );
