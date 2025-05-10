@@ -30,9 +30,9 @@ void main() {
   });
 
   test('초기 상태는 isLoading=false이고 userName이 비어있어야 한다.', () {
-    expect(viewModel.homeState.isLoading, false);
-    expect(viewModel.homeState.userName, '');
-    expect(viewModel.homeState, const HomeState());
+    expect(viewModel.state.isLoading, false);
+    expect(viewModel.state.currentUser.displayName, '');
+    expect(viewModel.state, const HomeState());
   });
 
   group('onAction(FindUser)', () {
@@ -42,7 +42,7 @@ void main() {
 
       viewModel.addListener(() {
         notifyCount++;
-        states.add(viewModel.homeState);
+        states.add(viewModel.state);
       });
 
       await viewModel.onAction(FindUser());
@@ -50,7 +50,10 @@ void main() {
       expect(notifyCount, 2);
       expect(states.first.isLoading, true);
       expect(states.last.isLoading, false);
-      expect(states.last.userName, userModelFixtures[0].displayName);
+      expect(
+        states.last.currentUser.displayName,
+        userModelFixtures[0].displayName,
+      );
 
       verify(() => mockGetCurrentUserUseCase.execute()).called(1);
     });

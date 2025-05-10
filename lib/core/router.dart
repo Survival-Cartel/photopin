@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/di/di_setup.dart';
@@ -5,22 +6,30 @@ import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
+import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
+import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/main/main_screen.dart';
 import 'package:photopin/presentation/screen/map/map_screen_root.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 
 final appRouter = GoRouter(
+  initialLocation: Routes.login,
   routes: <RouteBase>[
     GoRoute(
-      path: Routes.home,
+      path: '${Routes.journal}/:id',
       builder: (BuildContext context, GoRouterState state) {
-        return HomeScreenRoot(homeViewModel: getIt());
+        final String userId = state.pathParameters['id']!;
+
+        return JournalScreenRoot(
+          viewModel: getIt<JournalViewModel>(param1: userId),
+        );
       },
     ),
     GoRoute(
-      path: Routes.journal,
+      path: Routes.login,
       builder: (BuildContext context, GoRouterState state) {
-        return JournalScreenRoot(viewModel: getIt());
+        return AuthScreenRoot(authViewModel: getIt<AuthViewModel>());
       },
     ),
     GoRoute(
@@ -42,6 +51,36 @@ final appRouter = GoRouter(
 
         return MapScreenRoot(mapViewModel: viewModel);
       },
+    ),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MainScreen(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.home,
+              builder: (context, state) {
+                return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.journal,
+              builder: (context, state) {
+                final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+                return JournalScreenRoot(
+                  viewModel: getIt<JournalViewModel>(param1: userId),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 );

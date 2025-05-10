@@ -1,20 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_screen.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 
-class HomeScreenRoot extends StatelessWidget {
-  final HomeViewModel homeViewModel;
-  const HomeScreenRoot({super.key, required this.homeViewModel});
+class HomeScreenRoot extends StatefulWidget {
+  final HomeViewModel viewModel;
+  const HomeScreenRoot({super.key, required this.viewModel});
+
+  @override
+  State<HomeScreenRoot> createState() => _HomeScreenRootState();
+}
+
+class _HomeScreenRootState extends State<HomeScreenRoot> {
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.init();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: homeViewModel,
+      listenable: widget.viewModel,
       builder: (context, child) {
         return HomeScreen(
-          homeState: homeViewModel.homeState,
+          state: widget.viewModel.state,
           onAction: (action) {
             switch (action) {
               case CameraClick():
@@ -32,15 +44,16 @@ class HomeScreenRoot extends StatelessWidget {
                 // TODO: Handle this case.
                 throw UnimplementedError();
               case ViewAllClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
+                context.push(
+                  '/journals/${widget.viewModel.state.currentUser.id}',
+                );
               case MyJounalClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
               case FindUser():
-                homeViewModel.onAction(action);
+                widget.viewModel.onAction(action);
               case FindJounals():
-                homeViewModel.onAction(action);
+                widget.viewModel.onAction(action);
             }
           },
         );

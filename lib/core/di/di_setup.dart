@@ -53,16 +53,24 @@ void di() {
   );
 
   getIt.registerFactory<HomeViewModel>(
-    () => HomeViewModel(getCurrentUserUseCase: getIt()),
+    () => HomeViewModel(getCurrentUserUseCase: getIt<GetCurrentUserUseCase>()),
   );
-  getIt.registerSingleton<GetJournalListUseCase>(GetJournalListUseCase());
+
+  getIt.registerFactoryParam<GetJournalListUseCase, String, void>(
+    (userId, _) =>
+        GetJournalListUseCase(getIt<JournalRepository>(param1: userId)),
+  );
+
   getIt.registerSingleton<GetCurrentUserUseCase>(
     GetCurrentUserUseCase(getIt()),
   );
 
-  getIt.registerFactory<JournalScreenViewModel>(
-    () => JournalScreenViewModel(getJournalListUseCase: getIt()),
+  getIt.registerFactoryParam<JournalViewModel, String, void>(
+    (userId, _) => JournalViewModel(
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+    ),
   );
+
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
@@ -70,6 +78,7 @@ void di() {
       journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
     ),
   );
+
   getIt.registerFactoryParam<JournalRepository, String, void>(
     (userId, _) => JournalRepositoryImpl(
       dataSource: getIt<JournalDataSource>(param1: userId),
