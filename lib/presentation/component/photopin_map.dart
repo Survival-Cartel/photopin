@@ -65,6 +65,7 @@ class PhotoPinMapState extends State<PhotoPinMap> {
                 polylineId: PolylineId(id),
                 points: widget.polylines[id]!,
                 color: widget.polyLineColor,
+                width: 6,
               );
             }).toSet(),
         markers: widget.markers,

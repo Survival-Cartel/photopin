@@ -50,6 +50,7 @@ void main() {
       final List<PhotoModel> photos = await repository.findPhotosByDateRange(
         startDate: startDate,
         endDate: endDate,
+        journalId: 'journal1',
       );
       expect(photos.first, isA<PhotoModel>());
       expect(photos.length, 2);

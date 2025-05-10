@@ -6,6 +6,7 @@ abstract interface class PhotoRepository
     implements Repository<PhotoModel, String, PhotoDto> {
   Future<List<PhotoModel>> findPhotosByJournalId(String journalId);
   Future<List<PhotoModel>> findPhotosByDateRange({
+    required String journalId,
     required DateTime startDate,
     required DateTime endDate,
   });

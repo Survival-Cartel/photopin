@@ -18,6 +18,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
@@ -47,8 +48,8 @@ void di() {
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: getIt()),
   );
-  getIt.registerLazySingleton<PhotoRepository>(
-    () => PhotoRepositoryImpl(dataSource: getIt()),
+  getIt.registerFactoryParam<PhotoRepository, String, void>(
+    (userId, _) => PhotoRepositoryImpl(dataSource: getIt(param1: userId)),
   );
 
   getIt.registerFactory<HomeViewModel>(
@@ -81,6 +82,13 @@ void di() {
   getIt.registerFactoryParam<JournalRepository, String, void>(
     (userId, _) => JournalRepositoryImpl(
       dataSource: getIt<JournalDataSource>(param1: userId),
+    ),
+  );
+
+  getIt.registerFactoryParam<MapViewModel, String, void>(
+    (userId, _) => MapViewModel(
+      getIt<PhotoRepository>(param1: userId),
+      getIt<JournalRepository>(param1: userId),
     ),
   );
 }

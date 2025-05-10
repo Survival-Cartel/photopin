@@ -25,16 +25,18 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<List<PhotoModel>> findPhotosByDateRange({
+    required String journalId,
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    List<PhotoModel> photos = await findAll();
+    List<PhotoModel> photos = await findPhotosByJournalId(journalId);
 
     return photos
         .where(
           (photo) =>
               photo.dateTime.isAfter(startDate) &&
-              photo.dateTime.isBefore(endDate),
+              photo.dateTime.isBefore(endDate) &&
+              photo.journalId == journalId,
         )
         .toList();
   }
