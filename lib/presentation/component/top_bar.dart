@@ -26,28 +26,24 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: onNotificationTap,
           icon: Icon(Icons.notifications_none),
-          color: AppColors.gray4,
+          color: AppColors.gray2,
         ),
         Padding(
           padding: const EdgeInsets.only(right: 8),
           child:
-          profileImg != null
-              ? Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: NetworkImage(profileImg!),
-                fit: BoxFit.cover,
-              ),
-            ),
-          )
-              : const Icon(
-              Icons.person,
-              size: 24,
-              color: AppColors.gray2
-          ),
+              profileImg != null
+                  ? Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(profileImg!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                  : const Icon(Icons.person, size: 24, color: AppColors.gray2),
         ),
       ],
     );

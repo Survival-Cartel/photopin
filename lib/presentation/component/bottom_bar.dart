@@ -48,42 +48,37 @@ class BottomBar extends StatelessWidget {
     const double barHeight = 56.0;
     const double fabSize = 48.0;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('포토 핀'), centerTitle: true),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 8,
-        color: AppColors.white,
-        child: SizedBox(
-          height: barHeight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Home', 0, AppColors.primary100),
-              _buildNavItem(Icons.map, 'Map', 1, AppColors.secondary100),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => changeTab(2),
-                child: Container(
-                  width: fabSize,
-                  height: fabSize,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary100,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(color: Colors.black26, blurRadius: 4),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 24,
-                    color: AppColors.white,
-                  ),
+    return BottomAppBar(
+      elevation: 8,
+      color: AppColors.white,
+      child: SizedBox(
+        height: barHeight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(Icons.home, 'Home', 0, AppColors.primary100),
+            _buildNavItem(Icons.book, 'Journal', 1, AppColors.secondary100),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => changeTab(2),
+              child: Container(
+                width: fabSize,
+                height: fabSize,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary100,
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
+                child: const Icon(
+                  Icons.camera_alt,
+                  size: 24,
+                  color: AppColors.white,
                 ),
               ),
-              _buildNavItem(Icons.photo, 'Photos', 3, AppColors.marker80),
-              _buildNavItem(Icons.settings, 'Settings', 4, AppColors.marker100),
-            ],
-          ),
+            ),
+            _buildNavItem(Icons.photo, 'Photo', 3, AppColors.marker80),
+            _buildNavItem(Icons.settings, 'Setting', 4, AppColors.marker100),
+          ],
         ),
       ),
     );
