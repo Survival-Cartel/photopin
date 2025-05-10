@@ -25,7 +25,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: onNotificationTap,
-          icon: Icon(Icons.notifications_none),
+          icon: const Icon(Icons.notifications_none),
           color: AppColors.gray2,
         ),
         Padding(
