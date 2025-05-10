@@ -13,8 +13,8 @@ void main() {
       id: 'testJournal',
       name: 'Paris Getaway',
       tripWith: ['유제환', '최준성', '최은렬', '최따이호'],
-      startDate: startDate,
-      endDate: endDate,
+      startDateMilli: startDate.millisecondsSinceEpoch,
+      endDateMilli: endDate.millisecondsSinceEpoch,
       comment:
           'Breathtaking architecture! The light through the stained glass was magical.',
     );
