@@ -1,15 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:photopin/journal/data/repository/journal_repository.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
 import 'package:photopin/presentation/screen/map/map_state.dart';
 
 class MapViewModel with ChangeNotifier {
-  final PhotoRepository _repository;
+  final JournalRepository _journalRepository;
+  final PhotoRepository _photoRepository;
   MapState _state = const MapState();
 
-  MapViewModel(this._repository);
+  MapViewModel(this._photoRepository, this._journalRepository);
 
   MapState get state => _state;
 
@@ -40,10 +43,10 @@ class MapViewModel with ChangeNotifier {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
-    final List<PhotoModel> photos = await _repository.findPhotosByJournalId(
-      journalId,
-    );
-    _state = state.copyWith(isLoading: false, photos: photos);
+    final List<PhotoModel> photos = await _photoRepository
+        .findPhotosByJournalId(journalId);
+    final JournalModel jounal = (await _journalRepository.findOne(journalId))!;
+    _state = state.copyWith(isLoading: false, photos: photos, journal: jounal);
     notifyListeners();
   }
 }
