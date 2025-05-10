@@ -3,16 +3,18 @@ import 'package:photopin/location/domain/model/location_model.dart';
 class PhotoModel {
   final String id;
   final String name;
-  final DateTime dateTime;
+  final int dateTimeMilli;
   final String journalId;
   final String imageUrl;
   final LocationModel location;
   final String comment;
 
+  DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(dateTimeMilli);
+
   const PhotoModel({
     required this.id,
     required this.name,
-    required this.dateTime,
+    required this.dateTimeMilli,
     required this.journalId,
     required this.imageUrl,
     required this.location,
@@ -36,7 +38,7 @@ class PhotoModel {
   PhotoModel copyWith({
     String? id,
     String? name,
-    DateTime? dateTime,
+    int? dateTimeMilli,
     String? journalId,
     String? imageUrl,
     LocationModel? location,
@@ -45,7 +47,7 @@ class PhotoModel {
     return PhotoModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      dateTime: dateTime ?? this.dateTime,
+      dateTimeMilli: dateTimeMilli ?? this.dateTimeMilli,
       journalId: journalId ?? this.journalId,
       imageUrl: imageUrl ?? this.imageUrl,
       location: location ?? this.location,

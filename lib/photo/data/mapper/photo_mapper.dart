@@ -7,7 +7,8 @@ extension PhotoMapper on PhotoDto {
     return PhotoModel(
       id: id ?? 'N/A',
       name: name ?? 'N/A',
-      dateTime: dateTime ?? DateTime(1999, 1, 1),
+      dateTimeMilli:
+          dateTimeMilli ?? DateTime(1999, 1, 1).millisecondsSinceEpoch,
       journalId: journalId ?? 'N/A',
       imageUrl: imageUrl ?? 'N/A',
       location: LocationModel(
@@ -24,7 +25,7 @@ extension ModelMapper on PhotoModel {
     return PhotoDto(
       id: id,
       comment: comment,
-      dateTime: dateTime,
+      dateTimeMilli: dateTimeMilli,
       imageUrl: imageUrl,
       journalId: journalId,
       latitude: location.latitude,
