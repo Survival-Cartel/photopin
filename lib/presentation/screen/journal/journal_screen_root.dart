@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
@@ -31,7 +33,7 @@ class _JournalScreenRootState extends State<JournalScreenRoot> {
               case SearchJournal():
                 await widget.viewModel.onAction(action);
               case OnTapJournalCard():
-              // 추후 go_router로 화면 이동 로직
+                context.push('${Routes.map}/${action.journalId}');
             }
           },
         );

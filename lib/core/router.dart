@@ -40,6 +40,19 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '${Routes.map}/:journalId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+        final String journalId = state.pathParameters['journalId']!;
+
+        final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
+
+        viewModel.init(journalId);
+
+        return MapScreenRoot(mapViewModel: viewModel);
+      },
+    ),
+    GoRoute(
       path: '${Routes.map}/:userId/:journalId',
       builder: (BuildContext context, GoRouterState state) {
         final String userId = state.pathParameters['userId']!;
