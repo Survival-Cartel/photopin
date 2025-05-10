@@ -70,11 +70,16 @@ void di() {
       journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
     ),
   );
-  getIt.registerLazySingleton<JournalRepository>(
-    () => JournalRepositoryImpl(dataSource: getIt()),
+  getIt.registerFactoryParam<JournalRepository, String, void>(
+    (userId, _) => JournalRepositoryImpl(
+      dataSource: getIt<JournalDataSource>(param1: userId),
+    ),
   );
 
   getIt.registerFactoryParam<MapViewModel, String, void>(
-    (userId, _) => MapViewModel(getIt<PhotoRepository>(param1: userId)),
+    (userId, _) => MapViewModel(
+      getIt<PhotoRepository>(param1: userId),
+      getIt<JournalRepository>(param1: userId),
+    ),
   );
 }
