@@ -33,6 +33,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
           child:
               profileImg != null
                   ? Container(
+                    key: const Key('profileImgContainer'),
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
