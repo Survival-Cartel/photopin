@@ -39,8 +39,8 @@ class JournalDto {
     'id': id,
     'name': name,
     'tripWith': tripWith,
-    'startDate': startDateMilli,
-    'endDate': endDateMilli,
+    'startDate': Timestamp.fromMillisecondsSinceEpoch(startDateMilli ?? 0),
+    'endDate': Timestamp.fromMillisecondsSinceEpoch(endDateMilli ?? 0),
     'comment': comment,
   };
 }

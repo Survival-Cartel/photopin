@@ -5,4 +5,5 @@ abstract class Routes {
   static const String journal = '/journals';
   static const String photos = '/photos';
   static const String login = '/login';
+  static const String map = '/map';
 }

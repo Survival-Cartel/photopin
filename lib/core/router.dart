@@ -10,8 +10,9 @@ import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
-
-import '../presentation/screen/main/main_screen.dart';
+import 'package:photopin/presentation/screen/main/main_screen.dart';
+import 'package:photopin/presentation/screen/map/map_screen_root.dart';
+import 'package:photopin/presentation/screen/map/map_view_model.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.login,
@@ -42,6 +43,39 @@ final appRouter = GoRouter(
       path: Routes.login,
       builder: (BuildContext context, GoRouterState state) {
         return AuthScreenRoot(authViewModel: getIt<AuthViewModel>());
+      },
+    ),
+    GoRoute(
+      path: Routes.login,
+      builder: (BuildContext context, GoRouterState state) {
+        final AuthViewModel viewModel = getIt<AuthViewModel>();
+        return AuthScreenRoot(authViewModel: viewModel);
+      },
+    ),
+    GoRoute(
+      path: '${Routes.map}/:journalId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+        final String journalId = state.pathParameters['journalId']!;
+
+        final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
+
+        viewModel.init(journalId);
+
+        return MapScreenRoot(mapViewModel: viewModel);
+      },
+    ),
+    GoRoute(
+      path: '${Routes.map}/:userId/:journalId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String userId = state.pathParameters['userId']!;
+        final String journalId = state.pathParameters['journalId']!;
+
+        final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
+
+        viewModel.init(journalId);
+
+        return MapScreenRoot(mapViewModel: viewModel);
       },
     ),
     StatefulShellRoute.indexedStack(

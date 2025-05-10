@@ -52,12 +52,16 @@ void main() {
 
       final newS = DateTime(2025, 5, 5);
       final newE = DateTime(2025, 5, 20);
-      slider.onChanged!(SfRangeValues(newS, newE));
+
+      final startOffset = newS.difference(start).inDays.toDouble();
+      final endOffset = newE.difference(start).inDays.toDouble();
+
+      slider.onChanged!(SfRangeValues(startOffset, endOffset));
 
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(cbStart, equals(DateTime(2025, 5, 5)));
-      expect(cbEnd, equals(DateTime(2025, 5, 20)));
+      expect(cbEnd, equals(DateTime(2025, 5, 20, 23, 59, 59, 999)));
     });
   });
 }
