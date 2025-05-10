@@ -19,8 +19,11 @@ class MapViewModel with ChangeNotifier {
   Future<void> onAction(MapAction action) async {
     switch (action) {
       case OnDateRangeClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        _onDateRangeClick(
+          journalId: action.journalId,
+          startDate: action.startDate,
+          endDate: action.endDate,
+        );
       case OnPhotoClick():
         // TODO: Handle this case.
         throw UnimplementedError();
@@ -39,6 +42,25 @@ class MapViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> _onDateRangeClick({
+    required String journalId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    _state = state.copyWith(isLoading: true);
+    notifyListeners();
+
+    final List<PhotoModel> photos = await _photoRepository
+        .findPhotosByDateRange(
+          journalId: journalId,
+          startDate: startDate,
+          endDate: endDate,
+        );
+
+    _state = state.copyWith(isLoading: false, photos: photos);
+    notifyListeners();
+  }
+
   Future<void> init(String journalId) async {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
@@ -46,6 +68,7 @@ class MapViewModel with ChangeNotifier {
     final List<PhotoModel> photos = await _photoRepository
         .findPhotosByJournalId(journalId);
     final JournalModel jounal = (await _journalRepository.findOne(journalId))!;
+
     _state = state.copyWith(isLoading: false, photos: photos, journal: jounal);
     notifyListeners();
   }

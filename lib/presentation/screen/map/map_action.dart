@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 sealed class MapAction {
-  const factory MapAction.onDateRangeClick() = OnDateRangeClick;
+  const factory MapAction.onDateRangeClick({
+    required String journalId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) = OnDateRangeClick;
   const factory MapAction.onPhotoClick(String photoId) = OnPhotoClick;
   const factory MapAction.onCancelClick() = OnCancelClick;
   const factory MapAction.onApplyFilterClick() = OnApplyFilterClick;
@@ -11,7 +15,15 @@ sealed class MapAction {
 
 @immutable
 class OnDateRangeClick implements MapAction {
-  const OnDateRangeClick();
+  final String journalId;
+  final DateTime startDate;
+  final DateTime endDate;
+
+  const OnDateRangeClick({
+    required this.journalId,
+    required this.startDate,
+    required this.endDate,
+  });
 }
 
 @immutable
