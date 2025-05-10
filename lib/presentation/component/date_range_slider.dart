@@ -71,8 +71,11 @@ class _RangeSliderState extends State<DateRangeSlider> {
     return a[m];
   }
 
-  DateTime _toDate(double offset) =>
-      widget.startDate.add(Duration(days: offset.toInt()));
+  DateTime _toDate(double offset) => DateTime(
+    widget.startDate.year,
+    widget.startDate.month,
+    widget.startDate.day,
+  ).add(Duration(days: offset.toInt()));
 
   String _formatTop(DateTime s, DateTime e) {
     return '${_monthName(s.month)} ${s.day} - ${_monthName(e.month)} ${e.day}, ${e.year}';
