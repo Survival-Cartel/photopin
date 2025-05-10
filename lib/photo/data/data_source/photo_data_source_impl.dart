@@ -43,15 +43,19 @@ class PhotoDataSourceImpl implements PhotoDataSource {
   Future<List<PhotoDto>> findPhotosByJournalId(String journalId) async {
     final List<PhotoDto> photoDtos = [];
 
-    final QuerySnapshot<PhotoDto> snapshot = await photoStore
+    await photoStore
         .where('journalId', isEqualTo: journalId)
+        .orderBy('dateTime')
         .get()
+        .then((QuerySnapshot<PhotoDto> value) {
+          for (DocumentSnapshot<PhotoDto> snapshot in value.docs) {
+            photoDtos.add(snapshot.data()!);
+          }
+        })
         .timeout(
           const Duration(seconds: 8),
           onTimeout: () => throw FirestoreError.timeOutError,
         );
-
-    snapshot.docs.map((e) => photoDtos.add(e.data()));
 
     return photoDtos;
   }
