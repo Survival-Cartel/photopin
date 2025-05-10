@@ -1,17 +1,23 @@
 class JournalDto {
   final String? id;
   final String? name;
-  final DateTime? startDate;
-  final DateTime? endDate;
+  final int? startDateMilli;
+  final int? endDateMilli;
   final List<String>? tripWith;
   final String? comment;
+
+  DateTime get startDate =>
+      DateTime.fromMillisecondsSinceEpoch(startDateMilli ?? 0);
+
+  DateTime get endDate =>
+      DateTime.fromMillisecondsSinceEpoch(endDateMilli ?? 0);
 
   const JournalDto({
     this.id,
     this.name,
     this.tripWith,
-    this.startDate,
-    this.endDate,
+    this.startDateMilli,
+    this.endDateMilli,
     this.comment,
   });
 
@@ -19,8 +25,8 @@ class JournalDto {
     id: json['id'],
     name: json['name'],
     tripWith: json['tripWith'],
-    startDate: json['startDate'],
-    endDate: json['endDate'],
+    startDateMilli: json['startDate'],
+    endDateMilli: json['endDate'],
     comment: json['comment'],
   );
 
@@ -28,8 +34,8 @@ class JournalDto {
     'id': id,
     'name': name,
     'tripWith': tripWith,
-    'startDate': startDate,
-    'endDate': endDate,
+    'startDate': startDateMilli,
+    'endDate': endDateMilli,
     'comment': comment,
   };
 }
