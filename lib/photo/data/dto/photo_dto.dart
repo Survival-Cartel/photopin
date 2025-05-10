@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PhotoDto {
   final String? id;
   final String? name;
@@ -25,18 +27,18 @@ class PhotoDto {
   factory PhotoDto.fromJson(Map<String, dynamic> json) => PhotoDto(
     id: json['id'],
     name: json['name'],
-    dateTimeMilli: json['dateTime'],
+    dateTimeMilli: (json['dateTime'] as Timestamp).millisecondsSinceEpoch,
     journalId: json['journalId'],
     imageUrl: json['imageUrl'],
-    latitude: json['latitude'],
-    longitude: json['longitude'],
+    latitude: (json['latitude'] as num).toDouble(),
+    longitude: (json['longitude'] as num).toDouble(),
     comment: json['comment'],
   );
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
-    'dateTime': dateTimeMilli,
+    'dateTime': Timestamp.fromMillisecondsSinceEpoch(dateTimeMilli ?? 0),
     'journalId': journalId,
     'imageUrl': imageUrl,
     'latitude': latitude,
