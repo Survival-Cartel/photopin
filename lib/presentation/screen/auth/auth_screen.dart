@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/auth/auth_action.dart';
 import 'package:photopin/presentation/screen/auth/auth_state.dart';
 
@@ -25,11 +27,17 @@ class AuthScreen extends StatelessWidget {
                   },
                 )
                 : const CircularProgressIndicator(),
-            Text(state.email),
+            Text(state.currentUser.email),
             ElevatedButton(
               child: const Text('logout'),
               onPressed: () async {
                 onAction(AuthAction.logout());
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Go Home'),
+              onPressed: () {
+                context.go(Routes.home);
               },
             ),
           ],
