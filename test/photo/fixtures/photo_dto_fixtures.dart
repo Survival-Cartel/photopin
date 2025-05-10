@@ -4,7 +4,7 @@ final List<PhotoDto> photoDtoFixtures = [
   PhotoDto(
     id: '1',
     comment: 'test1',
-    dateTime: DateTime(2025, 05, 08, 13),
+    dateTimeMilli: DateTime(2025, 05, 08, 13).millisecondsSinceEpoch,
     imageUrl: '',
     journalId: 'journal1',
     latitude: 12.343,
@@ -14,7 +14,7 @@ final List<PhotoDto> photoDtoFixtures = [
   PhotoDto(
     id: '2',
     comment: 'test2',
-    dateTime: DateTime(2025, 05, 09),
+    dateTimeMilli: DateTime(2025, 05, 09).millisecondsSinceEpoch,
     imageUrl: '',
     journalId: 'journal1',
     latitude: 0.1212,
@@ -24,7 +24,7 @@ final List<PhotoDto> photoDtoFixtures = [
   PhotoDto(
     id: '3',
     comment: 'test3',
-    dateTime: DateTime(2025, 05, 11),
+    dateTimeMilli: DateTime(2025, 05, 11).millisecondsSinceEpoch,
     imageUrl: '',
     journalId: 'journal1',
     latitude: 10.23,
@@ -34,7 +34,7 @@ final List<PhotoDto> photoDtoFixtures = [
   PhotoDto(
     id: '4',
     comment: 'test4',
-    dateTime: DateTime(2025, 05, 15),
+    dateTimeMilli: DateTime(2025, 05, 15).millisecondsSinceEpoch,
     imageUrl: '',
     journalId: 'journal2',
     latitude: 0.1,
