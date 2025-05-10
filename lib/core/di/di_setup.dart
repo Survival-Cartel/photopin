@@ -48,8 +48,8 @@ void di() {
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: getIt()),
   );
-  getIt.registerLazySingleton<PhotoRepository>(
-    () => PhotoRepositoryImpl(dataSource: getIt<PhotoDataSource>()),
+  getIt.registerFactoryParam<PhotoRepository, String, void>(
+    (userId, _) => PhotoRepositoryImpl(dataSource: getIt(param1: userId)),
   );
 
   getIt.registerFactory<HomeViewModel>(
@@ -74,7 +74,7 @@ void di() {
     () => JournalRepositoryImpl(dataSource: getIt()),
   );
 
-  getIt.registerFactory<MapViewModel>(
-    () => MapViewModel(getIt<PhotoRepository>()),
+  getIt.registerFactoryParam<MapViewModel, String, void>(
+    (userId, _) => MapViewModel(getIt<PhotoRepository>(param1: userId)),
   );
 }
