@@ -8,7 +8,7 @@ import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.login,
