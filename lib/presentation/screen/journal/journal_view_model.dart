@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
-import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
+import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
 class JournalViewModel with ChangeNotifier {
-  JournalScreenState _state = const JournalScreenState();
+  JournalState _state = JournalState();
 
   final GetJournalListUseCase getJournalListUseCase;
 
   JournalViewModel({required this.getJournalListUseCase});
 
-  JournalScreenState get state => _state;
+  JournalState get state => _state;
   bool get isLoading => _state.isLoading;
 
   Future<void> onAction(JournalScreenAction action) async {
@@ -28,17 +28,19 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    final List<JournalModel> journals = await getJournalListUseCase.execute();
+    final JournalPhotoCollection collection =
+        await getJournalListUseCase.execute();
 
     _state = _state.copyWith(
       journals:
-          journals
+          collection.journals
               .where(
                 (journal) => journal.name.toLowerCase().contains(
                   query.trim().toLowerCase(),
                 ),
               )
               .toList(),
+      photoMap: collection.photoMap,
       isLoading: false,
     );
 
@@ -49,9 +51,14 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    final List<JournalModel> journals = await getJournalListUseCase.execute();
+    final JournalPhotoCollection collection =
+        await getJournalListUseCase.execute();
 
-    _state = _state.copyWith(journals: journals, isLoading: false);
+    _state = _state.copyWith(
+      journals: collection.journals,
+      photoMap: collection.photoMap,
+      isLoading: false,
+    );
 
     notifyListeners();
   }
