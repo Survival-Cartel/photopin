@@ -10,6 +10,8 @@ import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
 
+import '../presentation/screen/main/main_screen.dart';
+
 final appRouter = GoRouter(
   initialLocation: Routes.login,
   routes: <RouteBase>[
@@ -30,7 +32,20 @@ final appRouter = GoRouter(
       },
     ),
     StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MainScreen(navigationShell: navigationShell);
+      },
       branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.home,
+              builder: (context, state) {
+                return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
+              },
+            ),
+          ],
+        ),
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -40,16 +55,6 @@ final appRouter = GoRouter(
                 return JournalScreenRoot(
                   viewModel: getIt<JournalViewModel>(param1: userId),
                 );
-              },
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: Routes.home,
-              builder: (context, state) {
-                return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
               },
             ),
           ],
