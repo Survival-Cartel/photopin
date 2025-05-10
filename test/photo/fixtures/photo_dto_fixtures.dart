@@ -4,7 +4,7 @@ final List<PhotoDto> photoDtoFixtures = [
   PhotoDto(
     id: '1',
     comment: 'test1',
-    dateTime: DateTime.now(),
+    dateTime: DateTime(2025, 05, 08, 13),
     imageUrl: '',
     journalId: 'journal1',
     latitude: 12.343,
