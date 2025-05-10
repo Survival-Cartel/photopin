@@ -78,7 +78,7 @@ class _RangeSliderState extends State<DateRangeSlider> {
   ).add(Duration(days: offset.toInt()));
 
   DateTime _toEndDate(double offset) {
-    final base = widget.endDate.add(Duration(days: offset.toInt()));
+    final base = widget.startDate.add(Duration(days: offset.toInt()));
 
     return DateTime(base.year, base.month, base.day, 23, 59, 59, 999);
   }
