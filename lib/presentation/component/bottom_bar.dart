@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 
-class BottomBar extends StatefulWidget {
-  const BottomBar({super.key});
+class BottomBar extends StatelessWidget {
+  final int selectedIndex;
+  final void Function(int) changeTab;
 
-  @override
-  State<BottomBar> createState() => _BottomBarState();
-}
-
-class _BottomBarState extends State<BottomBar> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  const BottomBar({
+    super.key,
+    required this.selectedIndex,
+    required this.changeTab,
+  });
 
   Widget _buildNavItem(
     IconData icon,
@@ -24,10 +18,10 @@ class _BottomBarState extends State<BottomBar> {
     int index,
     Color activeColor,
   ) {
-    final bool isSelected = _selectedIndex == index;
+    final bool isSelected = selectedIndex == index;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => _onItemTapped(index),
+      onTap: () => changeTab(index),
       child: SizedBox(
         width: 48,
         height: 56,
@@ -68,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
               _buildNavItem(Icons.map, 'Map', 1, AppColors.secondary100),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => _onItemTapped(2),
+                onTap: () => changeTab(2),
                 child: Container(
                   width: fabSize,
                   height: fabSize,
