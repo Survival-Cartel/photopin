@@ -2,16 +2,19 @@ class JournalModel {
   final String id;
   final String name;
   final List<String> tripWith;
-  final DateTime startDate;
-  final DateTime endDate;
+  final int startDateMilli;
+  final int endDateMilli;
   final String comment;
+
+  DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startDateMilli);
+  DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endDateMilli);
 
   const JournalModel({
     required this.id,
     required this.name,
     required this.tripWith,
-    required this.startDate,
-    required this.endDate,
+    required this.startDateMilli,
+    required this.endDateMilli,
     required this.comment,
   });
 
@@ -33,16 +36,16 @@ class JournalModel {
     String? id,
     String? name,
     List<String>? tripWith,
-    DateTime? startDate,
-    DateTime? endDate,
+    int? startDateMilli,
+    int? endDateMilli,
     String? comment,
   }) {
     return JournalModel(
       id: id ?? this.id,
       name: name ?? this.name,
       tripWith: tripWith ?? this.tripWith,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
+      startDateMilli: startDateMilli ?? this.startDateMilli,
+      endDateMilli: endDateMilli ?? this.endDateMilli,
       comment: comment ?? this.comment,
     );
   }
