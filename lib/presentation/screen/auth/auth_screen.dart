@@ -34,12 +34,14 @@ class AuthScreen extends StatelessWidget {
                 onAction(AuthAction.logout());
               },
             ),
-            ElevatedButton(
-              child: const Text('Go Home'),
-              onPressed: () {
-                context.go(Routes.home);
-              },
-            ),
+            state.currentUser.email.isNotEmpty
+                ? ElevatedButton(
+                  child: const Text('Go Home'),
+                  onPressed: () {
+                    context.go(Routes.home);
+                  },
+                )
+                : const SizedBox(),
           ],
         ),
       ),
