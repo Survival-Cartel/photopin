@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
+import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
+import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
 import 'package:photopin/presentation/screen/map/map_screen_root.dart';
@@ -19,6 +21,13 @@ final appRouter = GoRouter(
       path: Routes.journal,
       builder: (BuildContext context, GoRouterState state) {
         return JournalScreenRoot(viewModel: getIt());
+      },
+    ),
+    GoRoute(
+      path: Routes.login,
+      builder: (BuildContext context, GoRouterState state) {
+        final AuthViewModel viewModel = getIt<AuthViewModel>();
+        return AuthScreenRoot(authViewModel: viewModel);
       },
     ),
     GoRoute(
