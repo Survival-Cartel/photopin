@@ -12,7 +12,7 @@ void main() async {
   final PhotoDto dto = PhotoDto(
     id: '5',
     comment: 'test5',
-    dateTime: DateTime.now(),
+    dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
     imageUrl: '',
     journalId: 'journal2',
     latitude: 12.343,
@@ -23,7 +23,7 @@ void main() async {
     PhotoDto(
       id: '1',
       comment: 'test1',
-      dateTime: DateTime.now(),
+      dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
       imageUrl: '',
       journalId: journalId,
       latitude: 12.343,
@@ -33,7 +33,7 @@ void main() async {
     PhotoDto(
       id: '2',
       comment: 'test2',
-      dateTime: DateTime(2025),
+      dateTimeMilli: DateTime(2025).millisecondsSinceEpoch,
       imageUrl: '',
       journalId: journalId,
       latitude: 0.1212,
@@ -43,7 +43,7 @@ void main() async {
     PhotoDto(
       id: '3',
       comment: 'test3',
-      dateTime: DateTime.now(),
+      dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
       imageUrl: '',
       journalId: journalId,
       latitude: 10.23,
@@ -53,7 +53,7 @@ void main() async {
     PhotoDto(
       id: '4',
       comment: 'test4',
-      dateTime: DateTime.now(),
+      dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
       imageUrl: '',
       journalId: 'journal2',
       latitude: 0.1,

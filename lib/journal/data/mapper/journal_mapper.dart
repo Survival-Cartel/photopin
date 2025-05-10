@@ -5,8 +5,8 @@ extension JournalMapper on JournalDto {
   JournalModel toModel() {
     return JournalModel(
       id: id ?? 'N/A',
-      startDate: startDate ?? DateTime(1999, 1, 1),
-      endDate: endDate ?? DateTime(1999, 1, 1),
+      startDateMilli: startDateMilli ?? 0,
+      endDateMilli: endDateMilli ?? 0,
       tripWith: tripWith ?? [],
       name: name ?? 'N/A',
       comment: comment ?? 'N/A',
@@ -19,8 +19,8 @@ extension JournalModelMapper on JournalModel {
     return JournalDto(
       id: id,
       name: name,
-      startDate: startDate,
-      endDate: endDate,
+      startDateMilli: startDateMilli,
+      endDateMilli: endDateMilli,
       tripWith: tripWith,
       comment: comment,
     );
