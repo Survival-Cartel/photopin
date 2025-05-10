@@ -30,8 +30,8 @@ class PhotoDto {
     dateTimeMilli: (json['dateTime'] as Timestamp).millisecondsSinceEpoch,
     journalId: json['journalId'],
     imageUrl: json['imageUrl'],
-    latitude: json['latitude'],
-    longitude: json['longitude'],
+    latitude: (json['latitude'] as num).toDouble(),
+    longitude: (json['longitude'] as num).toDouble(),
     comment: json['comment'],
   );
 

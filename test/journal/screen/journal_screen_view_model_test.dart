@@ -1,26 +1,43 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
+import '../../photo/fixtures/photo_model_fixtures.dart';
 import '../fixtures/journal_model_fixtures.dart';
+
+class MockJournalPhotoCollection extends Mock
+    implements JournalPhotoCollection {
+  @override
+  final List<JournalModel> journals = [journalModelFixtures[0]];
+
+  @override
+  final Map<String, List<PhotoModel>> photoMap = {
+    journalModelFixtures[0].id: [photoModelFixture],
+  };
+}
 
 class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
 void main() {
   late JournalViewModel viewModel;
+  late JournalPhotoCollection mockJournalPhotoCollection;
   late GetJournalListUseCase mockGetJournalListUseCase;
 
   setUp(() {
+    mockJournalPhotoCollection = MockJournalPhotoCollection();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
     viewModel = JournalViewModel(
       getJournalListUseCase: mockGetJournalListUseCase,
     );
 
     when(() => mockGetJournalListUseCase.execute()).thenAnswer((_) async {
-      return journalModelFixtures;
+      return mockJournalPhotoCollection;
     });
   });
 
@@ -28,26 +45,32 @@ void main() {
     viewModel.dispose();
   });
 
-  test('뷰모델의 초기 상태(state)는 isLoading이 false이고 journals가 비어 있어야 한다.', () {
-    expect(viewModel.state.isLoading, false);
-    expect(viewModel.state.journals, isEmpty);
-    expect(viewModel.state, const JournalScreenState());
-  });
+  test(
+    '뷰모델의 초기 상태(state)는 isLoading이 false이고 journals와 photoMap이 비어 있어야 한다.',
+    () {
+      expect(viewModel.state.isLoading, false);
+      expect(viewModel.state.journals, isEmpty);
+      expect(viewModel.state.photoMap, isEmpty);
+    },
+  );
 
   group('init()', () {
     test('init() 메서드는 UseCase를 사용해 저널 목록을 로드하고 상태를 업데이트 해야한다.', () async {
       await viewModel.init();
 
       expect(viewModel.state.isLoading, false);
-      expect(viewModel.state.journals.length, journalModelFixtures.length);
-      expect(viewModel.state.journals, equals(journalModelFixtures));
+      expect(
+        viewModel.state.journals.length,
+        mockJournalPhotoCollection.journals.length,
+      );
+      expect(viewModel.state.journals, equals([journalModelFixtures[0]]));
 
       verify(() => mockGetJournalListUseCase.execute()).called(1);
     });
 
     test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
       int listenerCallCount = 0;
-      List<JournalScreenState> states = [];
+      List<JournalState> states = [];
 
       viewModel.addListener(() {
         listenerCallCount++;
@@ -59,7 +82,7 @@ void main() {
       expect(states.first.isLoading, true);
       expect(states.first.journals, isEmpty);
       expect(states.last.isLoading, false);
-      expect(states.last.journals, equals(journalModelFixtures));
+      expect(states.last.journals, equals([journalModelFixtures[0]]));
 
       verify(() => mockGetJournalListUseCase.execute()).called(1);
     });
@@ -69,7 +92,7 @@ void main() {
     group('onAction(SearchJournal)', () {
       test('onAction(SearchJournal)은 search 메서드를 트리거 해야한다.', () async {
         int listenerCallCount = 0;
-        List<JournalScreenState> states = [];
+        List<JournalState> states = [];
 
         viewModel.addListener(() {
           listenerCallCount++;
@@ -145,13 +168,16 @@ void main() {
         );
 
         expect(viewModel.state.isLoading, false);
-        expect(viewModel.state.journals.length, journalModelFixtures.length);
+        expect(
+          viewModel.state.journals.length,
+          mockJournalPhotoCollection.journals.length,
+        );
         verify(() => mockGetJournalListUseCase.execute()).called(1);
       });
 
       test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
         int listenerCallCount = 0;
-        List<JournalScreenState> states = [];
+        List<JournalState> states = [];
 
         viewModel.addListener(() {
           listenerCallCount++;

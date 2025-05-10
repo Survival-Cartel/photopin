@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
+import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_screen.dart';
 import 'package:photopin/presentation/screen/map/map_screen_root.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
@@ -17,7 +18,19 @@ final appRouter = GoRouter(
   initialLocation: Routes.login,
   routes: <RouteBase>[
     GoRoute(
-      path: '${Routes.journal}/:id',
+      path: Routes.home,
+      builder: (BuildContext context, GoRouterState state) {
+        HomeViewModel viewModel = HomeViewModel(
+          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+        );
+
+        viewModel.init();
+
+        return HomeScreenRoot(viewModel: viewModel);
+      },
+    ),
+    GoRoute(
+      path: Routes.journal,
       builder: (BuildContext context, GoRouterState state) {
         final String userId = state.pathParameters['id']!;
 

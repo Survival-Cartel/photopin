@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_state.dart';
+import 'package:photopin/presentation/screen/journal/journal_state.dart';
 import 'package:photopin/presentation/component/base_tab.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/search_bar.dart';
 
 class JournalScreen extends StatelessWidget {
-  final JournalScreenState state;
+  final JournalState state;
   final Function(JournalScreenAction action) onAction;
 
   const JournalScreen({super.key, required this.state, required this.onAction});
@@ -56,10 +56,23 @@ class JournalScreen extends StatelessWidget {
                         return const SizedBox(height: 18);
                       },
                       itemBuilder: (BuildContext context, int index) {
+                        String? thumbnailUrl =
+                            state
+                                        .photoMap[state.journals[index].id]
+                                        ?.isNotEmpty ==
+                                    true
+                                ? state
+                                    .photoMap[state.journals[index].id]!
+                                    .first
+                                    .imageUrl
+                                : null;
+                        int? photoCount =
+                            state.photoMap[state.journals[index].id]?.length;
+
                         return JournalCard(
-                          imageUrl: '',
+                          imageUrl: thumbnailUrl,
                           journal: state.journals[index],
-                          photoCount: 2,
+                          photoCount: photoCount ?? 0,
                           onTap:
                               (String journalId) => onAction(
                                 JournalScreenAction.onTapJournalCard(

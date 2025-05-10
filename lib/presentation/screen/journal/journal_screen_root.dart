@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 
 class JournalScreenRoot extends StatefulWidget {
   final JournalViewModel viewModel;

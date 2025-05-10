@@ -50,6 +50,7 @@ class PhotoDataSourceImpl implements PhotoDataSource {
 
     await photoStore
         .where('journalId', isEqualTo: journalId)
+        .orderBy('dateTime')
         .get()
         .then((snapshot) {
           for (var doc in snapshot.docs) {

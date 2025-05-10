@@ -17,7 +17,7 @@ import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/journal/journal_screen_view_model.dart';
+import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
@@ -42,14 +42,16 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<PhotoRepository, String, void>(
+    (userId, _) =>
+        PhotoRepositoryImpl(dataSource: getIt<PhotoDataSource>(param1: userId)),
+  );
+
   getIt.registerLazySingleton<AuthDataSource>(
     () => AuthDataSourceImpl(auth: getIt()),
   );
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: getIt()),
-  );
-  getIt.registerFactoryParam<PhotoRepository, String, void>(
-    (userId, _) => PhotoRepositoryImpl(dataSource: getIt(param1: userId)),
   );
 
   getIt.registerFactory<HomeViewModel>(
@@ -57,8 +59,10 @@ void di() {
   );
 
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(
-    (userId, _) =>
-        GetJournalListUseCase(getIt<JournalRepository>(param1: userId)),
+    (userId, _) => GetJournalListUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
   );
 
   getIt.registerSingleton<GetCurrentUserUseCase>(
