@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
+import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
@@ -15,7 +16,13 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.home,
       builder: (BuildContext context, GoRouterState state) {
-        return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
+        HomeViewModel viewModel = HomeViewModel(
+          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+        );
+
+        viewModel.init();
+
+        return HomeScreenRoot(viewModel: viewModel);
       },
     ),
     GoRoute(
