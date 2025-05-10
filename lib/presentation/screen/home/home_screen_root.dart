@@ -44,9 +44,8 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
                 // TODO: Handle this case.
                 throw UnimplementedError();
               case ViewAllClick():
-                context.push(
-                  '/journals/${widget.viewModel.state.currentUser.id}',
-                );
+                // TODO: 없앨거
+                context.push('/journals');
               case MyJounalClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();

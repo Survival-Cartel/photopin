@@ -18,34 +18,6 @@ final appRouter = GoRouter(
   initialLocation: Routes.login,
   routes: <RouteBase>[
     GoRoute(
-      path: Routes.home,
-      builder: (BuildContext context, GoRouterState state) {
-        HomeViewModel viewModel = HomeViewModel(
-          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
-        );
-
-        viewModel.init();
-
-        return HomeScreenRoot(viewModel: viewModel);
-      },
-    ),
-    GoRoute(
-      path: Routes.journal,
-      builder: (BuildContext context, GoRouterState state) {
-        final String userId = state.pathParameters['id']!;
-
-        return JournalScreenRoot(
-          viewModel: getIt<JournalViewModel>(param1: userId),
-        );
-      },
-    ),
-    GoRoute(
-      path: Routes.login,
-      builder: (BuildContext context, GoRouterState state) {
-        return AuthScreenRoot(authViewModel: getIt<AuthViewModel>());
-      },
-    ),
-    GoRoute(
       path: Routes.login,
       builder: (BuildContext context, GoRouterState state) {
         final AuthViewModel viewModel = getIt<AuthViewModel>();
