@@ -71,11 +71,17 @@ class _RangeSliderState extends State<DateRangeSlider> {
     return a[m];
   }
 
-  DateTime _toDate(double offset) => DateTime(
+  DateTime _toStartDate(double offset) => DateTime(
     widget.startDate.year,
     widget.startDate.month,
     widget.startDate.day,
   ).add(Duration(days: offset.toInt()));
+
+  DateTime _toEndDate(double offset) {
+    final base = widget.endDate.add(Duration(days: offset.toInt()));
+
+    return DateTime(base.year, base.month, base.day, 23, 59, 59, 999);
+  }
 
   String _formatTop(DateTime s, DateTime e) {
     return '${_monthName(s.month)} ${s.day} - ${_monthName(e.month)} ${e.day}, ${e.year}';
@@ -91,8 +97,8 @@ class _RangeSliderState extends State<DateRangeSlider> {
     _startOffset ??= 0.0;
     _endOffset ??= totalDays;
 
-    final selStart = _toDate(_startOffset!);
-    final selEnd = _toDate(_endOffset!);
+    final selStart = _toStartDate(_startOffset!);
+    final selEnd = _toEndDate(_endOffset!);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -136,8 +142,8 @@ class _RangeSliderState extends State<DateRangeSlider> {
               }
 
               // 새 날짜 계산
-              final dayStart = _toDate(newStartOffset);
-              final dayEnd = _toDate(newEndOffset);
+              final dayStart = _toStartDate(newStartOffset);
+              final dayEnd = _toEndDate(newEndOffset);
 
               setState(() {
                 _startOffset = newStartOffset;

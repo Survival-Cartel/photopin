@@ -23,6 +23,7 @@ class MapScreenRoot extends StatefulWidget {
 class _MapScreenRootState extends State<MapScreenRoot> {
   // collapsed 시트 높이 (핸들만 보임)
   static const double _minHeight = 104;
+
   // expanded 시트 높이
   static const double _maxHeight = 400;
 
@@ -188,6 +189,7 @@ class MapBottomDragWidget extends StatelessWidget {
             startDate: journal.startDate,
             endDate: journal.endDate,
             onChanged: (start, end) {
+              print('마지막 시간 $end');
               onAction(
                 MapAction.onDateRangeClick(
                   startDate: start,
