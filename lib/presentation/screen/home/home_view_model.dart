@@ -6,20 +6,29 @@ import 'package:photopin/user/domain/model/user_model.dart';
 
 class HomeViewModel with ChangeNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
-  HomeState _homeState = const HomeState();
+  HomeState _state = const HomeState();
 
   HomeViewModel({required this.getCurrentUserUseCase});
 
-  HomeState get homeState => _homeState;
+  HomeState get state => _state;
 
   Future<void> _findUser() async {
-    _homeState = homeState.copyWith(isLoading: true);
+    _state = _state.copyWith(isLoading: true);
     notifyListeners();
+
     final UserModel user = await getCurrentUserUseCase.execute();
-    _homeState = homeState.copyWith(
-      isLoading: false,
-      userName: user.displayName,
-    );
+
+    _state = _state.copyWith(isLoading: false, currentUser: user);
+    notifyListeners();
+  }
+
+  Future<void> init() async {
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    final UserModel user = await getCurrentUserUseCase.execute();
+
+    _state = _state.copyWith(currentUser: user, isLoading: false);
     notifyListeners();
   }
 
