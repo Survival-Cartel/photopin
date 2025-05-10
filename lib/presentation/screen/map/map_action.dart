@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 sealed class MapAction {
   const factory MapAction.onDateRangeClick() = OnDateRangeClick;
-  const factory MapAction.onPhotoClick(int index) = OnPhotoClick;
+  const factory MapAction.onPhotoClick(String photoId) = OnPhotoClick;
   const factory MapAction.onCancelClick() = OnCancelClick;
   const factory MapAction.onApplyFilterClick() = OnApplyFilterClick;
   const factory MapAction.onEditClick() = OnEditClick;
@@ -16,9 +16,9 @@ class OnDateRangeClick implements MapAction {
 
 @immutable
 class OnPhotoClick implements MapAction {
-  final int index;
+  final String photoId;
 
-  const OnPhotoClick(this.index);
+  const OnPhotoClick(this.photoId);
 }
 
 @immutable
