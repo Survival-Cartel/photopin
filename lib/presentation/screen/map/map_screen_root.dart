@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photopin/photo/domain/model/photo_model.dart';
+import 'package:photopin/presentation/component/map_bottom_sheet.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
 import 'package:photopin/presentation/screen/map/map_screen.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
@@ -26,8 +28,26 @@ class _MapScreenRootState extends State<MapScreenRoot> {
                 // TODO: Handle this case.
                 throw UnimplementedError();
               case OnPhotoClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    print(
+                      'widget.mapViewModel.state.journal ${widget.mapViewModel.state.journal}',
+                    );
+                    final PhotoModel photo = widget.mapViewModel.state.photos
+                        .firstWhere((photo) => photo.id == action.photoId);
+                    return MapBottomSheet(
+                      title: widget.mapViewModel.state.journal.name,
+                      imageUrl: photo.imageUrl,
+                      dateTime: photo.dateTime,
+                      location: photo.name,
+                      comment: photo.comment,
+                      onTapClose: () {},
+                      onTapEdit: () {},
+                      onTapShare: () {},
+                    );
+                  },
+                );
               case OnCancelClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
