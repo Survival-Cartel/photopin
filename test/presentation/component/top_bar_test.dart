@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:photopin/presentation/component/top_bar.dart';
 
 void main() {
@@ -42,17 +43,20 @@ void main() {
   testWidgets('profileImg가 주어지면 NetworkImage Container가 생성 되어야 한다', (
     WidgetTester tester,
   ) async {
-    const url = 'https://example.com/avatar.png';
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          appBar: TopBar(profileImg: url, onNotificationTap: () {}),
+    const url = 'https://i.pravatar.cc/150?img=3';
+    await mockNetworkImagesFor(
+      () async => await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            appBar: TopBar(profileImg: url, onNotificationTap: () {}),
+          ),
         ),
       ),
     );
     await tester.pump();
 
-    final networkImgContainer = find.byType(Container());
+    expect(find.byKey(const Key('profileImgContainer')), findsOneWidget);
+    expect(find.byIcon(Icons.person), findsNothing);
   });
 
   testWidgets('profileImg가 없으면 PersonIcon이 생성 되어야 한다', (
@@ -62,7 +66,7 @@ void main() {
       MaterialApp(home: Scaffold(appBar: TopBar(onNotificationTap: () {}))),
     );
     await tester.pump();
-
+    expect(find.byKey(const Key('avatar_container')), findsNothing);
     expect(find.byIcon(Icons.notifications_none), findsOneWidget);
   });
 }
