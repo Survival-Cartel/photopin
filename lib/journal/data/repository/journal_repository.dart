@@ -6,6 +6,5 @@ import '../dto/journal_dto.dart';
 abstract interface class JournalRepository
     implements Repository<JournalModel, String, JournalDto> {
   Future<void> deleteJournal(String journalId);
-
   Future<void> saveJournal(JournalDto dto);
 }

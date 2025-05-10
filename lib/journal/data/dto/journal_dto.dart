@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class JournalDto {
   final String? id;
   final String? name;
@@ -24,9 +26,12 @@ class JournalDto {
   factory JournalDto.fromJson(Map<String, dynamic> json) => JournalDto(
     id: json['id'],
     name: json['name'],
-    tripWith: json['tripWith'],
-    startDateMilli: json['startDate'],
-    endDateMilli: json['endDate'],
+    tripWith:
+        (json['tripWith'] as List<dynamic>)
+            .map((data) => data.toString())
+            .toList(),
+    startDateMilli: (json['startDate'] as Timestamp).millisecondsSinceEpoch,
+    endDateMilli: (json['endDate'] as Timestamp).millisecondsSinceEpoch,
     comment: json['comment'],
   );
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/presentation/screen/auth/auth_action.dart';
 import 'package:photopin/presentation/screen/auth/auth_state.dart';
+import 'package:photopin/user/domain/model/user_model.dart';
 
 class AuthViewModel with ChangeNotifier {
   final AuthRepository _authRepository;
@@ -40,7 +41,7 @@ class AuthViewModel with ChangeNotifier {
 
       await _authRepository.login();
       _state = state.copyWith(
-        email: (await _authRepository.findCurrentUser()).email,
+        currentUser: await _authRepository.findCurrentUser(),
       );
     } on Exception catch (e) {
       _addError(e);
@@ -56,7 +57,14 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
 
       await _authRepository.logout();
-      _state = state.copyWith(email: '');
+      _state = state.copyWith(
+        currentUser: const UserModel(
+          displayName: '',
+          email: '',
+          id: '',
+          profileImg: '',
+        ),
+      );
     } on Exception catch (e) {
       _addError(e);
     } finally {
