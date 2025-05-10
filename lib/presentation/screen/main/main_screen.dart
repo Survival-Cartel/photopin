@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/presentation/component/bottom_bar.dart';
+import 'package:photopin/presentation/component/top_bar.dart';
 
 class MainScreen extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -24,10 +25,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: TopBar(onNotificationTap: () {}),
       body: widget.navigationShell,
       bottomSheet: BottomBar(
-          selectedIndex: _selectedIndex,
-          changeTab: changeTab
+        selectedIndex: _selectedIndex,
+        changeTab: changeTab,
       ),
     );
   }
