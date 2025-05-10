@@ -10,8 +10,8 @@ void main() {
     id: '1',
     name: 'test Journal',
     comment: 'Good',
-    startDate: DateTime(2023, 1, 1),
-    endDate: DateTime(2023, 1, 2),
+    startDateMilli: DateTime(2023, 1, 1).millisecondsSinceEpoch,
+    endDateMilli: DateTime(2023, 1, 2).millisecondsSinceEpoch,
     tripWith: ['철수', '영희'],
   );
 
@@ -19,8 +19,8 @@ void main() {
     id: '1',
     name: 'china trip',
     comment: 'Bad',
-    startDate: DateTime(2023, 1, 1),
-    endDate: DateTime(2023, 1, 2),
+    startDateMilli: DateTime(2023, 1, 1).millisecondsSinceEpoch,
+    endDateMilli: DateTime(2023, 1, 2).millisecondsSinceEpoch,
     tripWith: ['철수', '영희'],
   );
 
