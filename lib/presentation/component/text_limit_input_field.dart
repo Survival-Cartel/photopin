@@ -6,12 +6,14 @@ class TextLimitInputField extends StatefulWidget {
   final String hintText;
   final int maxLength;
   final TextEditingController controller;
+  final void Function(String changeText)? onChage;
 
   const TextLimitInputField({
     super.key,
     required this.controller,
     this.maxLength = 0,
     this.hintText = '',
+    this.onChage,
   });
 
   @override
@@ -25,6 +27,7 @@ class _TextLimitInputFieldState extends State<TextLimitInputField> {
       onChanged: (String value) {
         // TextField 재빌드용 setState 호출
         setState(() {});
+        widget.onChage?.call(value);
       },
       style: AppFonts.smallTextRegular,
       controller: widget.controller,

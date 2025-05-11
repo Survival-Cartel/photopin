@@ -4,11 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
+import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
-import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
+import '../../../journal/data/data_source/fake_journal_data_source.dart';
 import '../../../user/fixtures/user_model_fixtures.dart';
 
 // Mocktail을 사용한 mock 클래스 정의
@@ -32,6 +34,9 @@ void main() {
     mockGetJournalListUseCase = MockGetJournalListUseCase();
     viewModel = HomeViewModel(
       getCurrentUserUseCase: mockGetCurrentUserUseCase,
+      journalRepository: JournalRepositoryImpl(
+        dataSource: FakeJournalDataSource(),
+      ),
       getJournalListUseCase: mockGetJournalListUseCase,
     );
 
