@@ -12,22 +12,37 @@ import 'firebase_options.dart';
 bool isDeviceTest = true;
 String hostIp = '192.168.0.32';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  if (Platform.isAndroid) {
-    if (isDeviceTest) {
-      FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
-      await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
-    } else {
+  if (args.isEmpty) {
+    if (Platform.isAndroid) {
       FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
       await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+    } else {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     }
   } else {
-    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    print(args);
+
+    FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
+    await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
   }
+
+  // if (Platform.isAndroid) {
+  //   if (isDeviceTest) {
+  //     FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
+  //     await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
+  //   } else {
+  //     FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
+  //     await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+  //   }
+  // } else {
+  //   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  //   await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  // }
 
   di();
 
