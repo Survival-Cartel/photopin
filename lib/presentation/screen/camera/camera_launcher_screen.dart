@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,6 +7,7 @@ import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 
 class CameraLauncherScreen extends StatefulWidget {
   const CameraLauncherScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => _CameraLauncherScreenState();
 }
@@ -18,6 +20,69 @@ class _CameraLauncherScreenState extends State<CameraLauncherScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _launchCameraAndSave();
     });
+  }
+
+  // 위치 정보 권한 확인 및 현재 위치 가져오기
+  Future<Position?> _determinePosition() async {
+    debugPrint('[Geolocator] 위치 권한 확인 시작');
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 위치 서비스 활성화 상태 확인
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      debugPrint('[Geolocator] 위치 서비스 비활성화됨.');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('위치 서비스가 꺼져 있습니다.')));
+      }
+      return null;
+    }
+
+    // 위치 권한 확인
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('위치 정보 접근 권한이 거부되었습니다.')),
+          );
+        }
+        return null;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      debugPrint('[Geolocator] 위치 권한 영구 거부됨.');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('위치 권한이 영구 거부되었습니다. 설정에서 변경해주세요.')),
+        );
+      }
+
+      // TODO: 설정에서 권한 변경
+      return null;
+    }
+
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+
+      debugPrint(
+        '[Geolocator] 현재 위치 획득: ${position.latitude}, ${position.longitude}',
+      );
+
+      return position;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('위치 가져오기 오류: ${e.toString()}')));
+      }
+
+      return null;
+    }
   }
 
   Future<void> _launchCameraAndSave() async {
@@ -35,6 +100,10 @@ class _CameraLauncherScreenState extends State<CameraLauncherScreen> {
       }
       return;
     }
+
+    Position? position = await _determinePosition();
+
+    debugPrint('[Launcher] Position: $position');
 
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
