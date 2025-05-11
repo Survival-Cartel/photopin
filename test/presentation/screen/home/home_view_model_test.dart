@@ -2,10 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 
+import '../../../journal/data/data_source/fake_journal_data_source.dart';
 import '../../../user/fixtures/user_model_fixtures.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -18,7 +20,12 @@ void main() {
 
   setUp(() {
     mockGetCurrentUserUseCase = MockGetCurrentUserUseCase();
-    viewModel = HomeViewModel(getCurrentUserUseCase: mockGetCurrentUserUseCase);
+    viewModel = HomeViewModel(
+      getCurrentUserUseCase: mockGetCurrentUserUseCase,
+      journalRepository: JournalRepositoryImpl(
+        dataSource: FakeJournalDataSource(),
+      ),
+    );
 
     when(() => mockGetCurrentUserUseCase.execute()).thenAnswer((_) async {
       return userModelFixtures[0];
