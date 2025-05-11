@@ -77,11 +77,16 @@ class _NewJournalModalState extends State<NewJournalModal> {
       content: SizedBox(
         height: 360,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 12,
           children: [
-            const PhotopinHead(),
-            Text('* 이 들어간 입력은 필수 입니다.', style: AppFonts.smallerTextRegular),
+            const Center(child: PhotopinHead()),
+            Center(
+              child: Text(
+                '* 이 들어간 입력은 필수 입니다.',
+                style: AppFonts.smallerTextRegular,
+              ),
+            ),
             TextLimitInputField(
               controller: titleController,
               hintText: '* 여행 제목',
@@ -111,53 +116,57 @@ class _NewJournalModalState extends State<NewJournalModal> {
             (tripWith.isNotEmpty)
                 ? TripWithChips(tripWith: tripWith)
                 : const SizedBox(),
-            BaseIconButton(
-              buttonType: ButtonType.medium,
-              buttonName: dateRange,
-              iconName: CupertinoIcons.calendar_today,
-              onClick: () async {
-                await selectAndSaveDateRange(context);
-              },
-              buttonColor: AppColors.secondary100,
+            Center(
+              child: BaseIconButton(
+                buttonType: ButtonType.medium,
+                buttonName: dateRange,
+                iconName: CupertinoIcons.calendar_today,
+                onClick: () async {
+                  await selectAndSaveDateRange(context);
+                },
+                buttonColor: AppColors.secondary100,
+              ),
             ),
-            BaseIconButton(
-              buttonType: ButtonType.medium,
-              buttonName: '저장하기',
-              iconName: Icons.save,
-              onClick: () {
-                final String title = titleController.text;
-                final String comment = commentController.text;
+            Center(
+              child: BaseIconButton(
+                buttonType: ButtonType.medium,
+                buttonName: '저장하기',
+                iconName: Icons.save,
+                onClick: () {
+                  final String title = titleController.text;
+                  final String comment = commentController.text;
 
-                if (title == '' ||
-                    comment == '' ||
-                    startDate == null ||
-                    endDate == null) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext dialogContext) {
-                      Timer(const Duration(seconds: 1), () {
-                        Navigator.of(dialogContext).pop();
-                      });
-                      return const AlertDialog(
-                        content: Text('! 저장 실패 ! \n모든 입력을 완성해주세요.'),
-                      );
-                    },
-                  );
-                  return;
-                } else {
-                  final JournalModel journal = JournalModel(
-                    id: '',
-                    name: title,
-                    tripWith: tripWith,
-                    startDateMilli: startDate!.millisecondsSinceEpoch,
-                    endDateMilli: endDate!.millisecondsSinceEpoch,
-                    comment: comment,
-                  );
+                  if (title == '' ||
+                      comment == '' ||
+                      startDate == null ||
+                      endDate == null) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext dialogContext) {
+                        Timer(const Duration(seconds: 1), () {
+                          Navigator.of(dialogContext).pop();
+                        });
+                        return const AlertDialog(
+                          content: Text('! 저장 실패 ! \n모든 입력을 완성해주세요.'),
+                        );
+                      },
+                    );
+                    return;
+                  } else {
+                    final JournalModel journal = JournalModel(
+                      id: '',
+                      name: title,
+                      tripWith: tripWith,
+                      startDateMilli: startDate!.millisecondsSinceEpoch,
+                      endDateMilli: endDate!.millisecondsSinceEpoch,
+                      comment: comment,
+                    );
 
-                  widget.onSave(journal: journal);
-                }
-              },
-              buttonColor: AppColors.primary80,
+                    widget.onSave(journal: journal);
+                  }
+                },
+                buttonColor: AppColors.primary80,
+              ),
             ),
           ],
         ),
