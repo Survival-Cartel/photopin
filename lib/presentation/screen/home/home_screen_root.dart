@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/new_journal_modal.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_screen.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
@@ -32,8 +33,20 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
               case CameraClick():
               // 수정
               case NewJournalClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return NewJournalModal(
+                      userName: widget.viewModel.state.currentUser.displayName,
+                      onSave: ({required JournalModel journal}) {
+                        widget.viewModel.onAction(
+                          HomeAction.newJournalSave(journal: journal),
+                        );
+                        context.pop();
+                      },
+                    );
+                  },
+                );
               case ShareClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
@@ -53,6 +66,8 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
                 widget.viewModel.onAction(action);
               case FindJounals():
                 widget.viewModel.onAction(action);
+              case NewJournalSave():
+                break;
             }
           },
         );
