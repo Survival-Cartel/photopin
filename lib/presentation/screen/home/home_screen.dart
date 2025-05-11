@@ -56,10 +56,9 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: MainIconCard(
-                            onTap:
-                                () => {
-                                  // 수정
-                                },
+                            onTap: () {
+                              onAction(HomeAction.newJournalClick());
+                            },
                             title: 'New Journal',
                             iconData: Icons.auto_stories,
                             iconColor: AppColors.secondary100,
