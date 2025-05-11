@@ -126,7 +126,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
               iconName: Icons.save,
               onClick: () {
                 final String title = titleController.text;
-                final String comment = titleController.text;
+                final String comment = commentController.text;
 
                 if (title == '' ||
                     comment == '' ||
