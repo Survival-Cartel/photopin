@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
-
-import '../../core/styles/app_font.dart';
+import 'package:photopin/presentation/component/photopin_head.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final String? profileImg;
@@ -17,10 +16,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.white,
       elevation: 0,
-      title: Text(
-        'Photopin',
-        style: AppFonts.mediumTextBold.copyWith(color: AppColors.primary100),
-      ),
+      title: const PhotopinHead(),
       centerTitle: false,
       actions: [
         IconButton(
