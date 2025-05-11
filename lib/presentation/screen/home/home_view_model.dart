@@ -1,14 +1,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/journal/data/mapper/journal_mapper.dart';
+import 'package:photopin/journal/data/repository/journal_repository.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
 class HomeViewModel with ChangeNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
+  final JournalRepository _journalRepository;
   HomeState _state = const HomeState();
 
-  HomeViewModel({required this.getCurrentUserUseCase});
+  HomeViewModel({
+    required this.getCurrentUserUseCase,
+    required JournalRepository journalRepository,
+  }) : _journalRepository = journalRepository;
 
   HomeState get state => _state;
 
@@ -20,6 +27,10 @@ class HomeViewModel with ChangeNotifier {
 
     _state = _state.copyWith(isLoading: false, currentUser: user);
     notifyListeners();
+  }
+
+  Future<void> _newJournalSave({required JournalModel journal}) async {
+    await _journalRepository.saveJournal(journal.toDto());
   }
 
   Future<void> init() async {
@@ -52,6 +63,8 @@ class HomeViewModel with ChangeNotifier {
         throw UnimplementedError();
       case FindUser():
         _findUser();
+      case NewJournalSave():
+        _newJournalSave(journal: action.journal);
     }
   }
 }
