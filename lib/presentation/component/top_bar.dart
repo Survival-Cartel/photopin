@@ -17,6 +17,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.white,
       elevation: 0,
       title: const PhotopinHead(),
+      surfaceTintColor: AppColors.white,
       centerTitle: false,
       actions: [
         IconButton(
