@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
         profileImg: 'https://i.pravatar.cc/150?img=3',
       ),
       body: widget.navigationShell,
-      bottomSheet: BottomBar(
+      bottomNavigationBar: BottomBar(
         selectedIndex: _selectedIndex,
         changeTab: changeTab,
       ),
