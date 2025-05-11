@@ -6,8 +6,7 @@ sealed class HomeAction {
   factory HomeAction.shareClick() = ShareClick;
   factory HomeAction.recentActivityClick() = RecentActivityClick;
   factory HomeAction.seeAllClick() = SeeAllClick;
-  factory HomeAction.viewAllClick() = ViewAllClick;
-  factory HomeAction.myJounalClick(String id) = MyJounalClick;
+  factory HomeAction.myJounalClick(String id) = MyJournalClick;
   factory HomeAction.findUser() = FindUser;
   factory HomeAction.findJounals() = FindJounals;
   factory HomeAction.newJournalSave({required JournalModel journal}) =
@@ -24,12 +23,10 @@ class RecentActivityClick implements HomeAction {}
 
 class SeeAllClick implements HomeAction {}
 
-class ViewAllClick implements HomeAction {}
-
-class MyJounalClick implements HomeAction {
+class MyJournalClick implements HomeAction {
   final String id;
 
-  const MyJounalClick(this.id);
+  const MyJournalClick(this.id);
 }
 
 class FindUser implements HomeAction {}

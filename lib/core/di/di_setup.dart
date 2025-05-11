@@ -58,6 +58,7 @@ void di() {
     (userId, _) => HomeViewModel(
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
       journalRepository: getIt<JournalRepository>(param1: userId),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
     ),
   );
 
