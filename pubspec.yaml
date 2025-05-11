@@ -6,6 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 scripts:
   run:dev: flutter run -t lib/main_dev.dart
+  run:device: flutter run -t lib/main_dev.dart -- "deviceMode"
   run:prod: flutter run
   # run:emulator: firebase emulators:start --import=./saved-data --export-on-exit=./saved-data
   # run:emulator:readonly: firebase emulators:start --import=./saved-data
@@ -61,6 +62,7 @@ dependencies:
   image_picker: ^1.1.2
   path_provider: ^2.1.5
   image_gallery_saver_plus: ^4.0.1
+  exif: ^3.3.0
 
 dev_dependencies:
   flutter_test:
