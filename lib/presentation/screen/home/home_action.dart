@@ -4,7 +4,6 @@ sealed class HomeAction {
   factory HomeAction.shareClick() = ShareClick;
   factory HomeAction.recentActivityClick() = RecentActivityClick;
   factory HomeAction.seeAllClick() = SeeAllClick;
-  factory HomeAction.viewAllClick() = ViewAllClick;
   factory HomeAction.myJounalClick(String id) = MyJounalClick;
   factory HomeAction.findUser() = FindUser;
   factory HomeAction.findJounals() = FindJounals;
@@ -19,8 +18,6 @@ class ShareClick implements HomeAction {}
 class RecentActivityClick implements HomeAction {}
 
 class SeeAllClick implements HomeAction {}
-
-class ViewAllClick implements HomeAction {}
 
 class MyJounalClick implements HomeAction {
   final String id;

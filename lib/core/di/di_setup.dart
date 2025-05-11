@@ -54,8 +54,18 @@ void di() {
     () => AuthRepositoryImpl(dataSource: getIt()),
   );
 
-  getIt.registerFactory<HomeViewModel>(
-    () => HomeViewModel(getCurrentUserUseCase: getIt<GetCurrentUserUseCase>()),
+  // getIt.registerFactory<HomeViewModel>(
+  //   () => HomeViewModel(
+  //     getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+  //     getJournalListUseCase: getIt<GetJournalListUseCase>(),
+  //   ),
+  // );
+
+  getIt.registerFactoryParam<HomeViewModel, String, void>(
+    (userId, _) => HomeViewModel(
+      getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+    ),
   );
 
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(

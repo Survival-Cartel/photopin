@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_screen.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
@@ -43,9 +42,6 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
               case SeeAllClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
-              case ViewAllClick():
-                // TODO: 없앨거
-                context.push('/journals');
               case MyJounalClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
