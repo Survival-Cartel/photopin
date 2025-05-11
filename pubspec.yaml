@@ -59,6 +59,7 @@ dependencies:
   go_router: ^15.1.2
   grouped_list: ^6.0.0
   image_picker: ^1.1.2
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
