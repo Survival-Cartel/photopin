@@ -52,7 +52,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
         return Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              maxWidth: 400.0,
+              maxWidth: double.infinity,
               maxHeight: 600.0,
             ),
             child: child,
