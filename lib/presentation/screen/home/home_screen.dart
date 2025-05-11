@@ -106,35 +106,37 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 24),
                     Text('Your Journals', style: AppFonts.largeTextBold),
                     const SizedBox(height: 12),
-                    ListView.separated(
-                      itemCount: state.journals.length,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(height: 18);
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        String? thumbnailUrl =
-                            state
-                                        .photoMap[state.journals[index].id]
-                                        ?.isNotEmpty ==
-                                    true
-                                ? state
-                                    .photoMap[state.journals[index].id]!
-                                    .first
-                                    .imageUrl
-                                : null;
-                        int? photoCount =
-                            state.photoMap[state.journals[index].id]?.length;
-                        return JournalCard(
-                          imageUrl: thumbnailUrl,
-                          journal: state.journals[index],
-                          photoCount: photoCount ?? 0,
-                          onTap:
-                              (String journalId) =>
-                                  onAction(HomeAction.myJounalClick(journalId)),
-                        );
-                      },
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: state.journals.length,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const SizedBox(height: 18);
+                        },
+                        itemBuilder: (BuildContext context, int index) {
+                          String? thumbnailUrl =
+                              state
+                                          .photoMap[state.journals[index].id]
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? state
+                                      .photoMap[state.journals[index].id]!
+                                      .first
+                                      .imageUrl
+                                  : null;
+                          int? photoCount =
+                              state.photoMap[state.journals[index].id]?.length;
+                          return JournalCard(
+                            imageUrl: thumbnailUrl,
+                            journal: state.journals[index],
+                            photoCount: photoCount ?? 0,
+                            onTap:
+                                (String journalId) => onAction(
+                                  HomeAction.myJounalClick(journalId),
+                                ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
