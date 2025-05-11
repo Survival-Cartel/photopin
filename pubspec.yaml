@@ -6,7 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 scripts:
   run:dev: flutter run -t lib/main_dev.dart
-  run:device: flutter run -t lib/main_dev.dart -- "deviceMode"
+  run:device: flutter run -t lib/main_dev.dart --dart-define="mode=device"
   run:prod: flutter run
   # run:emulator: firebase emulators:start --import=./saved-data --export-on-exit=./saved-data
   # run:emulator:readonly: firebase emulators:start --import=./saved-data
