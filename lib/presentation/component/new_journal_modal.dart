@@ -9,8 +9,8 @@ import 'package:photopin/core/styles/app_font.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/base_icon_button.dart';
 import 'package:photopin/presentation/component/photopin_head.dart';
-import 'package:photopin/presentation/component/text_chip.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
+import 'package:photopin/presentation/component/trip_with_chips.dart';
 
 class NewJournalModal extends StatefulWidget {
   final String userName;
@@ -109,17 +109,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
               },
             ),
             (tripWith.isNotEmpty)
-                ? Wrap(
-                  spacing: 4,
-                  children:
-                      tripWith.map((value) {
-                        return TextChip(
-                          text: value,
-                          color: AppColors.primary80,
-                          textColor: AppColors.white,
-                        );
-                      }).toList(),
-                )
+                ? TripWithChips(tripWith: tripWith)
                 : const SizedBox(),
             BaseIconButton(
               buttonType: ButtonType.medium,
