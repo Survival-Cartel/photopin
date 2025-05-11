@@ -75,7 +75,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: SizedBox(
-        height: 330,
+        height: 360,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 12,
