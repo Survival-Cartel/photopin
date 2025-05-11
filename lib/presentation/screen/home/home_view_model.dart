@@ -39,6 +39,17 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<void> _myJournalClick() async {
+  //   _state = _state.copyWith(isLoading: true);
+  //   notifyListeners();
+
+  //   final JournalPhotoCollection collection =
+  //       await getJournalListUseCase.execute();
+
+  //   _state = _state.copyWith(isLoading: false, journals: collection.journals);
+  //   notifyListeners();
+  // }
+
   Future<void> init() async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
@@ -68,8 +79,8 @@ class HomeViewModel with ChangeNotifier {
         throw UnimplementedError();
       case SeeAllClick():
         throw UnimplementedError();
-      case MyJounalClick():
-        throw UnimplementedError();
+      case MyJournalClick():
+        break;
       case FindJounals():
         _findJournals();
       case FindUser():
