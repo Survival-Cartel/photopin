@@ -59,7 +59,10 @@ final appRouter = GoRouter(
             GoRoute(
               path: Routes.home,
               builder: (context, state) {
-                return HomeScreenRoot(viewModel: getIt<HomeViewModel>());
+                final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+                return HomeScreenRoot(
+                  viewModel: getIt<HomeViewModel>(param1: userId),
+                );
               },
             ),
           ],

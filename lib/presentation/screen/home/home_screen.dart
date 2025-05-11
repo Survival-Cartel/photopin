@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/main_icon_card.dart';
 import 'package:photopin/presentation/component/recent_activity_tile.dart';
@@ -56,10 +55,9 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: MainIconCard(
-                            onTap:
-                                () => {
-                                  // 수정
-                                },
+                            onTap: () {
+                              onAction(HomeAction.newJournalClick());
+                            },
                             title: 'New Journal',
                             iconData: Icons.auto_stories,
                             iconColor: AppColors.secondary100,
@@ -69,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: MainIconCard(
                             onTap: () {
-                              // 수정
+                              onAction(HomeAction.shareClick());
                             },
                             title: 'Share',
                             iconData: Icons.share,
@@ -85,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                         const Spacer(),
                         GestureDetector(
                           onTap: () {
-                            // 수정
+                            onAction(HomeAction.seeAllClick());
                           },
                           child: Text(
                             'See all',
@@ -101,45 +99,42 @@ class HomeScreen extends StatelessWidget {
                       title: 'Link shared: Paris Trip',
                       dateTime: DateTime.now(),
                       onTap: () {
-                        // 수정
+                        onAction(HomeAction.recentActivityClick());
                       },
                       iconData: CupertinoIcons.link,
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        Text('Your Journals', style: AppFonts.largeTextBold),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            onAction(HomeAction.viewAllClick());
-                          },
-                          child: Text(
-                            'View all',
-                            style: AppFonts.smallTextRegular.copyWith(
-                              color: AppColors.primary100,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    Text('Your Journals', style: AppFonts.largeTextBold),
                     const SizedBox(height: 12),
-                    JournalCard(
-                      onTap: (value) {
-                        // 수정
+                    ListView.separated(
+                      itemCount: state.journals.length,
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const SizedBox(height: 18);
                       },
-                      journal: JournalModel(
-                        id: '1',
-                        name: 'name',
-                        tripWith: ['a', 'b'],
-                        startDateMilli:
-                            DateTime(2000, 1, 1).millisecondsSinceEpoch,
-                        endDateMilli:
-                            DateTime(2000, 1, 2).millisecondsSinceEpoch,
-                        comment: 'good',
-                      ),
-                      imageUrl: 'imageUrl',
-                      photoCount: 2,
+                      itemBuilder: (BuildContext context, int index) {
+                        String? thumbnailUrl =
+                            state
+                                        .photoMap[state.journals[index].id]
+                                        ?.isNotEmpty ==
+                                    true
+                                ? state
+                                    .photoMap[state.journals[index].id]!
+                                    .first
+                                    .imageUrl
+                                : null;
+                        int? photoCount =
+                            state.photoMap[state.journals[index].id]?.length;
+                        return JournalCard(
+                          imageUrl: thumbnailUrl,
+                          journal: state.journals[index],
+                          photoCount: photoCount ?? 0,
+                          onTap:
+                              (String journalId) =>
+                                  onAction(HomeAction.myJounalClick(journalId)),
+                        );
+                      },
                     ),
                   ],
                 ),
