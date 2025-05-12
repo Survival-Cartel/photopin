@@ -6,6 +6,7 @@ import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_use_case.dart';
 import 'package:photopin/presentation/screen/camera/camera_state.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/enums/image_mime.dart';
 
@@ -75,12 +76,13 @@ class CameraViewModel with ChangeNotifier {
     if (binaryData != null && locationPermission != null) {
       final Position? position = await _determinePosition(locationPermission);
       debugPrint('Position: $position');
-
+      final String uuid = Uuid().v4();
       // 위치 정보 Firestore에 저장
       // 이거 해야도밈
 
       // 사진을 Firebase Storage에 저장
-      await _uploadFileUseCase.execute('ABC', binaryData.bytes, ImageMime.jpg);
+
+      await _uploadFileUseCase.execute(uuid, binaryData.bytes, ImageMime.jpg);
       return true;
     }
 

@@ -49,44 +49,49 @@ void di() {
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(
-    (userId, _) => PhotoDataSourceImpl(
-      photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
-    ),
+        (userId, _) =>
+        PhotoDataSourceImpl(
+          photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
+        ),
   );
 
   getIt.registerFactoryParam<PhotoRepository, String, void>(
-    (userId, _) => PhotoRepositoryImpl(
-      photoDataSource: getIt<PhotoDataSource>(param1: userId),
-    ),
+        (userId, _) =>
+        PhotoRepositoryImpl(
+          photoDataSource: getIt<PhotoDataSource>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<StorageDataSource, String, void>(
-    (userId, _) => FirebaseStorageDataSource(
-      storage: getIt<FirebaseStorage>(),
-      path: userId,
-    ),
+        (userId, _) =>
+        FirebaseStorageDataSource(
+          storage: getIt<FirebaseStorage>(),
+          path: userId,
+        ),
   );
 
   getIt.registerLazySingleton<AuthDataSource>(
-    () => AuthDataSourceImpl(auth: getIt()),
+        () => AuthDataSourceImpl(auth: getIt()),
   );
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(dataSource: getIt()),
+        () => AuthRepositoryImpl(dataSource: getIt()),
   );
 
   getIt.registerFactoryParam<HomeViewModel, String, void>(
-    (userId, _) => HomeViewModel(
-      getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
-      journalRepository: getIt<JournalRepository>(param1: userId),
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-    ),
+        (userId, _) =>
+        HomeViewModel(
+          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+          journalRepository: getIt<JournalRepository>(param1: userId),
+          getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(
-    (userId, _) => GetJournalListUseCase(
-      journalRepository: getIt<JournalRepository>(param1: userId),
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        GetJournalListUseCase(
+          journalRepository: getIt<JournalRepository>(param1: userId),
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+        ),
   );
 
   getIt.registerSingleton<PermissionChecker>(PermissionHandlerChecker());
@@ -100,9 +105,10 @@ void di() {
   );
 
   getIt.registerFactoryParam<JournalViewModel, String, void>(
-    (userId, _) => JournalViewModel(
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-    ),
+        (userId, _) =>
+        JournalViewModel(
+          getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+        ),
   );
 
   getIt.registerSingleton<CameraHandler>(ImagePickerCameraHandler());
@@ -112,35 +118,40 @@ void di() {
   );
 
   getIt.registerFactoryParam<UploadFileUseCase, String, void>(
-    (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
+        (userId, _) =>
+        UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
   );
 
   getIt.registerFactoryParam<CameraViewModel, String, void>(
-    (userId, _) => CameraViewModel(
-      launchCameraUseCase: getIt<LaunchCameraUseCase>(),
-      permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
-      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
-    ),
+        (userId, _) =>
+        CameraViewModel(
+          launchCameraUseCase: getIt<LaunchCameraUseCase>(),
+          permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
+          uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
+        ),
   );
 
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
-    (userId, _) => JournalDataSourceImpl(
-      journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
-    ),
+        (userId, _) =>
+        JournalDataSourceImpl(
+          journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
+        ),
   );
 
   getIt.registerFactoryParam<JournalRepository, String, void>(
-    (userId, _) => JournalRepositoryImpl(
-      dataSource: getIt<JournalDataSource>(param1: userId),
-    ),
+        (userId, _) =>
+        JournalRepositoryImpl(
+          dataSource: getIt<JournalDataSource>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<MapViewModel, String, void>(
-    (userId, _) => MapViewModel(
-      getIt<PhotoRepository>(param1: userId),
-      getIt<JournalRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        MapViewModel(
+          getIt<PhotoRepository>(param1: userId),
+          getIt<JournalRepository>(param1: userId),
+        ),
   );
 }
