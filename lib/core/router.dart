@@ -10,7 +10,8 @@ import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
-import 'package:photopin/presentation/screen/main/main_screen.dart';
+import 'package:photopin/presentation/screen/main/main_screen_root.dart';
+import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_screen_root.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 
@@ -58,7 +59,14 @@ final appRouter = GoRouter(
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        return MainScreen(navigationShell: navigationShell);
+        final MainScreenViewModel mainScreenViewModel = getIt();
+
+        mainScreenViewModel.init();
+
+        return MainScreenRoot(
+          navigationShell: navigationShell,
+          viewModel: mainScreenViewModel,
+        );
       },
       branches: [
         StatefulShellBranch(
