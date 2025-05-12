@@ -1,14 +1,31 @@
 // lib/presentation/main/main_screen_state.dart
-class MainScreenState {
+import 'package:photopin/user/domain/model/user_model.dart';
+
+class MainState {
+  final bool isLoading;
   final int selectedIndex;
-  final String? profileImageUrl;
+  final UserModel userModel;
 
-  const MainScreenState({this.selectedIndex = 0, this.profileImageUrl});
+  const MainState({
+    this.isLoading = false,
+    this.selectedIndex = 0,
+    this.userModel = const UserModel(
+      displayName: '',
+      email: '',
+      id: '',
+      profileImg: '',
+    ),
+  });
 
-  MainScreenState copyWith({int? selectedIndex, String? profileImageUrl}) {
-    return MainScreenState(
+  MainState copyWith({
+    bool? isLoading,
+    int? selectedIndex,
+    UserModel? userModel,
+  }) {
+    return MainState(
+      isLoading: isLoading ?? this.isLoading,
       selectedIndex: selectedIndex ?? this.selectedIndex,
-      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      userModel: userModel ?? this.userModel,
     );
   }
 }
