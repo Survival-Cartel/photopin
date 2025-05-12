@@ -6,131 +6,15 @@ import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
+import 'package:photopin/presentation/component/custom_map_marker.dart';
 import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:photopin/presentation/component/photopin_map.dart';
 import 'package:photopin/presentation/component/text_chip.dart';
 import 'package:photopin/presentation/component/timeline_tile.dart';
+import 'package:photopin/presentation/component/trip_with_chips.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
 import 'package:photopin/presentation/screen/map/map_state.dart';
-
-class MapScreen extends StatefulWidget {
-  final MapState mapState;
-  final void Function(MapAction) onAction;
-
-  const MapScreen({super.key, required this.mapState, required this.onAction});
-
-  @override
-  State<MapScreen> createState() => _MapScreenState();
-}
-
-class _MapScreenState extends State<MapScreen> {
-  // collapsed 시트 높이 (핸들만 보임)
-  static const double _minHeight = 104;
-
-  // expanded 시트 높이
-  static const double _maxHeight = 400;
-
-  double _sheetHeight = _maxHeight;
-
-  void _onHandleDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
-        _minHeight,
-        _maxHeight,
-      );
-    });
-  }
-
-  void _onHandleDragEnd(DragEndDetails details) {
-    // 반쯤 이상 펼쳐져 있으면 완전 확장, 아니면 접기
-    final mid = (_maxHeight + _minHeight) / 2;
-    setState(() {
-      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
-    });
-  }
-
-  void _onHandleTap() {
-    setState(() {
-      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.mapState.journal.name),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: GestureDetector(child: const Icon(Icons.share)),
-          ),
-        ],
-      ),
-      body:
-          widget.mapState.journal.id != ''
-              ? Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  widget.mapState.photos.isNotEmpty
-                      ? PhotoPinMap(
-                        initialLocation: LatLng(
-                          widget.mapState.photos.first.location.latitude,
-                          widget.mapState.photos.first.location.longitude,
-                        ),
-                        initialZoomLevel: 16,
-                        markers:
-                            widget.mapState.photos
-                                .map(
-                                  (photo) => Marker(
-                                    markerId: MarkerId(photo.id),
-                                    position: LatLng(
-                                      photo.location.latitude,
-                                      photo.location.longitude,
-                                    ),
-                                    onTap:
-                                        () => widget.onAction(
-                                          MapAction.onPhotoClick(photo.id),
-                                        ),
-                                  ),
-                                )
-                                .toSet(),
-                        polylines: {
-                          widget.mapState.journal.name:
-                              widget.mapState.photos
-                                  .map(
-                                    (photo) => LatLng(
-                                      photo.location.latitude,
-                                      photo.location.longitude,
-                                    ),
-                                  )
-                                  .toList(),
-                        },
-                        polyLineColor: AppColors.marker70,
-                      )
-                      : const PhotoPinMap(
-                        initialLocation: LatLng(37.5125, 127.1025),
-                        initialZoomLevel: 16,
-                        markers: {},
-                        polylines: {},
-                        polyLineColor: AppColors.marker70,
-                      ),
-                  MapBottomDragWidget(
-                    sheetHeight: _sheetHeight,
-                    onHandleDragUpdate: _onHandleDragUpdate,
-                    onHandleDragEnd: _onHandleDragEnd,
-                    onHandleTap: _onHandleTap,
-                    photos: widget.mapState.photos,
-                    journal: widget.mapState.journal,
-                    onAction: widget.onAction,
-                  ),
-                ],
-              )
-              : const Center(child: CircularProgressIndicator()),
-    );
-  }
-}
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MapBottomDragWidget extends StatelessWidget {
   final double sheetHeight;
@@ -165,7 +49,6 @@ class MapBottomDragWidget extends StatelessWidget {
       child: Column(
         spacing: 8,
         children: [
-          // 2-1) 드래그 핸들
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onVerticalDragUpdate: onHandleDragUpdate,
@@ -187,7 +70,6 @@ class MapBottomDragWidget extends StatelessWidget {
               ),
             ),
           ),
-          // 2-2) 날짜 슬라이더
           DateRangeSlider(
             startDate: journal.startDate,
             endDate: journal.endDate,
@@ -208,11 +90,15 @@ class MapBottomDragWidget extends StatelessWidget {
               TextChip(text: '${photos.length} Places'),
             ],
           ),
-          // 2-3) 사진 타임라인 (스크롤은 여기서만)
           Expanded(
-            child: GroupedListView<PhotoModel, String>(
+            child: GroupedListView<PhotoModel, DateTime>(
               elements: photos,
-              groupBy: (photo) => photo.dateTime.formDateString(),
+              groupBy:
+                  (photo) => DateTime(
+                    photo.dateTime.year,
+                    photo.dateTime.month,
+                    photo.dateTime.day,
+                  ),
               groupSeparatorBuilder:
                   (date) => Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -222,7 +108,10 @@ class MapBottomDragWidget extends StatelessWidget {
                         Expanded(
                           child: Container(height: 1, color: AppColors.gray4),
                         ),
-                        Text(date, style: AppFonts.smallTextRegular),
+                        Text(
+                          date.formDateString(),
+                          style: AppFonts.smallTextRegular,
+                        ),
                         Expanded(
                           child: Container(height: 1, color: AppColors.gray4),
                         ),
@@ -239,11 +128,221 @@ class MapBottomDragWidget extends StatelessWidget {
                 );
               },
               separator: const SizedBox(height: 4),
-              order: GroupedListOrder.DESC, // or ASC
+              order: GroupedListOrder.ASC,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class MapScreen extends StatefulWidget {
+  final MapState mapState;
+  final void Function(MapAction) onAction;
+
+  const MapScreen({super.key, required this.mapState, required this.onAction});
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  static const double _minHeight = 104;
+
+  static const double _maxHeight = 400;
+
+  Set<Marker> markers = {};
+
+  double _sheetHeight = _maxHeight;
+
+  @override
+  void didUpdateWidget(MapScreen oldWidget) {
+    if (widget.mapState.photos != oldWidget.mapState.photos) {
+      _preloadImagesForMarkers(
+        widget.mapState.journal.id,
+        widget.mapState.photos,
+      );
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    _preloadImagesForMarkers(
+      widget.mapState.journal.id,
+      widget.mapState.photos,
+    );
+    super.initState();
+  }
+
+  Future<void> _initMarkers(String journalId, List<PhotoModel> photos) async {
+    Set<Marker> tempMarkers = {};
+
+    if (photos.isEmpty) {
+      setState(() {
+        markers = {};
+      });
+      return;
+    }
+    BitmapDescriptor icon;
+
+    for (int index = 0; index < photos.length; index++) {
+      if (index == 0) {
+        icon = await CustomMapMarker(
+          imageUrl: photos[index].imageUrl,
+          tooltip: 'Start',
+        ).toBitmapDescriptor(
+          logicalSize: const Size(60, 60),
+          imageSize: const Size(180, 180),
+        );
+      } else if (index == photos.length - 1) {
+        icon = await CustomMapMarker(
+          imageUrl: photos[index].imageUrl,
+          tooltip: 'End',
+        ).toBitmapDescriptor(
+          logicalSize: const Size(60, 60),
+          imageSize: const Size(180, 180),
+        );
+      } else {
+        icon = await CustomMapMarker(
+          imageUrl: photos[index].imageUrl,
+        ).toBitmapDescriptor(
+          logicalSize: const Size(60, 60),
+          imageSize: const Size(180, 180),
+        );
+      }
+      tempMarkers.add(
+        Marker(
+          markerId: MarkerId(photos[index].id),
+          position: LatLng(
+            photos[index].location.latitude,
+            photos[index].location.longitude,
+          ),
+          clusterManagerId: ClusterManagerId(journalId),
+          consumeTapEvents: true,
+          icon: icon,
+          onTap:
+              () => widget.onAction(MapAction.onPhotoClick(photos[index].id)),
+        ),
+      );
+    }
+
+    if (tempMarkers.isNotEmpty || markers.isNotEmpty) {
+      setState(() {
+        markers = tempMarkers;
+      });
+    }
+  }
+
+  void _onHandleDragEnd(DragEndDetails details) {
+    // 반쯤 이상 펼쳐져 있으면 완전 확장, 아니면 접기
+    final mid = (_maxHeight + _minHeight) / 2;
+    setState(() {
+      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
+    });
+  }
+
+  void _onHandleDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
+        _minHeight,
+        _maxHeight,
+      );
+    });
+  }
+
+  void _onHandleTap() {
+    setState(() {
+      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
+    });
+  }
+
+  Future<void> _preloadImagesForMarkers(
+    String journalId,
+    List<PhotoModel> photos,
+  ) async {
+    List<Future<void>> precacheFutures = [];
+
+    for (PhotoModel photo in photos) {
+      precacheFutures.add(precacheImage(NetworkImage(photo.imageUrl), context));
+    }
+
+    await Future.wait(precacheFutures);
+    _initMarkers(journalId, photos);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.mapState.journal.name),
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(child: const Icon(Icons.share)),
+          ),
+        ],
+      ),
+      bottomSheet:
+          widget.mapState.journal.id != ''
+              ? MapBottomDragWidget(
+                sheetHeight: _sheetHeight,
+                onHandleDragUpdate: _onHandleDragUpdate,
+                onHandleDragEnd: _onHandleDragEnd,
+                onHandleTap: _onHandleTap,
+                photos: widget.mapState.photos,
+                journal: widget.mapState.journal,
+                onAction: widget.onAction,
+              )
+              : const SizedBox(),
+      body:
+          widget.mapState.journal.id != ''
+              ? Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  widget.mapState.photos.isNotEmpty
+                      ? PhotoPinMap(
+                        initialLocation: LatLng(
+                          widget.mapState.photos.first.location.latitude,
+                          widget.mapState.photos.first.location.longitude,
+                        ),
+                        initialZoomLevel: 16,
+                        markers: markers,
+                        polylines: {
+                          widget.mapState.journal.id:
+                              widget.mapState.photos
+                                  .map(
+                                    (photo) => LatLng(
+                                      photo.location.latitude,
+                                      photo.location.longitude,
+                                    ),
+                                  )
+                                  .toList(),
+                        },
+                        polyLineColor: AppColors.secondary100,
+                      )
+                      : const PhotoPinMap(
+                        initialLocation: LatLng(37.5125, 127.1025),
+                        initialZoomLevel: 16,
+                        markers: {},
+                        polylines: {},
+                        polyLineColor: AppColors.marker70,
+                      ),
+                  Positioned(
+                    top: 4,
+                    left: 4,
+                    child: TripWithChips(
+                      tripWith: widget.mapState.journal.tripWith,
+                      color: AppColors.primary80,
+                    ),
+                  ),
+                ],
+              )
+              : const Center(child: CircularProgressIndicator()),
     );
   }
 }
