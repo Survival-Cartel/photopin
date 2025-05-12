@@ -32,7 +32,7 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
           onAction: (action) {
             switch (action) {
               case CameraClick():
-              // 수정
+                break;
               case NewJournalClick():
                 showDialog(
                   context: context,
