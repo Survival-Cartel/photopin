@@ -7,11 +7,11 @@ class UploadFileUseCase {
 
   const UploadFileUseCase(this._storageDataSource);
 
-  Future<void> execute(
+  Future<String> execute(
     String fileName,
     Uint8List bytes,
     ImageMime mimeType,
   ) async {
-    await _storageDataSource.uploadFile(fileName, bytes, mimeType.type);
+    return await _storageDataSource.uploadFile(fileName, bytes, mimeType.type);
   }
 }
