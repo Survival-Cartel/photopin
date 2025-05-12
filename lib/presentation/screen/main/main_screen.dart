@@ -1,53 +1,53 @@
 // lib/presentation/screen/main/main_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:photopin/core/di/di_setup.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/component/bottom_bar.dart';
 import 'package:photopin/presentation/component/top_bar.dart';
 import 'package:photopin/presentation/screen/main/main_state.dart';
-import 'package:photopin/presentation/screen/main/main_view_model.dart';
 
 class MainScreen extends StatefulWidget {
+  final MainState state;
   final StatefulNavigationShell navigationShell;
 
-  const MainScreen({super.key, required this.navigationShell});
+  const MainScreen({
+    super.key,
+    required this.state,
+    required this.navigationShell,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late final MainScreenViewModel _viewModel;
+  int _selectedIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _viewModel = getIt<MainScreenViewModel>(param1: widget.navigationShell);
-  }
+  void changeTab(int index) {
+    // index 2는 카메라 버튼
+    // 카메라 버튼 누를 시에 ShellBranch를 벗어나서 카메라 런처 스크린 실행해야함, 아니면 State가 유지되지 않음
+    if (index == 2) {
+      context.push(Routes.camera);
+    }
 
-  @override
-  void dispose() {
-    _viewModel.dispose();
-    super.dispose();
+    widget.navigationShell.goBranch(index);
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<MainScreenState>(
-      valueListenable: _viewModel.stateNotifier,
-      builder: (context, state, _) {
-        return Scaffold(
-          appBar: TopBar(
-            profileImg: _viewModel.profileImgToDisplay,
-            onNotificationTap: () {},
-          ),
-          body: widget.navigationShell,
-          bottomSheet: BottomBar(
-            selectedIndex: state.selectedIndex,
-            changeTab: _viewModel.changeTab,
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: TopBar(
+        onNotificationTap: () {},
+        profileImg: widget.state.userModel.profileImg,
+      ),
+      body: widget.navigationShell,
+      bottomNavigationBar: BottomBar(
+        selectedIndex: _selectedIndex,
+        changeTab: changeTab,
+      ),
     );
   }
 }
