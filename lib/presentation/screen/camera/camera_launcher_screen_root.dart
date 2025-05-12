@@ -20,11 +20,6 @@ class _CameraLauncherScreenRootState extends State<CameraLauncherScreenRoot> {
 
   @override
   Widget build(BuildContext context) {
-    // return ListenableBuilder(
-    //   listenable: widget.viewModel,
-    //   builder: (context, child) {},
-    // );
-    //
     return const SizedBox();
   }
 }
