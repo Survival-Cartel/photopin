@@ -37,7 +37,7 @@ class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   bool showPolyline = true;
-  double showPolylineZoomLevel = 18;
+  double showPolylineZoomLevel = 17;
 
   static const double _maxHeight = 400;
 
