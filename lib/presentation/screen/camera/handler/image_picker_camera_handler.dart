@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photopin/core/domain/binary_data.dart';
 import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
+import 'package:photopin/presentation/screen/camera/handler/image_save_handler.dart';
+import 'package:photopin/presentation/screen/camera/handler/image_save_plus_handler.dart';
 
 class ImagePickerCameraHandler implements CameraHandler {
   final ImagePicker _imagePicker = ImagePicker();
+  final ImageSaveHandler _imageSaveHandler = ImageSavePlusHandler();
 
   ImagePickerCameraHandler();
 
@@ -21,7 +23,8 @@ class ImagePickerCameraHandler implements CameraHandler {
 
       final BinaryData binary = BinaryData(bytes: imageBytes, mimeType: 'jpg');
 
-      final result = await ImageGallerySaverPlus.saveFile(image.path);
+      final result = await _imageSaveHandler.saveFile(image.path);
+
       debugPrint("[Launcher] 갤러리 저장 결과: $result");
       return binary;
     } else {

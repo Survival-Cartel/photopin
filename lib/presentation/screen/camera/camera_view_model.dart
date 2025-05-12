@@ -7,6 +7,8 @@ import 'package:photopin/core/usecase/permission_checker_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_use_case.dart';
 import 'package:photopin/presentation/screen/camera/camera_state.dart';
 
+import '../../../core/enums/image_mime.dart';
+
 class CameraViewModel with ChangeNotifier {
   final CameraState _state = CameraState();
   final LaunchCameraUseCase _launchCameraUseCase;
@@ -78,8 +80,7 @@ class CameraViewModel with ChangeNotifier {
       // 이거 해야도밈
 
       // 사진을 Firebase Storage에 저장
-      // 이거는 거의됨
-      await _uploadFileUseCase.execute('ABC', binaryData.bytes, 'image/jpg');
+      await _uploadFileUseCase.execute('ABC', binaryData.bytes, ImageMime.jpg);
       return true;
     }
 

@@ -60,8 +60,11 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<StorageDataSource>(
-    FirebaseStorageDataSource(storage: getIt<FirebaseStorage>()),
+  getIt.registerFactoryParam<StorageDataSource, String, void>(
+    (userId, _) => FirebaseStorageDataSource(
+      storage: getIt<FirebaseStorage>(),
+      path: userId,
+    ),
   );
 
   getIt.registerLazySingleton<AuthDataSource>(
@@ -108,15 +111,15 @@ void di() {
     LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
   );
 
-  getIt.registerSingleton<UploadFileUseCase>(
-    UploadFileUseCase(getIt<StorageDataSource>()),
+  getIt.registerFactoryParam<UploadFileUseCase, String, void>(
+    (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
   );
 
-  getIt.registerSingleton<CameraViewModel>(
-    CameraViewModel(
+  getIt.registerFactoryParam<CameraViewModel, String, void>(
+    (userId, _) => CameraViewModel(
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
       permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
-      uploadFileUseCase: getIt<UploadFileUseCase>(),
+      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
     ),
   );
 

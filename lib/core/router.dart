@@ -54,7 +54,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.camera,
       builder: (context, state) {
-        return CameraLauncherScreenRoot(viewModel: getIt<CameraViewModel>());
+        final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+
+        return CameraLauncherScreenRoot(
+            viewModel: getIt<CameraViewModel>(param1: userId));
       },
     ),
     StatefulShellRoute.indexedStack(

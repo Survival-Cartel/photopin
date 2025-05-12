@@ -1,14 +1,17 @@
 import 'dart:typed_data';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
 
 class FirebaseStorageDataSource implements StorageDataSource {
-  static const String path = 'test';
+  final String path;
 
   final Reference _directoryRef;
 
-  FirebaseStorageDataSource({required FirebaseStorage storage})
-    : _directoryRef = storage.ref(path);
+  FirebaseStorageDataSource({
+    required FirebaseStorage storage,
+    required this.path,
+  }) : _directoryRef = storage.ref(path);
 
   /// [path]로 Storage 내부 버킷의 'test/' 경로 **하위의 파일 이름 또는 경로**를 전달합니다.
   /// 예: 'my_photo.jpg', 'subfolder/document.pdf'

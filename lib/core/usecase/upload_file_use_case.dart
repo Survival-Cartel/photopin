@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:photopin/core/enums/image_mime.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
 
 class UploadFileUseCase {
@@ -9,8 +10,8 @@ class UploadFileUseCase {
   Future<void> execute(
     String fileName,
     Uint8List bytes,
-    String mimeType,
+    ImageMime mimeType,
   ) async {
-    await _storageDataSource.uploadFile(fileName, bytes, mimeType);
+    await _storageDataSource.uploadFile(fileName, bytes, mimeType.type);
   }
 }
