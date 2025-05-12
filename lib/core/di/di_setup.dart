@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
@@ -6,6 +7,7 @@ import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -15,10 +17,15 @@ import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
+import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
+import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/storage/data/data_source/firebase_storage_data_source.dart';
+import 'package:photopin/storage/data/data_source/storage_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
@@ -28,6 +35,7 @@ final getIt = GetIt.instance;
 
 void di() {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
+  getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
   getIt.registerLazySingleton<FirestoreSetup>(() => FirestoreSetup());
   getIt.registerSingleton<UserDataSource>(
     UserDataSourceImpl(userStore: getIt.get<FirestoreSetup>().userFirestore()),
@@ -43,8 +51,13 @@ void di() {
   );
 
   getIt.registerFactoryParam<PhotoRepository, String, void>(
-    (userId, _) =>
-        PhotoRepositoryImpl(dataSource: getIt<PhotoDataSource>(param1: userId)),
+    (userId, _) => PhotoRepositoryImpl(
+      photoDataSource: getIt<PhotoDataSource>(param1: userId),
+    ),
+  );
+
+  getIt.registerSingleton<StorageDataSource>(
+    FirebaseStorageDataSource(storage: getIt<FirebaseStorage>()),
   );
 
   getIt.registerLazySingleton<AuthDataSource>(
@@ -77,6 +90,16 @@ void di() {
     (userId, _) => JournalViewModel(
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
     ),
+  );
+
+  getIt.registerSingleton<CameraHandler>(ImagePickerCameraHandler());
+
+  getIt.registerSingleton<LaunchCameraUseCase>(
+    LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
+  );
+
+  getIt.registerSingleton<CameraViewModel>(
+    CameraViewModel(launchCameraUseCase: getIt<LaunchCameraUseCase>()),
   );
 
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
