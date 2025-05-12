@@ -81,8 +81,17 @@ class _MapScreenState extends State<MapScreen> {
       );
     } else {
       final photo = cluster.items.first.photo;
+      final isFirst = photo.id == widget.mapState.photos.first.id;
+      final isLast = photo.id == widget.mapState.photos.last.id;
+
       final icon = await CustomMapMarker(
         imageUrl: photo.imageUrl,
+        tooltip:
+            isFirst
+                ? 'Start'
+                : isLast
+                ? 'End'
+                : '',
       ).toBitmapDescriptor(
         logicalSize: const Size(60, 60),
         imageSize: const Size(180, 180),
