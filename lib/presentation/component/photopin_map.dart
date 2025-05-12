@@ -13,6 +13,9 @@ class PhotoPinMap extends StatefulWidget {
   final Set<Marker> markers;
   final Map<String, List<LatLng>> polylines;
   final Color polyLineColor;
+  final void Function(GoogleMapController)? onMapCreated;
+  final void Function()? onCameraIdle;
+  final void Function(CameraPosition)? onCameraMove;
 
   const PhotoPinMap({
     super.key,
@@ -21,6 +24,9 @@ class PhotoPinMap extends StatefulWidget {
     required this.markers,
     required this.polylines,
     required this.polyLineColor,
+    this.onMapCreated,
+    this.onCameraIdle,
+    this.onCameraMove,
   });
 
   @override
@@ -28,26 +34,10 @@ class PhotoPinMap extends StatefulWidget {
 }
 
 class PhotoPinMapState extends State<PhotoPinMap> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-
-  Set<Polyline> _wholePolylines = {};
-  bool showPolyline = true;
-  double showPolylineZoomLevel = 18;
-
   @override
   void initState() {
     super.initState();
     _requestLocationPermission();
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    if (widget.markers != oldWidget.markers) {
-      _getPolyLines(widget.polylines);
-    }
-
-    super.didUpdateWidget(oldWidget);
   }
 
   Future<void> _requestLocationPermission() async {
@@ -55,22 +45,6 @@ class PhotoPinMapState extends State<PhotoPinMap> {
     if (!status.isGranted) {
       await Permission.location.request();
     }
-  }
-
-  void _getPolyLines(Map<String, List<LatLng>> polylines) {
-    Set<Polyline> remotePolylines =
-        polylines.keys.map((id) {
-          return Polyline(
-            polylineId: PolylineId(id),
-            points: widget.polylines[id]!,
-            color: widget.polyLineColor,
-            width: 6,
-          );
-        }).toSet();
-
-    setState(() {
-      _wholePolylines = remotePolylines;
-    });
   }
 
   @override
@@ -84,27 +58,20 @@ class PhotoPinMapState extends State<PhotoPinMap> {
         ),
         myLocationEnabled: true, // ✅ 내 위치 파란 점
         myLocationButtonEnabled: true, // ✅ 오른쪽 버튼 표시
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+        onMapCreated: widget.onMapCreated,
         buildingsEnabled: false,
-        clusterManagers:
+        polylines:
             widget.polylines.keys.map((id) {
-              return ClusterManager(clusterManagerId: ClusterManagerId(id));
+              return Polyline(
+                polylineId: PolylineId(id),
+                points: widget.polylines[id]!,
+                color: widget.polyLineColor,
+                width: 6,
+              );
             }).toSet(),
-        polylines: showPolyline ? _wholePolylines : {},
+        onCameraMove: widget.onCameraMove,
         onCameraIdle: () async {
-          final double zoomLevel =
-              await (await _controller.future).getZoomLevel();
-          if (zoomLevel >= showPolylineZoomLevel) {
-            setState(() {
-              showPolyline = true;
-            });
-          } else {
-            setState(() {
-              showPolyline = false;
-            });
-          }
+          widget.onCameraIdle?.call();
         },
         markers: widget.markers,
       ),
