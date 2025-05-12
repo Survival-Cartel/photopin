@@ -1,5 +1,5 @@
-import 'package:flutter/services.dart';
+import 'package:photopin/core/domain/binary_data.dart';
 
 abstract interface class CameraHandler {
-  Future<Uint8List?> launch();
+  Future<BinaryData?> launch();
 }
