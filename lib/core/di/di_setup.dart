@@ -10,6 +10,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
+import 'package:photopin/core/usecase/upload_file_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -107,10 +108,15 @@ void di() {
     LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
   );
 
+  getIt.registerSingleton<UploadFileUseCase>(
+    UploadFileUseCase(getIt<StorageDataSource>()),
+  );
+
   getIt.registerSingleton<CameraViewModel>(
     CameraViewModel(
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
       permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
+      uploadFileUseCase: getIt<UploadFileUseCase>(),
     ),
   );
 
