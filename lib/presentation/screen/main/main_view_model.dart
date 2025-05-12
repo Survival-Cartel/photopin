@@ -14,35 +14,21 @@ class MainScreenViewModel with ChangeNotifier {
   Future<void> loadProfile() async {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
-
-    try {
-      final UserModel user = await getCurrentUserUseCase.execute();
-      _state = state.copyWith(isLoading: false, userModel: user);
-      notifyListeners();
-    } catch (e) {
-      // 에러 처리
-      _state = state.copyWith(isLoading: false);
-      notifyListeners();
-      // 추가적인 에러 처리 로직이 필요할 수 있음
-    }
+    final UserModel user = await getCurrentUserUseCase.execute();
+    _state = state.copyWith(isLoading: false, userModel: user);
+    notifyListeners();
   }
 
   Future<void> init() async {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
-    try {
-      final UserModel user = await getCurrentUserUseCase.execute();
-      _state = state.copyWith(
-        userModel: user,
-        selectedIndex: 0,
-        isLoading: false,
-      );
-      notifyListeners();
-    } catch (e) {
-      // 에러 처리
-      _state = state.copyWith(isLoading: false);
-      notifyListeners();
-      // 추가적인 에러 처리 로직이 필요할 수 있음
-    }
+
+    final UserModel user = await getCurrentUserUseCase.execute();
+    _state = state.copyWith(
+      userModel: user,
+      selectedIndex: 0,
+      isLoading: false,
+    );
+    notifyListeners();
   }
 }
