@@ -4,9 +4,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:photopin/core/domain/binary_data.dart';
 import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
+import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/photo/data/dto/photo_dto.dart';
 import 'package:photopin/presentation/screen/camera/camera_state.dart';
-import 'package:uuid/uuid.dart';
+import 'package:uuid/v4.dart';
 
 import '../../../core/enums/image_mime.dart';
 
@@ -15,14 +17,19 @@ class CameraViewModel with ChangeNotifier {
   final LaunchCameraUseCase _launchCameraUseCase;
   final PermissionCheckerUseCase _permissionCheckerUseCase;
   final UploadFileUseCase _uploadFileUseCase;
+  final SavePhotoUseCase _savePhotoUseCase;
+
+  final UuidV4 uuid = const UuidV4();
 
   CameraViewModel({
     required LaunchCameraUseCase launchCameraUseCase,
     required PermissionCheckerUseCase permisionCheckerUseCase,
     required UploadFileUseCase uploadFileUseCase,
+    required SavePhotoUseCase savePhotoUseCase,
   }) : _launchCameraUseCase = launchCameraUseCase,
        _uploadFileUseCase = uploadFileUseCase,
-       _permissionCheckerUseCase = permisionCheckerUseCase;
+       _permissionCheckerUseCase = permisionCheckerUseCase,
+       _savePhotoUseCase = savePhotoUseCase;
 
   CameraState get state => _state;
 
@@ -75,14 +82,23 @@ class CameraViewModel with ChangeNotifier {
 
     if (binaryData != null && locationPermission != null) {
       final Position? position = await _determinePosition(locationPermission);
-      debugPrint('Position: $position');
-      final String uuid = Uuid().v4();
-      // 위치 정보 Firestore에 저장
-      // 이거 해야도밈
 
-      // 사진을 Firebase Storage에 저장
+      final String downloadUrl = await _uploadFileUseCase.execute(
+        uuid.generate(),
+        binaryData.bytes,
+        ImageMime.jpg,
+      );
 
-      await _uploadFileUseCase.execute(uuid, binaryData.bytes, ImageMime.jpg);
+      PhotoDto dto = PhotoDto(
+        imageUrl: downloadUrl,
+        latitude: position?.latitude,
+        longitude: position?.longitude,
+        dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      // Google Place API로 최초 저장 시 장소 이름 구해서 넣기
+      await _savePhotoUseCase.execute(dto);
+
       return true;
     }
 
