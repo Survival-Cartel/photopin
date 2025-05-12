@@ -18,6 +18,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
+import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
@@ -34,6 +35,10 @@ void di() {
   );
 
   getIt.registerSingleton<UserRepository>(UserRepositoryImpl(getIt()));
+
+  getIt.registerFactory<MainScreenViewModel>(
+    () => MainScreenViewModel(getCurrentUserUseCase: getIt()),
+  );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(

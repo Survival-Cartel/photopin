@@ -1,13 +1,20 @@
+// lib/presentation/screen/main/main_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/component/bottom_bar.dart';
 import 'package:photopin/presentation/component/top_bar.dart';
+import 'package:photopin/presentation/screen/main/main_state.dart';
 
 class MainScreen extends StatefulWidget {
+  final MainState state;
   final StatefulNavigationShell navigationShell;
 
-  const MainScreen({super.key, required this.navigationShell});
+  const MainScreen({
+    super.key,
+    required this.state,
+    required this.navigationShell,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -34,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: TopBar(
         onNotificationTap: () {},
-        profileImg: 'https://i.pravatar.cc/150?img=3',
+        profileImg: widget.state.userModel.profileImg,
       ),
       body: widget.navigationShell,
       bottomNavigationBar: BottomBar(
