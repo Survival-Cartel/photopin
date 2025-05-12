@@ -1,0 +1,37 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "survival-photopin",
+          "appId": "1:667710416901:android:76a1e45ac2d5131621946c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "survival-photopin",
+          "configurations": {
+            "android": "1:667710416901:android:76a1e45ac2d5131621946c",
+            "ios": "1:667710416901:ios:ae8b191194c0814021946c",
+            "web": "1:667710416901:web:2f3941f69cf26c8421946c"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "auth": {
+      "host": "0.0.0.0",
+      "port": 9099
+    },
+    "firestore": {
+      "host": "0.0.0.0",
+      "port": 8080
+    },
+    "ui": {
+      "enalbed": true
+    },
+    "singleProjectMode": true
+  }
+}

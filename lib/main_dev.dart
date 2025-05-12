@@ -9,20 +9,27 @@ import 'package:photopin/core/router.dart';
 
 import 'firebase_options.dart';
 
-void main() async {
+const String hostIp = '192.168.0.32';
+const runMode = String.fromEnvironment("mode", defaultValue: 'dev');
+
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (Platform.isAndroid) {
-    FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
-    await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+    if (runMode == 'device') {
+      FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
+      await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
+    } else {
+      FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+    }
   } else {
     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   }
 
   di();
-
   runApp(const MyApp());
 }
 
