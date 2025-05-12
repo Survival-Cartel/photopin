@@ -40,23 +40,25 @@ class _MapFilterState extends State<MapFilter> {
       width: double.infinity,
       height: 24,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
-        children: List.generate(
-          widget.icons.length,
-          (index) => Expanded(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedIndex = index;
-                });
-                widget.onSelected(index);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        children: List.generate(widget.icons.length, (index) {
+          final bool isLastItem = index == widget.icons.length - 1;
+
+          return Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: isLastItem ? 0 : 8),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                  widget.onSelected(index);
+                },
                 child: Container(
+                  height: double.infinity,
                   decoration: BoxDecoration(
                     color:
                         selectedIndex == index
@@ -75,37 +77,41 @@ class _MapFilterState extends State<MapFilter> {
                             ]
                             : null,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconTheme(
-                        data: IconThemeData(
-                          color:
-                              selectedIndex == index
-                                  ? Colors.white
-                                  : AppColors.gray1,
-                          size: 16,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconTheme(
+                          data: IconThemeData(
+                            color:
+                                selectedIndex == index
+                                    ? Colors.white
+                                    : AppColors.gray1,
+                            size: 16,
+                          ),
+                          child: widget.icons[index],
                         ),
-                        child: widget.icons[index],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.labels[index],
-                        style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              selectedIndex == index
-                                  ? Colors.white
-                                  : AppColors.gray1,
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.labels[index],
+                          style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                selectedIndex == index
+                                    ? Colors.white
+                                    : AppColors.gray1,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
