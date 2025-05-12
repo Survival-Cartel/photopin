@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
@@ -18,6 +19,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
+import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
@@ -34,6 +36,14 @@ void di() {
   );
 
   getIt.registerSingleton<UserRepository>(UserRepositoryImpl(getIt()));
+
+  getIt
+      .registerFactoryParam<MainScreenViewModel, StatefulNavigationShell, void>(
+        (navigationShell, _) => MainScreenViewModel(
+          navigationShell: navigationShell,
+          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+        ),
+      );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(
