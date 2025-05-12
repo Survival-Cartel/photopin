@@ -71,40 +71,27 @@ class _RangeSliderState extends State<DateRangeSlider> {
     return a[m];
   }
 
-  DateTime _toStartDate(double offset) =>
-      DateTime(
-        widget.startDate.year,
-        widget.startDate.month,
-        widget.startDate.day,
-      ).add(Duration(days: offset.toInt()));
+  DateTime _toStartDate(double offset) => DateTime(
+    widget.startDate.year,
+    widget.startDate.month,
+    widget.startDate.day,
+  ).add(Duration(days: offset.toInt()));
 
   DateTime _toEndDate(double offset) {
     final base = widget.startDate.add(Duration(days: offset.toInt()));
 
-    return DateTime(
-        base.year,
-        base.month,
-        base.day,
-        23,
-        59,
-        59,
-        999);
+    return DateTime(base.year, base.month, base.day, 23, 59, 59, 999);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDayTrip = widget.endDate
-        .difference(widget.startDate)
-        .inDays == 0;
+    final isDayTrip = widget.endDate.difference(widget.startDate).inDays == 0;
 
     // 전체 날짜 범위 계산
     final totalTimes =
-    isDayTrip
-        ? 23.0
-        : widget.endDate
-        .difference(widget.startDate)
-        .inDays
-        .toDouble();
+        isDayTrip
+            ? 23.0
+            : widget.endDate.difference(widget.startDate).inDays.toDouble();
 
     // 초기값 설정
     _startOffset ??= 0.0;
@@ -115,22 +102,26 @@ class _RangeSliderState extends State<DateRangeSlider> {
       selStart = widget.startDate.add(Duration(hours: _startOffset!.toInt()));
       selEnd = widget.startDate
           .add(Duration(hours: _endOffset!.toInt()))
-          .add(Duration(minutes: 59, seconds: 59, milliseconds: 999));
+          .add(const Duration(minutes: 59, seconds: 59, milliseconds: 999));
     } else {
       selStart = widget.startDate.add(Duration(days: _startOffset!.toInt()));
       selEnd = widget.startDate
           .add(Duration(days: _endOffset!.toInt()))
           .add(
-        Duration(hours: 23, minutes: 59, seconds: 59, milliseconds: 999),
-      );
+            const Duration(
+              hours: 23,
+              minutes: 59,
+              seconds: 59,
+              milliseconds: 999,
+            ),
+          );
     }
 
-    String _formatTop(DateTime s, DateTime e) {
+    String formatTop(DateTime s, DateTime e) {
       if (isDayTrip) {
         return '${_monthName(s.month)}, ${s.day}, ${s.year}';
       } else {
-        return '${_monthName(s.month)} ${s.day} - ${_monthName(e.month)} ${e
-            .day}, ${e.year}';
+        return '${_monthName(s.month)} ${s.day} - ${_monthName(e.month)} ${e.day}, ${e.year}';
       }
     }
 
@@ -146,7 +137,7 @@ class _RangeSliderState extends State<DateRangeSlider> {
               children: [
                 Text('Date Range', style: AppFonts.smallerTextBold),
                 Text(
-                  _formatTop(selStart, selEnd),
+                  formatTop(selStart, selEnd),
                   style: AppFonts.smallerTextRegular.copyWith(
                     color: AppColors.primary80,
                   ),
@@ -174,7 +165,6 @@ class _RangeSliderState extends State<DateRangeSlider> {
               if (newEndOffset - newStartOffset < 1.0) {
                 return; // 변경 취소
               }
-
 
               setState(() {
                 _startOffset = newStartOffset;
@@ -209,36 +199,35 @@ class _RangeSliderState extends State<DateRangeSlider> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:
-              isDayTrip
-                  ? [
-                Text(
-                  '0:00',
-                  style: AppFonts.smallerTextRegular.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-                Text(
-                  '24:00',
-                  style: AppFonts.smallerTextRegular.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-              ]
-                  : [
-                Text(
-                  '${_monthAbbr(widget.startDate.month)} ${widget.startDate
-                      .day}',
-                  style: AppFonts.smallerTextRegular.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-                Text(
-                  '${_monthAbbr(widget.endDate.month)} ${widget.endDate.day}',
-                  style: AppFonts.smallerTextRegular.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
+                  isDayTrip
+                      ? [
+                        Text(
+                          '0:00',
+                          style: AppFonts.smallerTextRegular.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          '24:00',
+                          style: AppFonts.smallerTextRegular.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ]
+                      : [
+                        Text(
+                          '${_monthAbbr(widget.startDate.month)} ${widget.startDate.day}',
+                          style: AppFonts.smallerTextRegular.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          '${_monthAbbr(widget.endDate.month)} ${widget.endDate.day}',
+                          style: AppFonts.smallerTextRegular.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
             ),
           ),
         ],
