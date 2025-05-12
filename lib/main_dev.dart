@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/router.dart';
@@ -20,13 +21,16 @@ void main(List<String> args) async {
     if (runMode == 'device') {
       FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
       await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
+      await FirebaseStorage.instance.useStorageEmulator(hostIp, 9199);
     } else {
       FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
       await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+      await FirebaseStorage.instance.useStorageEmulator('10.0.2.2', 9199);
     }
   } else {
     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
   }
 
   di();
