@@ -64,8 +64,12 @@ void di() {
     () => AuthRepositoryImpl(dataSource: getIt()),
   );
 
-  getIt.registerFactory<HomeViewModel>(
-    () => HomeViewModel(getCurrentUserUseCase: getIt<GetCurrentUserUseCase>()),
+  getIt.registerFactoryParam<HomeViewModel, String, void>(
+    (userId, _) => HomeViewModel(
+      getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+      journalRepository: getIt<JournalRepository>(param1: userId),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+    ),
   );
 
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(

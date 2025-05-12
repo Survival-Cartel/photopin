@@ -8,6 +8,7 @@ import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:photopin/presentation/component/photopin_map.dart';
+import 'package:photopin/presentation/component/text_chip.dart';
 import 'package:photopin/presentation/component/timeline_tile.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
 import 'package:photopin/presentation/screen/map/map_state.dart';
@@ -204,22 +205,7 @@ class MapBottomDragWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Timeline', style: AppFonts.smallTextRegular),
-              FittedBox(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  height: 24,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
-                    color: AppColors.marker100,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${photos.length} Places',
-                      style: AppFonts.smallerTextRegular,
-                    ),
-                  ),
-                ),
-              ),
+              TextChip(text: '${photos.length} Places'),
             ],
           ),
           // 2-3) 사진 타임라인 (스크롤은 여기서만)
