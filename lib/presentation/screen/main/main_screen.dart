@@ -28,6 +28,9 @@ class _MainScreenState extends State<MainScreen> {
     // 카메라 버튼 누를 시에 ShellBranch를 벗어나서 카메라 런처 스크린 실행해야함, 아니면 State가 유지되지 않음
     if (index == 2) {
       context.push(Routes.camera);
+      return;
+    } else if (index > 2) {
+      index = index - 1;
     }
 
     widget.navigationShell.goBranch(index);
