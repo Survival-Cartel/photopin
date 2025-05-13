@@ -77,4 +77,9 @@ class PhotoDataSourceImpl implements PhotoDataSource {
 
     await photoStore.doc(docId).update({'id': docId});
   }
+
+  @override
+  Future<void> updatePhoto(PhotoDto photoDto) async {
+    await photoStore.doc(photoDto.id).set(photoDto, SetOptions(merge: true));
+  }
 }
