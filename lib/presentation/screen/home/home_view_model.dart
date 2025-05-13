@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/core/usecase/watch_journals_user_case.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -13,15 +16,25 @@ class HomeViewModel with ChangeNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
+  final WatchJournalsUserCase _watchJournalsUserCase;
+  StreamSubscription<JournalPhotoCollection>? _streamSubscription;
   HomeState _state = HomeState();
 
   HomeViewModel({
     required this.getCurrentUserUseCase,
     required JournalRepository journalRepository,
     required this.getJournalListUseCase,
-  }) : _journalRepository = journalRepository;
+    required WatchJournalsUserCase watchJournalsUserCase,
+  }) : _journalRepository = journalRepository,
+       _watchJournalsUserCase = watchJournalsUserCase;
 
   HomeState get state => _state;
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
 
   Future<void> _findUser() async {
     _state = _state.copyWith(isLoading: true);
@@ -71,9 +84,18 @@ class HomeViewModel with ChangeNotifier {
       currentUser: user,
       journals: collection.journals,
       photoMap: collection.photoMap,
-      isLoading: false,
     );
     notifyListeners();
+
+    _streamSubscription = _watchJournalsUserCase.execute().listen((collection) {
+      _state = state.copyWith(
+        journals: collection.journals,
+        photoMap: collection.photoMap,
+        isLoading: false,
+      );
+
+      notifyListeners();
+    });
   }
 
   Future<void> onAction(HomeAction action) async {
