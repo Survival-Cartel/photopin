@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
@@ -32,13 +33,13 @@ import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/presentation/screen/settings/settings_view_model.dart';
 import 'package:photopin/storage/data/data_source/firebase_storage_data_source.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
 import 'package:photopin/user/data/repository/user_repository_impl.dart';
-import 'package:http/http.dart' as http;
 
 final getIt = GetIt.instance;
 
@@ -170,5 +171,9 @@ void di() {
       getIt<PhotoRepository>(param1: userId),
       getIt<JournalRepository>(param1: userId),
     ),
+  );
+
+  getIt.registerSingleton<SettingsViewModel>(
+    SettingsViewModel(getIt<PermissionCheckerUseCase>()),
   );
 }
