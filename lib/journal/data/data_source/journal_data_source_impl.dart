@@ -71,4 +71,15 @@ class JournalDataSourceImpl implements JournalDataSource {
       rethrow;
     }
   }
+
+  @override
+  Stream<List<JournalDto>> watchJournals() {
+    try {
+      return journalStore.snapshots().map(
+        (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+      );
+    } catch (e) {
+      throw FirestoreError.notFoundError;
+    }
+  }
 }

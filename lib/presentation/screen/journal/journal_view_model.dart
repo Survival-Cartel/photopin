@@ -1,18 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
 class JournalViewModel with ChangeNotifier {
   JournalState _state = JournalState();
+  StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
   final GetJournalListUseCase getJournalListUseCase;
+  final WatchJournalsUseCase watchJournalsUserCase;
 
-  JournalViewModel({required this.getJournalListUseCase});
+  JournalViewModel({
+    required this.getJournalListUseCase,
+    required this.watchJournalsUserCase,
+  });
 
   JournalState get state => _state;
   bool get isLoading => _state.isLoading;
+
+  @override
+  void dispose() {
+    _journalSubscription?.cancel();
+    super.dispose();
+  }
 
   Future<void> onAction(JournalScreenAction action) async {
     switch (action) {
@@ -51,15 +65,22 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    final JournalPhotoCollection collection =
-        await getJournalListUseCase.execute();
+    // final JournalPhotoCollection collection =
+    //     await getJournalListUseCase.execute();
 
-    _state = _state.copyWith(
-      journals: collection.journals,
-      photoMap: collection.photoMap,
-      isLoading: false,
-    );
-
-    notifyListeners();
+    // _state = _state.copyWith(
+    //   journals: collection.journals,
+    //   photoMap: collection.photoMap,
+    //   isLoading: false,
+    // );
+    //
+    _journalSubscription = watchJournalsUserCase.execute().listen((collection) {
+      _state = _state.copyWith(
+        journals: collection.journals,
+        photoMap: collection.photoMap,
+        isLoading: false,
+      );
+      notifyListeners();
+    });
   }
 }

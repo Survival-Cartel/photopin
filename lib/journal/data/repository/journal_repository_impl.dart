@@ -29,4 +29,11 @@ class JournalRepositoryImpl implements JournalRepository {
   Future<void> deleteJournal(String journalId) async {
     await dataSource.deleteJournal(journalId);
   }
+
+  @override
+  Stream<List<JournalModel>> watchJournals() {
+    return dataSource.watchJournals().map(
+      (dtoList) => dtoList.map((dto) => dto.toModel()).toList(),
+    );
+  }
 }
