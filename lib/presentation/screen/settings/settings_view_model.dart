@@ -11,12 +11,13 @@ class SettingsViewModel with ChangeNotifier {
   Future<void> onAction(SettingsAction action) async {
     switch (action) {
       case CameraPermissionRequest():
+        await _permissionCheckerUseCase;
         final PermissionStatus cameraPermission =
             await Permission.camera.status;
 
         if (cameraPermission.isDenied) {
           await Permission.camera.request();
-          debugPrint('cameraPermission: ${cameraPermission}');
+          debugPrint('cameraPermission: $cameraPermission');
         } else if (cameraPermission.isPermanentlyDenied) {
           openAppSettings();
         }
@@ -26,7 +27,7 @@ class SettingsViewModel with ChangeNotifier {
         final PermissionStatus photoPermission = await Permission.photos.status;
         if (photoPermission.isDenied) {
           await Permission.photos.request();
-          debugPrint('PhotosPermission: ${photoPermission}');
+          debugPrint('PhotosPermission: $photoPermission');
         } else if (photoPermission.isPermanentlyDenied) {
           openAppSettings();
         }
@@ -37,7 +38,7 @@ class SettingsViewModel with ChangeNotifier {
 
         if (locationPermission.isDenied) {
           await Permission.location.request();
-          debugPrint('LocationPermissionRequres : ${locationPermission}');
+          debugPrint('LocationPermissionRequres : $locationPermission');
         } else if (locationPermission.isPermanentlyDenied) {
           openAppSettings();
         }

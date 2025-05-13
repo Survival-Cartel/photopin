@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Column(
               children: [
