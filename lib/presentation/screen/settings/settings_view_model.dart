@@ -14,8 +14,7 @@ class SettingsViewModel with ChangeNotifier {
         await _permissionCheckerUseCase.execute(Permission.camera);
 
         final PermissionStatus cameraPermission =
-        await Permission.camera.status;
-
+            await Permission.camera.status;
 
         if (cameraPermission.isDenied) {
           await Permission.camera.request();
@@ -36,7 +35,7 @@ class SettingsViewModel with ChangeNotifier {
         break;
       case LocationPermissionRequest():
         final PermissionStatus locationPermission =
-        await Permission.location.status;
+            await Permission.location.status;
 
         if (locationPermission.isDenied) {
           await Permission.location.request();

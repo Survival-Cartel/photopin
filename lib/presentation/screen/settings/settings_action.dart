@@ -1,5 +1,3 @@
-
-
 sealed class SettingsAction {
   factory SettingsAction.cameraPermissionRequest() = CameraPermissionRequest;
 
