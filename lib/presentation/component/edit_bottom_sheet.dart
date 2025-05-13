@@ -11,12 +11,13 @@ import 'package:photopin/presentation/component/text_limit_input_field.dart';
 class EditBottomSheet extends StatefulWidget {
   final String imageUrl;
   final DateTime dateTime;
+  final String title;
   final String comment;
   final String journalId;
   final List<JournalModel> journals;
 
   final VoidCallback onTapClose;
-  final Function(String journalId, String comment) onTapApply;
+  final Function(String photoName, String journalId, String comment) onTapApply;
   final VoidCallback onTapCancel;
   final VoidCallback? onClosing;
 
@@ -24,6 +25,7 @@ class EditBottomSheet extends StatefulWidget {
     super.key,
     required this.imageUrl,
     required this.dateTime,
+    required this.title,
     required this.comment,
     required this.onTapClose,
     required this.onTapApply,
@@ -38,6 +40,7 @@ class EditBottomSheet extends StatefulWidget {
 }
 
 class _EditBottomSheetState extends State<EditBottomSheet> {
+  final TextEditingController titleController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final TextEditingController journalController = TextEditingController();
   String _journalId = '';
@@ -47,12 +50,14 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   void initState() {
     super.initState();
+    titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
   }
 
   @override
   void dispose() {
     widget.onClosing?.call();
+    titleController.dispose();
     commentController.dispose();
     journalController.dispose();
     super.dispose();
@@ -75,15 +80,16 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             spacing: 16,
             children: [
               Row(
+                spacing: 12,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Edit',
-                    style: AppFonts.mediumTextBold.copyWith(
-                      color: AppColors.textColor,
+                  Expanded(
+                    child: TextLimitInputField(
+                      controller: titleController,
+                      hintText: 'Write Title',
+                      maxLength: 30,
                     ),
                   ),
-                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       widget.onTapClose();
@@ -200,7 +206,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       iconName: Icons.edit,
                       buttonName: 'Apply',
                       onClick: () {
-                        widget.onTapApply(_journalId, commentController.text);
+                        widget.onTapApply(
+                          titleController.text,
+                          _journalId,
+                          commentController.text,
+                        );
                       },
                     ),
                   ),
