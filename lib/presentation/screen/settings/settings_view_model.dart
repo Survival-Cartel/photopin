@@ -11,9 +11,11 @@ class SettingsViewModel with ChangeNotifier {
   Future<void> onAction(SettingsAction action) async {
     switch (action) {
       case CameraPermissionRequest():
-        await _permissionCheckerUseCase;
+        await _permissionCheckerUseCase.execute(Permission.camera);
+
         final PermissionStatus cameraPermission =
-            await Permission.camera.status;
+        await Permission.camera.status;
+
 
         if (cameraPermission.isDenied) {
           await Permission.camera.request();
@@ -34,7 +36,7 @@ class SettingsViewModel with ChangeNotifier {
         break;
       case LocationPermissionRequest():
         final PermissionStatus locationPermission =
-            await Permission.location.status;
+        await Permission.location.status;
 
         if (locationPermission.isDenied) {
           await Permission.location.request();
