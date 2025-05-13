@@ -12,6 +12,7 @@ class EditBottomSheet extends StatefulWidget {
   final String imageUrl;
   final DateTime dateTime;
   final String comment;
+  final String journalId;
   final List<JournalModel> journals;
 
   final VoidCallback onTapClose;
@@ -29,6 +30,7 @@ class EditBottomSheet extends StatefulWidget {
     required this.onTapCancel,
     required this.journals,
     this.onClosing,
+    this.journalId = '',
   });
 
   @override
@@ -38,6 +40,7 @@ class EditBottomSheet extends StatefulWidget {
 class _EditBottomSheetState extends State<EditBottomSheet> {
   final TextEditingController commentController = TextEditingController();
   final TextEditingController journalController = TextEditingController();
+  String _journalId = '';
 
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
@@ -157,7 +160,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                           ),
                           initialSelection:
                               widget.journals.isNotEmpty
-                                  ? widget.journals.first.id
+                                  ? widget.journalId
                                   : null,
                           menuStyle: MenuStyle(
                             backgroundColor: WidgetStateProperty.all(
@@ -166,6 +169,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                             padding: WidgetStateProperty.all(EdgeInsets.zero),
                             elevation: WidgetStateProperty.all(2),
                           ),
+                          onSelected: (value) {
+                            _journalId = value!;
+                          },
                           textStyle: AppFonts.smallTextRegular,
                           dropdownMenuEntries:
                               widget.journals.isEmpty
@@ -194,10 +200,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       iconName: Icons.edit,
                       buttonName: 'Apply',
                       onClick: () {
-                        widget.onTapApply(
-                          journalController.text,
-                          commentController.text,
-                        );
+                        widget.onTapApply(_journalId, commentController.text);
                       },
                     ),
                   ),
