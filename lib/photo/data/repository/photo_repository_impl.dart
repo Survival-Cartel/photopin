@@ -52,4 +52,9 @@ class PhotoRepositoryImpl implements PhotoRepository {
   Future<void> savePhoto(PhotoModel model) async {
     await dataSource.savePhoto(model.toDto());
   }
+
+  @override
+  Future<void> updatePhoto(PhotoModel photoModel) async {
+    await dataSource.updatePhoto(photoModel.toDto());
+  }
 }
