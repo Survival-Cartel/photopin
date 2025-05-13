@@ -17,11 +17,17 @@ class WatchJournalsUseCase {
     await for (final journals in _journalRepository.watchJournals()) {
       final Map<String, List<PhotoModel>> photoMap = {};
 
-      for (final journal in journals) {
-        final List<PhotoModel> photos = await _photoRepository
-            .findPhotosByJournalId(journal.id);
-        photoMap[journal.id] = photos;
-      }
+      final photoFutures =
+          journals.map((journal) async {
+            final photos = await _photoRepository.findPhotosByJournalId(
+              journal.id,
+            );
+            return MapEntry(journal.id, photos);
+          }).toList();
+
+      final photoEntries = await Future.wait(photoFutures);
+
+      photoMap.addEntries(photoEntries);
 
       yield JournalPhotoCollection(journals: journals, photoMap: photoMap);
     }
