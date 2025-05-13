@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_user_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
@@ -12,7 +12,7 @@ class JournalViewModel with ChangeNotifier {
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
   final GetJournalListUseCase getJournalListUseCase;
-  final WatchJournalsUserCase watchJournalsUserCase;
+  final WatchJournalsUseCase watchJournalsUserCase;
 
   JournalViewModel({
     required this.getJournalListUseCase,

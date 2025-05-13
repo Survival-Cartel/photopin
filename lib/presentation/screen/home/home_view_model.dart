@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_user_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -16,7 +16,7 @@ class HomeViewModel with ChangeNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
-  final WatchJournalsUserCase _watchJournalsUserCase;
+  final WatchJournalsUseCase _watchJournalsUserCase;
   StreamSubscription<JournalPhotoCollection>? _streamSubscription;
   HomeState _state = HomeState();
 
@@ -24,7 +24,7 @@ class HomeViewModel with ChangeNotifier {
     required this.getCurrentUserUseCase,
     required JournalRepository journalRepository,
     required this.getJournalListUseCase,
-    required WatchJournalsUserCase watchJournalsUserCase,
+    required WatchJournalsUseCase watchJournalsUserCase,
   }) : _journalRepository = journalRepository,
        _watchJournalsUserCase = watchJournalsUserCase;
 
@@ -77,14 +77,8 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
 
     final UserModel user = await getCurrentUserUseCase.execute();
-    final JournalPhotoCollection collection =
-        await getJournalListUseCase.execute();
 
-    _state = _state.copyWith(
-      currentUser: user,
-      journals: collection.journals,
-      photoMap: collection.photoMap,
-    );
+    _state = _state.copyWith(currentUser: user);
     notifyListeners();
 
     _streamSubscription = _watchJournalsUserCase.execute().listen((collection) {
@@ -93,7 +87,6 @@ class HomeViewModel with ChangeNotifier {
         photoMap: collection.photoMap,
         isLoading: false,
       );
-
       notifyListeners();
     });
   }

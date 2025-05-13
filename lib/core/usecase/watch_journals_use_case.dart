@@ -3,11 +3,11 @@ import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 
-class WatchJournalsUserCase {
+class WatchJournalsUseCase {
   final JournalRepository _journalRepository;
   final PhotoRepository _photoRepository;
 
-  const WatchJournalsUserCase({
+  const WatchJournalsUseCase({
     required JournalRepository journalRepository,
     required PhotoRepository photoRepository,
   }) : _journalRepository = journalRepository,
