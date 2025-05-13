@@ -8,6 +8,7 @@ import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
@@ -35,6 +36,7 @@ import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
 import 'package:photopin/user/data/repository/user_repository_impl.dart';
+import 'package:http/http.dart' as http;
 
 final getIt = GetIt.instance;
 
@@ -126,7 +128,12 @@ void di() {
       permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
       uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
       savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
+      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
     ),
+  );
+
+  getIt.registerSingleton<GetPlaceNameUseCase>(
+    GetPlaceNameUseCase(http.Client()),
   );
 
   getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
