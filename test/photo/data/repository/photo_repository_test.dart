@@ -18,7 +18,7 @@ void main() {
   final DateTime startDate = DateTime(2025, 05, 08);
 
   setUpAll(() {
-    repository = PhotoRepositoryImpl(dataSource: dataSource);
+    repository = PhotoRepositoryImpl(photoDataSource: dataSource);
   });
 
   test('findAll을 호출하면 List<PhotoModel> 형태로 반환해야한다.', () async {

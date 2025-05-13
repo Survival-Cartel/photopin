@@ -5,7 +5,8 @@ import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/camera/camera_launcher_screen.dart';
+import 'package:photopin/presentation/screen/camera/camera_launcher_screen_root.dart';
+import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
@@ -61,7 +62,11 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.camera,
       builder: (context, state) {
-        return const CameraLauncherScreen();
+        final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+
+        return CameraLauncherScreenRoot(
+          viewModel: getIt<CameraViewModel>(param1: userId),
+        );
       },
     ),
     StatefulShellRoute.indexedStack(

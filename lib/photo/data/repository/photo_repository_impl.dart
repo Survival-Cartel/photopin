@@ -4,23 +4,26 @@ import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 
 class PhotoRepositoryImpl implements PhotoRepository {
-  final PhotoDataSource dataSource;
+  final PhotoDataSource _photoDataSource;
 
-  const PhotoRepositoryImpl({required this.dataSource});
+  const PhotoRepositoryImpl({required PhotoDataSource photoDataSource})
+    : _photoDataSource = photoDataSource;
 
   @override
   Future<void> deletePhoto(String photoId) async {
-    await dataSource.deletePhoto(photoId);
+    await _photoDataSource.deletePhoto(photoId);
   }
 
   @override
   Future<List<PhotoModel>> findAll() async {
-    return (await dataSource.findPhotos()).map((dto) => dto.toModel()).toList();
+    return (await _photoDataSource.findPhotos())
+        .map((dto) => dto.toModel())
+        .toList();
   }
 
   @override
   Future<PhotoModel?> findOne(String id) async {
-    return (await dataSource.findPhotoById(id)).toModel();
+    return (await _photoDataSource.findPhotoById(id)).toModel();
   }
 
   @override
@@ -43,13 +46,13 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<List<PhotoModel>> findPhotosByJournalId(String journalId) async {
-    return (await dataSource.findPhotosByJournalId(
+    return (await _photoDataSource.findPhotosByJournalId(
       journalId,
     )).map((dto) => dto.toModel()).toList();
   }
 
   @override
   Future<void> savePhoto(PhotoModel model) async {
-    await dataSource.savePhoto(model.toDto());
+    await _photoDataSource.savePhoto(model.toDto());
   }
 }

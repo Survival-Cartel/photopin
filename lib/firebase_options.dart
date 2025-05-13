@@ -69,6 +69,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '667710416901',
     projectId: 'survival-photopin',
     storageBucket: 'survival-photopin.firebasestorage.app',
+    androidClientId:
+        '667710416901-2l3b417vneek7n70nllr8045rgcrk7k0.apps.googleusercontent.com',
+    iosClientId:
+        '667710416901-g33blgi7326eo4fq03a6f4qrri3vp1gk.apps.googleusercontent.com',
     iosBundleId: 'com.example.photopin',
   );
 }
