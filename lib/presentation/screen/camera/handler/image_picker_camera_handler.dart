@@ -16,9 +16,6 @@ class ImagePickerCameraHandler implements CameraHandler {
   Future<BinaryData?> launch() async {
     XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
 
-    debugPrint('MIME TYPE ::: ${image?.mimeType}');
-    debugPrint('NAME ::: ${image?.name}');
-
     if (image != null) {
       Uint8List imageBytes = await image.readAsBytes();
 
