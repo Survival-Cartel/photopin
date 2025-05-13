@@ -13,6 +13,7 @@ import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -91,6 +92,7 @@ void di() {
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
       journalRepository: getIt<JournalRepository>(param1: userId),
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
     ),
   );
 
@@ -111,9 +113,17 @@ void di() {
     GetCurrentUserUseCase(getIt()),
   );
 
+  getIt.registerFactoryParam<WatchJournalsUseCase, String, void>(
+    (userId, _) => WatchJournalsUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+      journalRepository: getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
     ),
   );
 

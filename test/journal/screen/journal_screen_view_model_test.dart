@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
@@ -24,20 +25,28 @@ class MockJournalPhotoCollection extends Mock
 
 class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
+class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
+
 void main() {
   late JournalViewModel viewModel;
   late JournalPhotoCollection mockJournalPhotoCollection;
   late GetJournalListUseCase mockGetJournalListUseCase;
+  late WatchJournalsUseCase mockWatchJournalsUseCase;
 
   setUp(() {
     mockJournalPhotoCollection = MockJournalPhotoCollection();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
+    mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     viewModel = JournalViewModel(
       getJournalListUseCase: mockGetJournalListUseCase,
+      watchJournalsUserCase: mockWatchJournalsUseCase,
     );
 
     when(() => mockGetJournalListUseCase.execute()).thenAnswer((_) async {
       return mockJournalPhotoCollection;
+    });
+    when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
+      yield mockJournalPhotoCollection;
     });
   });
 
@@ -65,7 +74,7 @@ void main() {
       );
       expect(viewModel.state.journals, equals([journalModelFixtures[0]]));
 
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
+      verify(() => mockWatchJournalsUseCase.execute()).called(1);
     });
 
     test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
@@ -84,7 +93,7 @@ void main() {
       expect(states.last.isLoading, false);
       expect(states.last.journals, equals([journalModelFixtures[0]]));
 
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
+      verify(() => mockWatchJournalsUseCase.execute()).called(1);
     });
   });
 

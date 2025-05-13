@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
@@ -18,10 +19,13 @@ class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
 class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
+class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
+
 void main() {
   late HomeViewModel viewModel;
   late MockGetCurrentUserUseCase mockGetCurrentUserUseCase;
   late MockGetJournalListUseCase mockGetJournalListUseCase;
+  late WatchJournalsUseCase mockWatchJournalsUseCase;
   late JournalPhotoCollection testCollection;
 
   setUpAll(() {
@@ -32,12 +36,14 @@ void main() {
   setUp(() {
     mockGetCurrentUserUseCase = MockGetCurrentUserUseCase();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
+    mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     viewModel = HomeViewModel(
       getCurrentUserUseCase: mockGetCurrentUserUseCase,
       journalRepository: JournalRepositoryImpl(
         dataSource: FakeJournalDataSource(),
       ),
       getJournalListUseCase: mockGetJournalListUseCase,
+      watchJournalsUserCase: mockWatchJournalsUseCase,
     );
 
     // 가정: JournalPhotoCollection 구조에 맞게 테스트 데이터 생성
@@ -52,20 +58,20 @@ void main() {
       when(
         () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) async => testUser);
-      when(
-        () => mockGetJournalListUseCase.execute(),
-      ).thenAnswer((_) async => testCollection);
+      when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
+        yield testCollection;
+      });
 
       // when
       await viewModel.init();
 
       // then
-      expect(viewModel.state.isLoading, false);
+      expect(viewModel.state.isLoading, true);
       expect(viewModel.state.currentUser, testUser);
       expect(viewModel.state.journals, testCollection.journals);
       expect(viewModel.state.photoMap, testCollection.photoMap);
       verify(() => mockGetCurrentUserUseCase.execute()).called(1);
-      verify(() => mockGetJournalListUseCase.execute()).called(1);
+      verify(() => mockWatchJournalsUseCase.execute()).called(1);
     });
 
     test('FindUser 액션 실행 시 사용자 정보만 갱신한다', () async {

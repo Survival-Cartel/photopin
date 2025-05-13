@@ -18,11 +18,31 @@ import 'package:photopin/presentation/screen/map/map_view_model.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.login,
+  redirect: (BuildContext context, GoRouterState state) {
+    final User? currentUser = getIt<FirebaseAuth>().currentUser;
+    final bool isLoggedIn = currentUser != null;
+    final bool isGoingToLogin = state.matchedLocation == Routes.login;
+
+    if (isLoggedIn && isGoingToLogin) {
+      return Routes.home;
+    }
+
+    if (!isLoggedIn && !isGoingToLogin) {
+      if (state.matchedLocation.startsWith('${Routes.map}/') &&
+          state.pathParameters.containsKey('userId')) {
+        return null;
+      }
+      return Routes.login;
+    }
+
+    return null;
+  },
   routes: <RouteBase>[
     GoRoute(
       path: Routes.login,
       builder: (BuildContext context, GoRouterState state) {
         final AuthViewModel viewModel = getIt<AuthViewModel>();
+
         return AuthScreenRoot(authViewModel: viewModel);
       },
     ),
@@ -30,19 +50,6 @@ final appRouter = GoRouter(
       path: '${Routes.map}/:journalId',
       builder: (BuildContext context, GoRouterState state) {
         final String userId = getIt<FirebaseAuth>().currentUser!.uid;
-        final String journalId = state.pathParameters['journalId']!;
-
-        final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
-
-        viewModel.init(journalId);
-
-        return MapScreenRoot(mapViewModel: viewModel);
-      },
-    ),
-    GoRoute(
-      path: '${Routes.map}/:userId/:journalId',
-      builder: (BuildContext context, GoRouterState state) {
-        final String userId = state.pathParameters['userId']!;
         final String journalId = state.pathParameters['journalId']!;
 
         final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
@@ -84,6 +91,23 @@ final appRouter = GoRouter(
                   viewModel: getIt<HomeViewModel>(param1: userId),
                 );
               },
+              routes: [
+                GoRoute(
+                  path: '${Routes.map}/:userId/:journalId',
+                  builder: (BuildContext context, GoRouterState state) {
+                    final String userId = state.pathParameters['userId']!;
+                    final String journalId = state.pathParameters['journalId']!;
+
+                    final MapViewModel viewModel = getIt<MapViewModel>(
+                      param1: userId,
+                    );
+
+                    viewModel.init(journalId);
+
+                    return MapScreenRoot(mapViewModel: viewModel);
+                  },
+                ),
+              ],
             ),
           ],
         ),
