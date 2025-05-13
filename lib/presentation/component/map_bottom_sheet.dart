@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:photopin/core/enums/button_type.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 import 'package:photopin/presentation/component/base_icon.dart';
 import 'package:photopin/core/extensions/datetime_extension.dart';
-import 'package:photopin/presentation/component/base_icon_button.dart';
 
 /// showModalBottomSheet() 함수를 사용하여 띄울 수 있는 모달 바텀 시트입니다.
 /// 기본적으로 showModalBottomSheet의 isDismissible 속성을 반드시 false로 설정해야 [onClosing]과 [onTapClose] 호출이 보장됩니다.
@@ -143,29 +141,6 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                         ),
                       ),
                     ],
-                  ),
-                ],
-              ),
-              Row(
-                spacing: 12,
-                children: [
-                  Expanded(
-                    child: BaseIconButton(
-                      buttonType: ButtonType.small,
-                      buttonColor: AppColors.primary100,
-                      iconName: Icons.edit,
-                      buttonName: 'Edit',
-                      onClick: widget.onTapEdit,
-                    ),
-                  ),
-                  Expanded(
-                    child: BaseIconButton(
-                      buttonType: ButtonType.small,
-                      buttonColor: AppColors.secondary100,
-                      iconName: Icons.share,
-                      buttonName: 'Share',
-                      onClick: widget.onTapShare,
-                    ),
                   ),
                 ],
               ),
