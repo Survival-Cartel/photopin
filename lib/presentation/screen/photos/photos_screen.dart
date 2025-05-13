@@ -83,6 +83,7 @@ class PhotosScreen extends StatelessWidget {
                                   imageUrl: photo.imageUrl,
                                   dateTime: photo.dateTime,
                                   comment: photo.comment,
+                                  journalId: photo.journalId,
                                   onTapClose: () => Navigator.pop(context),
                                   onTapApply: (selectJournal, newComment) {
                                     // 여기서 photo를 업데이트하는 적절한 액션을 생성
