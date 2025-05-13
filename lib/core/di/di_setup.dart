@@ -6,6 +6,7 @@ import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -20,6 +21,7 @@ import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/presentation/screen/photos/photos_view_model.dart';
 import 'package:photopin/user/data/data_source/user_data_source.dart';
 import 'package:photopin/user/data/data_source/user_data_source_impl.dart';
 import 'package:photopin/user/data/repository/user_repository.dart';
@@ -50,6 +52,12 @@ void di() {
   getIt.registerFactoryParam<PhotoRepository, String, void>(
     (userId, _) =>
         PhotoRepositoryImpl(dataSource: getIt<PhotoDataSource>(param1: userId)),
+  );
+
+  getIt.registerFactoryParam<GetPhotoListUseCase, String, void>(
+    (userId, _) => GetPhotoListUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
   );
 
   getIt.registerLazySingleton<AuthDataSource>(
@@ -102,6 +110,14 @@ void di() {
     (userId, _) => MapViewModel(
       getIt<PhotoRepository>(param1: userId),
       getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
+  getIt.registerFactoryParam<PhotosViewModel, String, void>(
+    (userId, _) => PhotosViewModel(
+      getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
     ),
   );
 }

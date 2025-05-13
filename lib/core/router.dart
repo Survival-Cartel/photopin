@@ -14,6 +14,8 @@ import 'package:photopin/presentation/screen/main/main_screen_root.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_screen_root.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/presentation/screen/photos/photos_screen_root.dart';
+import 'package:photopin/presentation/screen/photos/photos_view_model.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.login,
@@ -90,6 +92,19 @@ final appRouter = GoRouter(
                 final String userId = getIt<FirebaseAuth>().currentUser!.uid;
                 return JournalScreenRoot(
                   viewModel: getIt<JournalViewModel>(param1: userId),
+                );
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.photos,
+              builder: (context, state) {
+                final String userId = getIt<FirebaseAuth>().currentUser!.uid;
+                return PhotosScreenRoot(
+                  viewModel: getIt<PhotosViewModel>(param1: userId),
                 );
               },
             ),
