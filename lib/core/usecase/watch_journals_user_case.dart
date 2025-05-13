@@ -1,0 +1,29 @@
+import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/journal/data/repository/journal_repository.dart';
+import 'package:photopin/photo/data/repository/photo_repository.dart';
+import 'package:photopin/photo/domain/model/photo_model.dart';
+
+class WatchJournalsUserCase {
+  final JournalRepository _journalRepository;
+  final PhotoRepository _photoRepository;
+
+  const WatchJournalsUserCase({
+    required JournalRepository journalRepository,
+    required PhotoRepository photoRepository,
+  }) : _journalRepository = journalRepository,
+       _photoRepository = photoRepository;
+
+  Stream<JournalPhotoCollection> execute() async* {
+    await for (final journals in _journalRepository.watchJournals()) {
+      final Map<String, List<PhotoModel>> photoMap = {};
+
+      for (final journal in journals) {
+        final List<PhotoModel> photos = await _photoRepository
+            .findPhotosByJournalId(journal.id);
+        photoMap[journal.id] = photos;
+      }
+
+      yield JournalPhotoCollection(journals: journals, photoMap: photoMap);
+    }
+  }
+}
