@@ -80,17 +80,23 @@ class PhotosScreen extends StatelessWidget {
                                   ),
                                 ),
                                 child: EditBottomSheet(
+                                  title: photo.name,
                                   imageUrl: photo.imageUrl,
                                   dateTime: photo.dateTime,
                                   comment: photo.comment,
                                   journalId: photo.journalId,
                                   onTapClose: () => Navigator.pop(context),
-                                  onTapApply: (selectJournal, newComment) {
+                                  onTapApply: (
+                                    photoName,
+                                    selectJournal,
+                                    newComment,
+                                  ) {
                                     // 여기서 photo를 업데이트하는 적절한 액션을 생성
                                     // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
                                     onAction(
                                       PhotosAction.applyClick(
                                         photo.copyWith(
+                                          name: photoName,
                                           comment: newComment,
                                           journalId: selectJournal,
                                         ),
