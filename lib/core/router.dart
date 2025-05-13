@@ -57,7 +57,8 @@ final appRouter = GoRouter(
         final String userId = getIt<FirebaseAuth>().currentUser!.uid;
 
         return CameraLauncherScreenRoot(
-            viewModel: getIt<CameraViewModel>(param1: userId));
+          viewModel: getIt<CameraViewModel>(param1: userId),
+        );
       },
     ),
     StatefulShellRoute.indexedStack(
