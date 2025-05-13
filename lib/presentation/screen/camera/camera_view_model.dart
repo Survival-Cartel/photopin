@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photopin/core/domain/binary_data.dart';
+import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_checker_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_use_case.dart';
 import 'package:photopin/photo/data/dto/photo_dto.dart';
+import 'package:photopin/core/enums/camera_stream_event.dart';
 import 'package:photopin/presentation/screen/camera/camera_state.dart';
 import 'package:uuid/v4.dart';
 
@@ -18,27 +22,34 @@ class CameraViewModel with ChangeNotifier {
   final PermissionCheckerUseCase _permissionCheckerUseCase;
   final UploadFileUseCase _uploadFileUseCase;
   final SavePhotoUseCase _savePhotoUseCase;
+  final GetPlaceNameUseCase _getPlaceNameUseCase;
 
   final UuidV4 uuid = const UuidV4();
+
+  final StreamController<CameraStreamEvent> _eventController =
+      StreamController<CameraStreamEvent>();
 
   CameraViewModel({
     required LaunchCameraUseCase launchCameraUseCase,
     required PermissionCheckerUseCase permisionCheckerUseCase,
     required UploadFileUseCase uploadFileUseCase,
     required SavePhotoUseCase savePhotoUseCase,
+    required GetPlaceNameUseCase getPlaceNameUseCase,
   }) : _launchCameraUseCase = launchCameraUseCase,
        _uploadFileUseCase = uploadFileUseCase,
        _permissionCheckerUseCase = permisionCheckerUseCase,
+       _getPlaceNameUseCase = getPlaceNameUseCase,
        _savePhotoUseCase = savePhotoUseCase;
 
   CameraState get state => _state;
+  Stream<CameraStreamEvent> get eventStream => _eventController.stream;
 
-  Future<bool> checkLocationServiceEnabled() async {
+  Future<bool> _checkLocationServiceEnabled() async {
     return await Geolocator.isLocationServiceEnabled();
   }
 
   Future<LocationPermission?> _requestLocationPermision() async {
-    bool isServiceEnabled = await checkLocationServiceEnabled();
+    bool isServiceEnabled = await _checkLocationServiceEnabled();
 
     if (isServiceEnabled) {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -73,7 +84,7 @@ class CameraViewModel with ChangeNotifier {
     }
   }
 
-  Future<bool> launchCameraApp() async {
+  Future<void> launchCameraApp() async {
     await _permissionCheckerUseCase.execute(Permission.camera);
     await _permissionCheckerUseCase.execute(Permission.photos);
 
@@ -81,6 +92,8 @@ class CameraViewModel with ChangeNotifier {
     BinaryData? binaryData = await _launchCameraUseCase.execute();
 
     if (binaryData != null && locationPermission != null) {
+      _eventController.add(CameraStreamEvent.done);
+
       final Position? position = await _determinePosition(locationPermission);
 
       final String downloadUrl = await _uploadFileUseCase.execute(
@@ -89,20 +102,21 @@ class CameraViewModel with ChangeNotifier {
         ImageMime.jpg,
       );
 
+      final String placeName = await _getPlaceNameUseCase.execute(
+        position: position!,
+      );
+
       PhotoDto dto = PhotoDto(
+        name: placeName,
         imageUrl: downloadUrl,
-        latitude: position?.latitude,
-        longitude: position?.longitude,
+        latitude: position.latitude,
+        longitude: position.longitude,
         dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
       );
 
-      // Google Place API로 최초 저장 시 장소 이름 구해서 넣기
-      await _savePhotoUseCase.execute(dto);
-
-      return true;
+      _savePhotoUseCase.execute(dto);
     }
 
-    // Case 2. 사진 촬영 취소
-    return false;
+    _eventController.add(CameraStreamEvent.cancel);
   }
 }
