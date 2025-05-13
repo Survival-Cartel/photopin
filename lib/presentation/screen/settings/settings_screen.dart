@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:photopin/core/enums/button_type.dart';
+import 'package:photopin/core/styles/app_font.dart';
+import 'package:photopin/presentation/component/base_button.dart';
 import 'package:photopin/presentation/screen/settings/settings_action.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -10,23 +13,33 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // BaseButton(
-          //   buttonName: '사진 권한 요청',
-          //   onClick: onAction(PhotoPermissionRequest()),
-          //   buttonType: ButtonType.small,
-          // ),
-          ElevatedButton(
-            onPressed: () => onAction(PhotoPermissionRequest()),
-            child: Text('사진 권한 요청'),
-          ),
-          ElevatedButton(
-            onPressed: () => onAction(CameraPermissionRequest()),
-            child: Text('카메라 권한 요청'),
-          ),
-          ElevatedButton(
-            onPressed: () => onAction(LocationPermissionRequest()),
-            child: Text('위치 권한 요청'),
+          Container(
+            width: double.infinity,
+            child: Column(
+              children: [
+                Text('권한 재신청', style: AppFonts.mediumTextBold),
+                const SizedBox(height: 12),
+                BaseButton(
+                  buttonName: '사진 권한 요청',
+                  onClick: () => onAction(PhotoPermissionRequest()),
+                  buttonType: ButtonType.small,
+                ),
+                const SizedBox(height: 12),
+                BaseButton(
+                  buttonName: '카메라 권한 요청',
+                  onClick: () => onAction(CameraPermissionRequest()),
+                  buttonType: ButtonType.small,
+                ),
+                const SizedBox(height: 12),
+                BaseButton(
+                  buttonName: '위치 권한 요청',
+                  onClick: () => onAction(LocationPermissionRequest()),
+                  buttonType: ButtonType.small,
+                ),
+              ],
+            ),
           ),
         ],
       ),
