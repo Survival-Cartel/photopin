@@ -29,6 +29,7 @@ import 'package:photopin/presentation/screen/camera/handler/permission_checker.d
 import 'package:photopin/presentation/screen/camera/handler/permisson_handler_checker.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
+import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
 import 'package:photopin/storage/data/data_source/firebase_storage_data_source.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
@@ -49,6 +50,10 @@ void di() {
   );
 
   getIt.registerSingleton<UserRepository>(UserRepositoryImpl(getIt()));
+
+  getIt.registerFactory<MainScreenViewModel>(
+    () => MainScreenViewModel(getCurrentUserUseCase: getIt()),
+  );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(

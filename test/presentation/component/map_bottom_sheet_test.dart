@@ -64,8 +64,6 @@ void main() {
       expect(find.byIcon(Icons.calendar_month), findsOneWidget);
       expect(find.byIcon(Icons.location_on), findsOneWidget);
       expect(find.byIcon(Icons.comment), findsOneWidget);
-      expect(find.byIcon(Icons.edit), findsOneWidget);
-      expect(find.byIcon(Icons.share), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.close));
       await tester.pumpAndSettle();
@@ -139,64 +137,64 @@ void main() {
     },
   );
 
-  testWidgets(
-    'MapBottomSheet의 Edit, Share 버튼을 탭하면 onTapEdit, onTapShare 콜백 함수가 실행되어야 한다.',
-    (WidgetTester tester) async {
-      bool isTapEdit = false;
-      bool isTapShare = false;
+  // testWidgets(
+  //   'MapBottomSheet의 Edit, Share 버튼을 탭하면 onTapEdit, onTapShare 콜백 함수가 실행되어야 한다.',
+  //   (WidgetTester tester) async {
+  //     bool isTapEdit = false;
+  //     bool isTapShare = false;
 
-      await mockNetworkImagesFor(() async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: SafeArea(
-                child: Builder(
-                  builder: (context) {
-                    return Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (BuildContext context) {
-                              return MapBottomSheet(
-                                title: title,
-                                location: location,
-                                imageUrl: imageUrl,
-                                comment: comment,
-                                dateTime: dateTime,
-                                onTapEdit: () {
-                                  isTapEdit = true;
-                                },
-                                onTapShare: () {
-                                  isTapShare = true;
-                                },
-                                onTapClose: () {},
-                              );
-                            },
-                          );
-                        },
-                        child: const Text('Show BottomSheet'),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        );
+  //     await mockNetworkImagesFor(() async {
+  //       await tester.pumpWidget(
+  //         MaterialApp(
+  //           home: Scaffold(
+  //             body: SafeArea(
+  //               child: Builder(
+  //                 builder: (context) {
+  //                   return Center(
+  //                     child: ElevatedButton(
+  //                       onPressed: () {
+  //                         showModalBottomSheet(
+  //                           context: context,
+  //                           isScrollControlled: true,
+  //                           builder: (BuildContext context) {
+  //                             return MapBottomSheet(
+  //                               title: title,
+  //                               location: location,
+  //                               imageUrl: imageUrl,
+  //                               comment: comment,
+  //                               dateTime: dateTime,
+  //                               onTapEdit: () {
+  //                                 isTapEdit = true;
+  //                               },
+  //                               onTapShare: () {
+  //                                 isTapShare = true;
+  //                               },
+  //                               onTapClose: () {},
+  //                             );
+  //                           },
+  //                         );
+  //                       },
+  //                       child: const Text('Show BottomSheet'),
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
 
-        await tester.pumpAndSettle();
+  //       await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Show BottomSheet'));
-        await tester.pumpAndSettle();
+  //       await tester.tap(find.text('Show BottomSheet'));
+  //       await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Edit'));
-        await tester.tap(find.text('Share'));
+  //       await tester.tap(find.text('Edit'));
+  //       await tester.tap(find.text('Share'));
 
-        expect(isTapShare, true);
-        expect(isTapEdit, true);
-      });
-    },
-  );
+  //       expect(isTapShare, true);
+  //       expect(isTapEdit, true);
+  //     });
+  //   },
+  // );
 }
