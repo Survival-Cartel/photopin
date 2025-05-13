@@ -30,7 +30,9 @@ class _MainScreenState extends State<MainScreen> {
       context.push(Routes.camera);
     }
 
-    widget.navigationShell.goBranch(index);
+    final int routeIndex = index > 2 ? index - 1 : index;
+
+    widget.navigationShell.goBranch(routeIndex);
     setState(() {
       _selectedIndex = index;
     });
