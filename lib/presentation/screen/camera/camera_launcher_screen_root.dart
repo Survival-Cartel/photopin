@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/enums/camera_stream_event.dart';
 import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
 
 class CameraLauncherScreenRoot extends StatefulWidget {
@@ -11,10 +15,35 @@ class CameraLauncherScreenRoot extends StatefulWidget {
 }
 
 class _CameraLauncherScreenRootState extends State<CameraLauncherScreenRoot> {
+  StreamSubscription? _cameraEventStream;
+
   @override
   void initState() {
     super.initState();
 
+    _cameraEventStream = widget.viewModel.eventStream.listen((
+      CameraStreamEvent event,
+    ) {
+      if (mounted) {
+        switch (event) {
+          case CameraStreamEvent.done:
+            context.pop();
+          case CameraStreamEvent.cancel:
+            context.pop();
+        }
+      }
+    });
+
+    mountCameraApp();
+  }
+
+  @override
+  void dispose() {
+    _cameraEventStream?.cancel();
+    super.dispose();
+  }
+
+  void mountCameraApp() {
     widget.viewModel.launchCameraApp();
   }
 
