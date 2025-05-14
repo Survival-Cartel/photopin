@@ -13,6 +13,9 @@ class PhotoPinMap extends StatefulWidget {
   final Set<Marker> markers;
   final Map<String, List<LatLng>> polylines;
   final Color polyLineColor;
+  final void Function(GoogleMapController)? onMapCreated;
+  final void Function()? onCameraIdle;
+  final void Function(CameraPosition)? onCameraMove;
 
   const PhotoPinMap({
     super.key,
@@ -21,6 +24,9 @@ class PhotoPinMap extends StatefulWidget {
     required this.markers,
     required this.polylines,
     required this.polyLineColor,
+    this.onMapCreated,
+    this.onCameraIdle,
+    this.onCameraMove,
   });
 
   @override
@@ -28,9 +34,6 @@ class PhotoPinMap extends StatefulWidget {
 }
 
 class PhotoPinMapState extends State<PhotoPinMap> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-
   @override
   void initState() {
     super.initState();
@@ -55,9 +58,7 @@ class PhotoPinMapState extends State<PhotoPinMap> {
         ),
         myLocationEnabled: true, // ✅ 내 위치 파란 점
         myLocationButtonEnabled: true, // ✅ 오른쪽 버튼 표시
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+        onMapCreated: widget.onMapCreated,
         buildingsEnabled: false,
         polylines:
             widget.polylines.keys.map((id) {
@@ -68,6 +69,10 @@ class PhotoPinMapState extends State<PhotoPinMap> {
                 width: 6,
               );
             }).toSet(),
+        onCameraMove: widget.onCameraMove,
+        onCameraIdle: () async {
+          widget.onCameraIdle?.call();
+        },
         markers: widget.markers,
       ),
     );

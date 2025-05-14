@@ -123,3 +123,6 @@ analytics/macos/Runner/GoogleService-Info.plist
 **/GoogleService-Info.plist
 **/google-services.json
 **/firebase_app_id_file.json
+
+# env
+.env

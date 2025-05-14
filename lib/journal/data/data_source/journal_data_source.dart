@@ -6,4 +6,5 @@ abstract interface class JournalDataSource {
   Future<void> saveJournal(JournalDto dto);
   Future<void> deleteJournal(String journalId);
   Future<List<JournalDto>> findJournals();
+  Stream<List<JournalDto>> watchJournals();
 }

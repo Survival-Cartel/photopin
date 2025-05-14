@@ -7,4 +7,5 @@ abstract interface class JournalRepository
     implements Repository<JournalModel, String, JournalDto> {
   Future<void> deleteJournal(String journalId);
   Future<void> saveJournal(JournalDto dto);
+  Stream<List<JournalModel>> watchJournals();
 }
