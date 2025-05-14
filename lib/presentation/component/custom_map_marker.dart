@@ -25,7 +25,7 @@ class CustomMapMarker extends StatelessWidget {
                     ? const EdgeInsets.symmetric(horizontal: 4)
                     : null,
             decoration: BoxDecoration(
-              color: AppColors.marker50,
+              color: AppColors.marker40,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(tooltip, style: AppFonts.smallerTextRegular),
