@@ -41,9 +41,8 @@ class CameraViewModel {
         _eventController.add(CameraStreamEvent.done);
         await _savePictureInDeviceUseCase.execute(imageData.xFile.path);
         await _savePictureInFirebaseUseCase.execute(imageData, ImageMime.jpg);
-      } else {
-        _eventController.add(CameraStreamEvent.cancel);
       }
     }
+    _eventController.add(CameraStreamEvent.cancel);
   }
 }
