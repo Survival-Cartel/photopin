@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photopin/camera/presentation/camera_launcher_screen_root.dart';
+import 'package:photopin/camera/presentation/camera_view_model.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/camera/camera_launcher_screen_root.dart';
-import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';

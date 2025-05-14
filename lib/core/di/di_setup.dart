@@ -6,14 +6,23 @@ import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
+import 'package:photopin/camera/data/repository/image_save_plus_local_device_repository.dart';
+import 'package:photopin/camera/data/repository/local_device_repository.dart';
+import 'package:photopin/camera/helper/camera_helper.dart';
+import 'package:photopin/camera/helper/image_picker_camera_helper.dart';
+import 'package:photopin/camera/presentation/camera_view_model.dart';
+import 'package:photopin/camera/usecase/launch_camera_check_permission_use_case.dart';
+import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
-import 'package:photopin/core/usecase/launch_camera_use_case.dart';
-import 'package:photopin/core/usecase/permission_checker_use_case.dart';
+import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
-import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
@@ -24,11 +33,8 @@ import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
-import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
-import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
-import 'package:photopin/presentation/screen/camera/handler/permission_checker.dart';
-import 'package:photopin/presentation/screen/camera/handler/permisson_handler_checker.dart';
+import 'package:photopin/core/service/location_service.dart';
+import 'package:photopin/core/service/geolocator_location_service.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
@@ -104,14 +110,22 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<PermissionChecker>(PermissionHandlerChecker());
-
-  getIt.registerSingleton<PermissionCheckerUseCase>(
-    PermissionCheckerUseCase(permissionChecker: getIt<PermissionChecker>()),
-  );
-
   getIt.registerSingleton<GetCurrentUserUseCase>(
     GetCurrentUserUseCase(getIt()),
+  );
+
+  getIt.registerSingleton<LocationService>(GeolocatorLocationService());
+
+  getIt.registerSingleton<GetCurrentLocationUseCase>(
+    GetCurrentLocationUseCase(geoService: getIt<LocationService>()),
+  );
+
+  getIt.registerSingleton<PermissionCheckUseCase>(PermissionCheckUseCase());
+
+  getIt.registerSingleton<LaunchCameraCheckPermissionUseCase>(
+    LaunchCameraCheckPermissionUseCase(
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+    ),
   );
 
   getIt.registerFactoryParam<WatchJournalsUseCase, String, void>(
@@ -128,23 +142,47 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<CameraHandler>(ImagePickerCameraHandler());
+  getIt.registerSingleton<CameraHelper>(ImagePickerCameraHelper());
 
   getIt.registerSingleton<LaunchCameraUseCase>(
-    LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
+    LaunchCameraUseCase(cameraHelper: getIt<CameraHelper>()),
   );
 
-  getIt.registerFactoryParam<UploadFileUseCase, String, void>(
-    (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
+  getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(
+    (userId, _) =>
+        UploadFileInStorageUseCase(getIt<StorageDataSource>(param1: userId)),
+  );
+
+  getIt.registerFactoryParam<SavePictureInFirebaseUseCase, String, void>(
+    (userId, _) => SavePictureInFirebaseUseCase(
+      getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
+      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
+      uploadFileInStorageUseCase: getIt<UploadFileInStorageUseCase>(
+        param1: userId,
+      ),
+      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+    ),
+  );
+
+  getIt.registerSingleton<LocalDeviceRepository>(
+    ImageSavePlusLocalDeviceRepository(),
+  );
+
+  getIt.registerSingleton<SavePictureInDeviceUseCase>(
+    SavePictureInDeviceUseCase(
+      localDeviceRepository: getIt<LocalDeviceRepository>(),
+    ),
   );
 
   getIt.registerFactoryParam<CameraViewModel, String, void>(
     (userId, _) => CameraViewModel(
+      savePictureInDeviceUseCase: getIt<SavePictureInDeviceUseCase>(),
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
-      permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
-      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
-      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
-      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+      launchCameraCheckPermissionUseCase:
+          getIt<LaunchCameraCheckPermissionUseCase>(),
+      savePictureInFirebaseUseCase: getIt<SavePictureInFirebaseUseCase>(
+        param1: userId,
+      ),
     ),
   );
 
@@ -174,6 +212,6 @@ void di() {
   );
 
   getIt.registerSingleton<SettingsViewModel>(
-    SettingsViewModel(getIt<PermissionCheckerUseCase>()),
+    SettingsViewModel(permissionCheckUseCase: getIt<PermissionCheckUseCase>()),
   );
 }
