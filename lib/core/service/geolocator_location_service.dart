@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:photopin/core/domain/location.dart';
-import 'package:photopin/presentation/screen/camera/services/location_service.dart';
+import 'package:photopin/core/service/location_service.dart';
 
 class GeolocatorLocationService implements LocationService {
   @override
