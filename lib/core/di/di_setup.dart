@@ -6,6 +6,15 @@ import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
+import 'package:photopin/camera/data/repository/image_save_plus_local_device_repository.dart';
+import 'package:photopin/camera/data/repository/local_device_repository.dart';
+import 'package:photopin/camera/helper/camera_helper.dart';
+import 'package:photopin/camera/helper/image_picker_camera_helper.dart';
+import 'package:photopin/camera/presentation/camera_view_model.dart';
+import 'package:photopin/camera/usecase/launch_camera_check_permission_use_case.dart';
+import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
@@ -24,14 +33,8 @@ import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
-import 'package:photopin/presentation/screen/camera/service/camera_service.dart';
-import 'package:photopin/presentation/screen/camera/service/image_picker_camera_service.dart';
 import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/geolocator_location_service.dart';
-import 'package:photopin/presentation/screen/camera/usecase/launch_camera_check_permission_use_case.dart';
-import 'package:photopin/presentation/screen/camera/usecase/launch_camera_use_case.dart';
-import 'package:photopin/presentation/screen/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
@@ -139,10 +142,10 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<CameraService>(ImagePickerCameraService());
+  getIt.registerSingleton<CameraHelper>(ImagePickerCameraHelper());
 
   getIt.registerSingleton<LaunchCameraUseCase>(
-    LaunchCameraUseCase(cameraService: getIt<CameraService>()),
+    LaunchCameraUseCase(cameraHelper: getIt<CameraHelper>()),
   );
 
   getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(
@@ -161,8 +164,19 @@ void di() {
     ),
   );
 
+  getIt.registerSingleton<LocalDeviceRepository>(
+    ImageSavePlusLocalDeviceRepository(),
+  );
+
+  getIt.registerSingleton<SavePictureInDeviceUseCase>(
+    SavePictureInDeviceUseCase(
+      localDeviceRepository: getIt<LocalDeviceRepository>(),
+    ),
+  );
+
   getIt.registerFactoryParam<CameraViewModel, String, void>(
     (userId, _) => CameraViewModel(
+      savePictureInDeviceUseCase: getIt<SavePictureInDeviceUseCase>(),
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
       launchCameraCheckPermissionUseCase:
           getIt<LaunchCameraCheckPermissionUseCase>(),
