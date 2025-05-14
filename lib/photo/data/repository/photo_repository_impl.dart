@@ -58,6 +58,6 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<void> updatePhoto(PhotoModel photoModel) async {
-    await dataSource.updatePhoto(photoModel.toDto());
+    await _photoDataSource.updatePhoto(photoModel.toDto());
   }
 }
