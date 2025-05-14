@@ -1,16 +1,16 @@
 import 'package:photopin/photo/domain/model/photo_model.dart';
 
 sealed class PhotosAction {
-  factory PhotosAction.photoFilterClick(String filter) = PhotoFilterClick;
+  factory PhotosAction.photoFilterClick(int index) = PhotoFilterClick;
   factory PhotosAction.photoCardClick() = PhotoCardClick;
   factory PhotosAction.applyClick(PhotoModel photoModel) = PhotoApplyClick;
   factory PhotosAction.shareClick() = PhotoShareClick;
 }
 
 class PhotoFilterClick implements PhotosAction {
-  final String filter;
+  final int index;
 
-  PhotoFilterClick(this.filter);
+  PhotoFilterClick(this.index);
 }
 
 class PhotoCardClick implements PhotosAction {}
