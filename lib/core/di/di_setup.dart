@@ -30,6 +30,8 @@ import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart'
 import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
 import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/geolocator_location_service.dart';
+import 'package:photopin/presentation/screen/camera/usecase/launch_camera_check_permission_use_case.dart';
+import 'package:photopin/presentation/screen/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
@@ -115,6 +117,14 @@ void di() {
     GetCurrentLocationUseCase(geoService: getIt<LocationService>()),
   );
 
+  getIt.registerSingleton<PermissionCheckUseCase>(PermissionCheckUseCase());
+
+  getIt.registerSingleton<LaunchCameraCheckPermissionUseCase>(
+    LaunchCameraCheckPermissionUseCase(
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+    ),
+  );
+
   getIt.registerFactoryParam<WatchJournalsUseCase, String, void>(
     (userId, _) => WatchJournalsUseCase(
       photoRepository: getIt<PhotoRepository>(param1: userId),
@@ -139,14 +149,23 @@ void di() {
     (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
   );
 
+  getIt.registerFactoryParam<SavePictureInFirebaseUseCase, String, void>(
+    (userId, _) => SavePictureInFirebaseUseCase(
+      getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
+      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
+      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
+      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+    ),
+  );
+
   getIt.registerFactoryParam<CameraViewModel, String, void>(
     (userId, _) => CameraViewModel(
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
-      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
-      getCurrentLocatinoUseCase: getIt<GetCurrentLocationUseCase>(),
-      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
-      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
-      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+      launchCameraCheckPermissionUseCase:
+          getIt<LaunchCameraCheckPermissionUseCase>(),
+      savePictureInFirebaseUseCase: getIt<SavePictureInFirebaseUseCase>(
+        param1: userId,
+      ),
     ),
   );
 
@@ -174,8 +193,6 @@ void di() {
       getIt<JournalRepository>(param1: userId),
     ),
   );
-
-  getIt.registerSingleton<PermissionCheckUseCase>(PermissionCheckUseCase());
 
   getIt.registerSingleton<SettingsViewModel>(
     SettingsViewModel(permissionCheckUseCase: getIt<PermissionCheckUseCase>()),
