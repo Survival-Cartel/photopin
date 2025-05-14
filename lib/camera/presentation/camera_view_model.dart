@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:photopin/camera/usecase/launch_camera_check_permission_use_case.dart';
 import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
@@ -9,7 +8,7 @@ import 'package:photopin/core/domain/image_data.dart';
 import 'package:photopin/core/enums/image_mime.dart';
 import 'package:photopin/core/enums/camera_stream_event.dart';
 
-class CameraViewModel with ChangeNotifier {
+class CameraViewModel {
   final LaunchCameraUseCase _launchCameraUseCase;
   final LaunchCameraCheckPermissionUseCase _launchCameraCheckPermissionUseCase;
   final SavePictureInFirebaseUseCase _savePictureInFirebaseUseCase;
