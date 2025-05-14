@@ -1,4 +1,4 @@
-import 'package:photopin/core/domain/compare_model.dart';
+import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
@@ -19,7 +19,7 @@ class GetCompareModelUseCase {
        _photoRepository = photoRepository,
        _userRepository = userRepository;
 
-  Future<CompareModel> execute({
+  Future<IntegrationModel> execute({
     required String userId,
     required String journalId,
   }) async {
@@ -28,6 +28,6 @@ class GetCompareModelUseCase {
     final List<PhotoModel> photos = await _photoRepository
         .findPhotosByJournalId(journalId);
 
-    return CompareModel(user: user, journal: journal, photos: photos);
+    return IntegrationModel(user: user, journal: journal, photos: photos);
   }
 }
