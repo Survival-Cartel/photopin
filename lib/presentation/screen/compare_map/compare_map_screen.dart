@@ -59,7 +59,7 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
   @override
   void didUpdateWidget(CompareMapScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.state.sharedData.photos != oldWidget.state.myData.photos) {
+    if (widget.state.sharedData.photos != oldWidget.state.sharedData.photos) {
       _clusterManager.setItems([
         ...widget.state.sharedData.photos.map(
           (p) => PhotoClusterItem(photo: p),
