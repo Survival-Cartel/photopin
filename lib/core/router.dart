@@ -7,6 +7,10 @@ import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/camera/camera_launcher_screen_root.dart';
 import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
+import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_screen_root.dart';
+import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_view_model.dart';
+import 'package:photopin/presentation/screen/compare_map/compare_map_screen_root.dart';
+import 'package:photopin/presentation/screen/compare_map/compare_map_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_screen_root.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_root.dart';
@@ -71,6 +75,30 @@ final appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '${Routes.compareMap}/:userId/:journalId/:myJournalId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String compareUserId = state.pathParameters['userId']!;
+        final String compareJournalId = state.pathParameters['journalId']!;
+        final String myJournalId = state.pathParameters['myJournalId']!;
+
+        final String myUserId = getIt<FirebaseAuth>().currentUser!.uid;
+
+        final CompareMapViewModel viewModel = getIt<CompareMapViewModel>(
+          param1: compareUserId,
+          param2: myUserId,
+        );
+
+        viewModel.init(
+          sharedUserId: compareUserId,
+          sharedJournalId: compareJournalId,
+          myUserId: myUserId,
+          myJournalId: myJournalId,
+        );
+
+        return CompareMapScreenRoot(viewModel: viewModel);
+      },
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         final MainScreenViewModel mainScreenViewModel = getIt();
@@ -97,16 +125,24 @@ final appRouter = GoRouter(
                 GoRoute(
                   path: '${Routes.map}/:userId/:journalId',
                   builder: (BuildContext context, GoRouterState state) {
-                    final String userId = state.pathParameters['userId']!;
-                    final String journalId = state.pathParameters['journalId']!;
+                    final String compareUserId =
+                        state.pathParameters['userId']!;
+                    final String compareJournalId =
+                        state.pathParameters['journalId']!;
 
-                    final MapViewModel viewModel = getIt<MapViewModel>(
-                      param1: userId,
+                    final String myUserId =
+                        getIt<FirebaseAuth>().currentUser!.uid;
+
+                    final CompareDialogViewModel viewModel =
+                        getIt<CompareDialogViewModel>(param1: myUserId);
+
+                    viewModel.init();
+
+                    return CompareDialogScreenRoot(
+                      viewModel: viewModel,
+                      compareUserId: compareUserId,
+                      compareJournalId: compareJournalId,
                     );
-
-                    viewModel.init(journalId);
-
-                    return MapScreenRoot(mapViewModel: viewModel);
                   },
                 ),
               ],
