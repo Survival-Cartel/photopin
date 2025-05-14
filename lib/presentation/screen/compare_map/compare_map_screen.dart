@@ -32,12 +32,13 @@ class CompareMapScreen extends StatefulWidget {
 }
 
 class _CompareMapScreenState extends State<CompareMapScreen> {
-  static const double _minHeight = 160;
+  static const double _minHeight = 60;
 
   late package.ClusterManager<PhotoClusterItem> _clusterManager;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   bool showPolyline = true;
+  bool isHide = false;
   double showPolylineZoomLevel = 17;
 
   static const double _maxHeight = 400;
@@ -155,6 +156,9 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
     final mid = (_maxHeight + _minHeight) / 2;
     setState(() {
       _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
+      if (_sheetHeight == _minHeight) {
+        isHide = !isHide;
+      }
     });
   }
 
@@ -170,6 +174,7 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
   void _onHandleTap() {
     setState(() {
       _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
+      isHide = !isHide;
     });
   }
 
@@ -192,6 +197,7 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
                 onAction: widget.onAction,
                 sharedModel: widget.state.sharedData,
                 myModel: widget.state.myData,
+                isHide: isHide,
               )
               : const SizedBox(),
       body:
@@ -324,6 +330,7 @@ class _LineInfo extends StatelessWidget {
 
 class MapBottomDragWidget extends StatelessWidget {
   final double sheetHeight;
+  final bool isHide;
   final void Function(DragUpdateDetails details) onHandleDragUpdate;
   final void Function(DragEndDetails details) onHandleDragEnd;
   final void Function() onHandleTap;
@@ -340,6 +347,7 @@ class MapBottomDragWidget extends StatelessWidget {
     required this.onAction,
     required this.sharedModel,
     required this.myModel,
+    required this.isHide,
   });
 
   @override
@@ -376,55 +384,58 @@ class MapBottomDragWidget extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Row(
-              spacing: 8,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CompareCard(
-                          profileImageUrl: myModel.user.profileImg,
-                          nameString: myModel.user.displayName,
-                          journal: myModel.journal,
-                          color: AppColors.secondary100,
-                          photoString: '${myModel.photos.length} Photos',
-                        ),
+          !isHide
+              ? Expanded(
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CompareCard(
+                              profileImageUrl: myModel.user.profileImg,
+                              nameString: myModel.user.displayName,
+                              journal: myModel.journal,
+                              color: AppColors.secondary100,
+                              photoString: '${myModel.photos.length} Photos',
+                            ),
+                          ),
+                          Expanded(
+                            child: GrouplistPhotosTimelineTile(
+                              photos: myModel.photos,
+                              onTap: (id) {},
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: GrouplistPhotosTimelineTile(
-                          photos: myModel.photos,
-                          onTap: (id) {},
-                        ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CompareCard(
+                              profileImageUrl: sharedModel.user.profileImg,
+                              nameString: sharedModel.user.displayName,
+                              journal: sharedModel.journal,
+                              color: AppColors.primary100,
+                              photoString:
+                                  '${sharedModel.photos.length} Photos',
+                            ),
+                          ),
+                          Expanded(
+                            child: GrouplistPhotosTimelineTile(
+                              photos: sharedModel.photos,
+                              onTap: (id) {},
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CompareCard(
-                          profileImageUrl: sharedModel.user.profileImg,
-                          nameString: sharedModel.user.displayName,
-                          journal: sharedModel.journal,
-                          color: AppColors.primary100,
-                          photoString: '${sharedModel.photos.length} Photos',
-                        ),
-                      ),
-                      Expanded(
-                        child: GrouplistPhotosTimelineTile(
-                          photos: sharedModel.photos,
-                          onTap: (id) {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+              )
+              : const SizedBox(),
         ],
       ),
     );
