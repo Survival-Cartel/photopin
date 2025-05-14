@@ -40,6 +40,7 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
   bool showPolyline = true;
   bool isHide = false;
   double showPolylineZoomLevel = 17;
+  LatLng initailLatLng = const LatLng(37.513, 127.1027);
 
   static const double _maxHeight = 400;
 
@@ -66,6 +67,22 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
         ),
         ...widget.state.myData.photos.map((p) => PhotoClusterItem(photo: p)),
       ]);
+      final List<PhotoModel> sharedPhotos = widget.state.sharedData.photos;
+      final List<PhotoModel> myPhotos = widget.state.myData.photos;
+
+      final List<PhotoModel> allPhotos = [...sharedPhotos, ...myPhotos];
+      double totalLatitude = 0;
+      double totalLongitude = 0;
+
+      for (PhotoModel photo in allPhotos) {
+        totalLatitude += photo.location.latitude;
+        totalLongitude += photo.location.longitude;
+      }
+
+      initailLatLng = LatLng(
+        totalLatitude / allPhotos.length,
+        totalLongitude / allPhotos.length,
+      );
     }
   }
 
@@ -207,22 +224,7 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
                 children: [
                   widget.state.sharedData.photos.isNotEmpty
                       ? PhotoPinMap(
-                        initialLocation: LatLng(
-                          widget
-                              .state
-                              .sharedData
-                              .photos
-                              .first
-                              .location
-                              .latitude,
-                          widget
-                              .state
-                              .sharedData
-                              .photos
-                              .first
-                              .location
-                              .longitude,
-                        ),
+                        initialLocation: initailLatLng,
                         onMapCreated: (controller) {
                           if (!_controller.isCompleted) {
                             _controller.complete(controller);
