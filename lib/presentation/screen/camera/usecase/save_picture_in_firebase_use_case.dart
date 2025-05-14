@@ -17,10 +17,10 @@ class SavePictureInFirebaseUseCase {
   final UuidV4 uuid = const UuidV4();
 
   const SavePictureInFirebaseUseCase({
-    required getCurrentLocationUseCase,
-    required uploadFileInStorageUseCase,
-    required getPlaceNameUseCase,
-    required savePhotoUseCase,
+    required GetCurrentLocationUseCase getCurrentLocationUseCase,
+    required UploadFileInStorageUseCase uploadFileInStorageUseCase,
+    required GetPlaceNameUseCase getPlaceNameUseCase,
+    required SavePhotoUseCase savePhotoUseCase,
   }) : _getCurrentLocationUseCase = getCurrentLocationUseCase,
        _uploadFileInStorageUseCase = uploadFileInStorageUseCase,
        _getPlaceNameUseCase = getPlaceNameUseCase,
