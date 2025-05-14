@@ -1,5 +1,5 @@
 import 'package:photopin/core/domain/binary_data.dart';
 
-abstract interface class CameraHandler {
+abstract interface class CameraService {
   Future<BinaryData?> launch();
 }

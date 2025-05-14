@@ -26,8 +26,8 @@ import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
-import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
-import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
+import 'package:photopin/presentation/screen/camera/service/camera_service.dart';
+import 'package:photopin/presentation/screen/camera/service/image_picker_camera_service.dart';
 import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/geolocator_location_service.dart';
 import 'package:photopin/presentation/screen/camera/usecase/launch_camera_check_permission_use_case.dart';
@@ -139,10 +139,10 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<CameraHandler>(ImagePickerCameraHandler());
+  getIt.registerSingleton<CameraService>(ImagePickerCameraService());
 
   getIt.registerSingleton<LaunchCameraUseCase>(
-    LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
+    LaunchCameraUseCase(cameraService: getIt<CameraService>()),
   );
 
   getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(

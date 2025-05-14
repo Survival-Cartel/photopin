@@ -6,11 +6,11 @@ import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart'
 import 'package:photopin/presentation/screen/camera/handler/image_save_handler.dart';
 import 'package:photopin/presentation/screen/camera/handler/image_save_plus_handler.dart';
 
-class ImagePickerCameraHandler implements CameraHandler {
+class ImagePickerCameraService implements CameraService {
   final ImagePicker _imagePicker = ImagePicker();
   final ImageSaveHandler _imageSaveHandler = ImageSavePlusHandler();
 
-  ImagePickerCameraHandler();
+  ImagePickerCameraService();
 
   @override
   Future<BinaryData?> launch() async {

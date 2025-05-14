@@ -1,13 +1,13 @@
 import 'package:photopin/core/domain/binary_data.dart';
-import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
+import 'package:photopin/presentation/screen/camera/service/camera_service.dart';
 
 class LaunchCameraUseCase {
-  final CameraHandler _cameraHandler;
+  final CameraService _cameraService;
 
-  LaunchCameraUseCase({required CameraHandler cameraHandler})
-    : _cameraHandler = cameraHandler;
+  LaunchCameraUseCase({required CameraService cameraService})
+    : _cameraService = cameraService;
 
   Future<BinaryData?> execute() async {
-    return await _cameraHandler.launch();
+    return await _cameraService.launch();
   }
 }
