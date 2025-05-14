@@ -4,18 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_cluster_manager_2/google_maps_cluster_manager_2.dart'
     as package;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:grouped_list/grouped_list.dart';
+import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/core/domain/photo_cluster_item.dart';
-import 'package:photopin/core/extensions/datetime_extension.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
-import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
+import 'package:photopin/presentation/component/compare_card.dart';
 import 'package:photopin/presentation/component/custom_map_marker.dart';
-import 'package:photopin/presentation/component/date_range_slider.dart';
+import 'package:photopin/presentation/component/grouplist_photos_timeline_tile.dart';
+import 'package:photopin/presentation/component/photopin_head.dart';
 import 'package:photopin/presentation/component/photopin_map.dart';
-import 'package:photopin/presentation/component/text_chip.dart';
-import 'package:photopin/presentation/component/timeline_tile.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_action.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_state.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
@@ -34,7 +32,7 @@ class CompareMapScreen extends StatefulWidget {
 }
 
 class _CompareMapScreenState extends State<CompareMapScreen> {
-  static const double _minHeight = 104;
+  static const double _minHeight = 160;
 
   late package.ClusterManager<PhotoClusterItem> _clusterManager;
   final Completer<GoogleMapController> _controller =
@@ -154,7 +152,6 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
   }
 
   void _onHandleDragEnd(DragEndDetails details) {
-    // 반쯤 이상 펼쳐져 있으면 완전 확장, 아니면 접기
     final mid = (_maxHeight + _minHeight) / 2;
     setState(() {
       _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
@@ -179,7 +176,12 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const PhotopinHead(),
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+      ),
       bottomSheet:
           widget.state.sharedData.journal.id != ''
               ? MapBottomDragWidget(
@@ -187,9 +189,9 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
                 onHandleDragUpdate: _onHandleDragUpdate,
                 onHandleDragEnd: _onHandleDragEnd,
                 onHandleTap: _onHandleTap,
-                photos: widget.state.sharedData.photos,
-                journal: widget.state.sharedData.journal,
                 onAction: widget.onAction,
+                sharedModel: widget.state.sharedData,
+                myModel: widget.state.myData,
               )
               : const SizedBox(),
       body:
@@ -326,8 +328,8 @@ class MapBottomDragWidget extends StatelessWidget {
   final void Function(DragEndDetails details) onHandleDragEnd;
   final void Function() onHandleTap;
   final void Function(CompareMapAction) onAction;
-  final List<PhotoModel> photos;
-  final JournalModel journal;
+  final IntegrationModel sharedModel;
+  final IntegrationModel myModel;
 
   const MapBottomDragWidget({
     super.key,
@@ -335,9 +337,9 @@ class MapBottomDragWidget extends StatelessWidget {
     required this.onHandleDragUpdate,
     required this.onHandleDragEnd,
     required this.onHandleTap,
-    required this.photos,
-    required this.journal,
     required this.onAction,
+    required this.sharedModel,
+    required this.myModel,
   });
 
   @override
@@ -374,66 +376,53 @@ class MapBottomDragWidget extends StatelessWidget {
               ),
             ),
           ),
-          DateRangeSlider(
-            startDate: journal.startDate,
-            endDate: journal.endDate,
-            onChanged: (start, end) {
-              // onAction(
-              //   MapAction.onDateRangeClick(
-              //     startDate: start,
-              //     endDate: end,
-              //     journalId: journal.id,
-              //   ),
-              // );
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Timeline', style: AppFonts.smallTextRegular),
-              TextChip(text: '${photos.length} Places'),
-            ],
-          ),
           Expanded(
-            child: GroupedListView<PhotoModel, DateTime>(
-              elements: photos,
-              groupBy:
-                  (photo) => DateTime(
-                    photo.dateTime.year,
-                    photo.dateTime.month,
-                    photo.dateTime.day,
+            child: Row(
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: CompareCard(
+                          profileImageUrl: myModel.user.profileImg,
+                          nameString: myModel.user.displayName,
+                          journal: myModel.journal,
+                          color: AppColors.secondary100,
+                          photoString: '${myModel.photos.length} Photos',
+                        ),
+                      ),
+                      Expanded(
+                        child: GrouplistPhotosTimelineTile(
+                          photos: myModel.photos,
+                          onTap: (id) {},
+                        ),
+                      ),
+                    ],
                   ),
-              groupSeparatorBuilder:
-                  (date) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      spacing: 8,
-                      children: [
-                        Expanded(
-                          child: Container(height: 1, color: AppColors.gray4),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: CompareCard(
+                          profileImageUrl: sharedModel.user.profileImg,
+                          nameString: sharedModel.user.displayName,
+                          journal: sharedModel.journal,
+                          color: AppColors.primary100,
+                          photoString: '${sharedModel.photos.length} Photos',
                         ),
-                        Text(
-                          date.formDateString(),
-                          style: AppFonts.smallTextRegular,
+                      ),
+                      Expanded(
+                        child: GrouplistPhotosTimelineTile(
+                          photos: sharedModel.photos,
+                          onTap: (id) {},
                         ),
-                        Expanded(
-                          child: Container(height: 1, color: AppColors.gray4),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-              itemBuilder: (context, photo) {
-                return TimeLineTile(
-                  photoId: photo.id,
-                  dateTime: photo.dateTime,
-                  title: photo.name,
-                  imageUrl: photo.imageUrl,
-                  onTap: (String photoId) {},
-                  // onTap: (id) => onAction(MapAction.onPhotoClick(id)),
-                );
-              },
-              separator: const SizedBox(height: 4),
-              order: GroupedListOrder.ASC,
+                ),
+              ],
             ),
           ),
         ],

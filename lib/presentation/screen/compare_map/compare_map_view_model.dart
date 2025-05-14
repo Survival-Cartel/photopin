@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:photopin/core/domain/compare_model.dart';
+import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_state.dart';
 
@@ -25,11 +25,11 @@ class CompareMapViewModel with ChangeNotifier {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
-    final CompareModel sharedModel = await _sharedUseCase.execute(
+    final IntegrationModel sharedModel = await _sharedUseCase.execute(
       userId: sharedUserId,
       journalId: sharedJournalId,
     );
-    final CompareModel myModel = await _myUseCase.execute(
+    final IntegrationModel myModel = await _myUseCase.execute(
       userId: myUserId,
       journalId: myJournalId,
     );

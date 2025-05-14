@@ -1,14 +1,14 @@
-import 'package:photopin/core/domain/compare_model.dart';
+import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
 class CompareMapState {
-  final CompareModel sharedData;
-  final CompareModel myData;
+  final IntegrationModel sharedData;
+  final IntegrationModel myData;
   final bool isLoading;
 
   const CompareMapState({
-    this.sharedData = const CompareModel(
+    this.sharedData = const IntegrationModel(
       user: UserModel(id: '', email: '', displayName: '', profileImg: ''),
       photos: [],
       journal: JournalModel(
@@ -20,7 +20,7 @@ class CompareMapState {
         tripWith: [],
       ),
     ),
-    this.myData = const CompareModel(
+    this.myData = const IntegrationModel(
       user: UserModel(id: '', email: '', displayName: '', profileImg: ''),
       photos: [],
       journal: JournalModel(
@@ -36,8 +36,8 @@ class CompareMapState {
   });
 
   CompareMapState copyWith({
-    CompareModel? sharedData,
-    CompareModel? myData,
+    IntegrationModel? sharedData,
+    IntegrationModel? myData,
     bool? isLoading,
   }) {
     return CompareMapState(
