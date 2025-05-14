@@ -14,7 +14,7 @@ import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/launch_camera_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
-import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
@@ -145,15 +145,18 @@ void di() {
     LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
   );
 
-  getIt.registerFactoryParam<UploadFileUseCase, String, void>(
-    (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
+  getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(
+    (userId, _) =>
+        UploadFileInStorageUseCase(getIt<StorageDataSource>(param1: userId)),
   );
 
   getIt.registerFactoryParam<SavePictureInFirebaseUseCase, String, void>(
     (userId, _) => SavePictureInFirebaseUseCase(
       getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
       savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
-      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
+      uploadFileInStorageUseCase: getIt<UploadFileInStorageUseCase>(
+        param1: userId,
+      ),
       getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
     ),
   );

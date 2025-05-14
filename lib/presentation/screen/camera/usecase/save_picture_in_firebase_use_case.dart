@@ -4,13 +4,13 @@ import 'package:photopin/core/enums/image_mime.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
-import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/photo/data/dto/photo_dto.dart';
 import 'package:uuid/v4.dart';
 
 class SavePictureInFirebaseUseCase {
   final GetCurrentLocationUseCase _getCurrentLocationUseCase;
-  final UploadFileUseCase _uploadFileUseCase;
+  final UploadFileInStorageUseCase _uploadFileInStorageUseCase;
   final GetPlaceNameUseCase _getPlaceNameUseCase;
   final SavePhotoUseCase _savePhotoUseCase;
 
@@ -18,11 +18,11 @@ class SavePictureInFirebaseUseCase {
 
   const SavePictureInFirebaseUseCase({
     required getCurrentLocationUseCase,
-    required uploadFileUseCase,
+    required uploadFileInStorageUseCase,
     required getPlaceNameUseCase,
     required savePhotoUseCase,
   }) : _getCurrentLocationUseCase = getCurrentLocationUseCase,
-       _uploadFileUseCase = uploadFileUseCase,
+       _uploadFileInStorageUseCase = uploadFileInStorageUseCase,
        _getPlaceNameUseCase = getPlaceNameUseCase,
        _savePhotoUseCase = savePhotoUseCase;
 
@@ -30,7 +30,7 @@ class SavePictureInFirebaseUseCase {
     final Location? location = await _getCurrentLocationUseCase.execute();
 
     if (location != null) {
-      final String downloadUrl = await _uploadFileUseCase.execute(
+      final String downloadUrl = await _uploadFileInStorageUseCase.execute(
         uuid.generate(),
         binaryData.bytes,
         imageMime,
