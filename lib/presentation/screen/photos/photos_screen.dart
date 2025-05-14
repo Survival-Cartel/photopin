@@ -13,26 +13,22 @@ class PhotosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> journalNames =
+        state.journals.map((journal) => journal.name).toList();
+
+    final filterLabels = ['All', ...journalNames];
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 55),
-              child: MapFilter(
-                icons: const [
-                  Icon(Icons.watch_later_rounded),
-                  Icon(Icons.local_fire_department),
-                  Icon(Icons.photo_library_sharp),
-                ],
-                labels: const ['Time', 'Heat Map', 'Photos'],
-                initialIndex: 0,
-                onSelected: (int index) {
-                  // 필터 선택 처리 구현
-                  // onAction(PhotosAction.filterChanged(index));
-                },
-              ),
+            MapFilter(
+              labels: filterLabels,
+              selectedIndex: state.selectedFilterIndex,
+              onSelected: (int index) {
+                // 필터 선택 처리 구현
+                onAction(PhotosAction.photoFilterClick(index));
+              },
             ),
             Expanded(
               child: Builder(
