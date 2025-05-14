@@ -7,6 +7,7 @@ import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
@@ -29,6 +30,8 @@ import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart'
 import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
 import 'package:photopin/presentation/screen/camera/handler/permission_checker.dart';
 import 'package:photopin/presentation/screen/camera/handler/permisson_handler_checker.dart';
+import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_view_model.dart';
+import 'package:photopin/presentation/screen/compare_map/compare_map_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
@@ -175,5 +178,26 @@ void di() {
 
   getIt.registerSingleton<SettingsViewModel>(
     SettingsViewModel(getIt<PermissionCheckerUseCase>()),
+  );
+
+  getIt.registerFactoryParam<GetCompareModelUseCase, String, void>(
+    (userId, _) => GetCompareModelUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+      userRepository: getIt<UserRepository>(),
+    ),
+  );
+
+  getIt.registerFactoryParam<CompareMapViewModel, String, String>(
+    (compareUserId, myUserId) => CompareMapViewModel(
+      sharedUseCase: getIt<GetCompareModelUseCase>(param1: compareUserId),
+      myUseCase: getIt<GetCompareModelUseCase>(param1: myUserId),
+    ),
+  );
+
+  getIt.registerFactoryParam<CompareDialogViewModel, String, void>(
+    (userId, _) => CompareDialogViewModel(
+      repository: getIt<JournalRepository>(param1: userId),
+    ),
   );
 }
