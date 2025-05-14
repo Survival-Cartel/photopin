@@ -7,6 +7,7 @@ import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -82,6 +83,12 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<GetPhotoListWithJournalIdUseCase, String, void>(
+    (userId, _) => GetPhotoListWithJournalIdUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerSingleton<GetCurrentUserUseCase>(
     GetCurrentUserUseCase(getIt()),
   );
@@ -117,6 +124,9 @@ void di() {
     (userId, _) => PhotosViewModel(
       getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      getPhotoListWithJournalIdUseCase: getIt<GetPhotoListWithJournalIdUseCase>(
+        param1: userId,
+      ),
       photoRepository: getIt<PhotoRepository>(param1: userId),
     ),
   );
