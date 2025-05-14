@@ -28,8 +28,7 @@ class _PhotosScreenRootState extends State<PhotosScreenRoot> {
           onAction: (action) {
             switch (action) {
               case PhotoFilterClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
+                widget.viewModel.onAction(action);
               case PhotoCardClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
