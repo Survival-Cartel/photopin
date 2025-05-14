@@ -1,38 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photopin/core/styles/app_color.dart';
-import 'package:photopin/presentation/component/map_filter.dart'; // 실제 MapFilter 경로로 수정 필요
+import 'package:photopin/presentation/component/map_filter.dart';
 
 void main() {
   group('MapFilter 위젯 테스트', () {
-    testWidgets('Icon과 Label의 갯수가 1:1 매칭되지 않을 시 ArgumentError가 발생합니다.', (
-      WidgetTester tester,
-    ) async {
-      // Arrange
-      const icons = [Icon(Icons.access_time), Icon(Icons.photo)];
-      const labels = ['Time', 'Photos', 'Extra']; // 길이가 일치하지 않음
-
-      // Act & Assert
-      expect(
-        () => MapFilter(
-          icons: icons,
-          labels: labels,
-          initialIndex: 0,
-          onSelected: (index) {},
-        ),
-        throwsA(isA<ArgumentError>()),
-      );
-    });
-
     testWidgets('초기 인덱스를 n으로 설정하면 해당 인덱스의 항목이 선택된 상태로 표시됩니다.', (
       WidgetTester tester,
     ) async {
       // Arrange
-      const icons = [
-        Icon(Icons.access_time),
-        Icon(Icons.local_fire_department),
-        Icon(Icons.photo),
-      ];
       const labels = ['Time', 'Heat Map', 'Photos'];
       const initialIndex = 1;
 
@@ -41,9 +17,8 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: MapFilter(
-              icons: icons,
               labels: labels,
-              initialIndex: initialIndex,
+              selectedIndex: initialIndex,
               onSelected: (index) {},
             ),
           ),
@@ -72,12 +47,7 @@ void main() {
   testWidgets('탭을 누르면 해당 항목이 선택되어 콜백이 호출되고 UI가 올바르게 업데이트됩니다.', (
     WidgetTester tester,
   ) async {
-    // Arrange: 3개의 아이콘과 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
-    const icons = [
-      Icon(Icons.access_time),
-      Icon(Icons.local_fire_department),
-      Icon(Icons.photo),
-    ];
+    // Arrange: 3개의 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
     const labels = ['Time', 'Heat Map', 'Photos'];
     int selectedIndex = -1;
 
@@ -85,9 +55,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: MapFilter(
-            icons: icons,
             labels: labels,
-            initialIndex: 0,
+            selectedIndex: 0,
             onSelected: (index) {
               selectedIndex = index;
             },
@@ -132,41 +101,10 @@ void main() {
     expect(selectedItemText, findsOneWidget);
   });
 
-  testWidgets('MapFilter의 각 아이템이 Expanded로 감싸져 있어 모든 항목이 동일한 공간을 차지해야 합니다.', (
-    WidgetTester tester,
-  ) async {
-    // Arrange: 3개의 아이콘과 라벨을 가진 MapFilter를 렌더링합니다.
-    const icons = [
-      Icon(Icons.access_time),
-      Icon(Icons.local_fire_department),
-      Icon(Icons.photo),
-    ];
-    const labels = ['Time', 'Heat Map', 'Photos'];
-
-    // Act: MapFilter 위젯을 빌드합니다.
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: MapFilter(
-            icons: icons,
-            labels: labels,
-            initialIndex: 0,
-            onSelected: (index) {},
-          ),
-        ),
-      ),
-    );
-
-    // Assert: 각 아이템이 Expanded로 감싸져 있어 3개의 Expanded 위젯이 존재함을 확인합니다.
-    final expandedWidgets = find.byType(Expanded);
-    expect(expandedWidgets, findsNWidgets(3));
-  });
-
   testWidgets('선택된 항목의 텍스트 색상과 선택되지 않은 항목의 텍스트 색상이 달라지는지 확인합니다.', (
     WidgetTester tester,
   ) async {
-    // Arrange: 2개의 아이콘과 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
-    const icons = [Icon(Icons.access_time), Icon(Icons.local_fire_department)];
+    // Arrange: 2개의 라벨, 초기 선택 인덱스 0으로 MapFilter를 렌더링합니다.
     const labels = ['Time', 'Heat Map'];
 
     // Act: MapFilter 위젯을 빌드합니다.
@@ -174,9 +112,8 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: MapFilter(
-            icons: icons,
             labels: labels,
-            initialIndex: 0,
+            selectedIndex: 0,
             onSelected: (index) {},
           ),
         ),
@@ -234,5 +171,37 @@ void main() {
       AppColors.gray4,
       reason: '선택되지 않은 항목의 배경색이 AppColors.gray4이어야 합니다.',
     );
+  });
+
+  testWidgets('가로 스크롤이 적용되어 있는지 확인합니다.', (WidgetTester tester) async {
+    // Arrange: 여러 개의 라벨을 가진 MapFilter를 렌더링합니다.
+    const labels = [
+      'Time',
+      'Heat Map',
+      'Photos',
+      'Locations',
+      'Events',
+      'People',
+    ];
+
+    // Act: MapFilter 위젯을 빌드합니다.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: MapFilter(
+            labels: labels,
+            selectedIndex: 0,
+            onSelected: (index) {},
+          ),
+        ),
+      ),
+    );
+
+    // Assert: SingleChildScrollView가 가로 스크롤을 가지고 있는지 확인합니다.
+    final scrollView = find.byType(SingleChildScrollView);
+    expect(scrollView, findsOneWidget);
+
+    final scrollViewWidget = tester.widget<SingleChildScrollView>(scrollView);
+    expect(scrollViewWidget.scrollDirection, Axis.horizontal);
   });
 }
