@@ -192,9 +192,14 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: Routes.unkown,
+              path: Routes.unknown,
               builder: (context, state) {
-                return Container();
+                return const Center(
+                  child: Text(
+                    'Page not found',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                );
               },
             ),
           ],
