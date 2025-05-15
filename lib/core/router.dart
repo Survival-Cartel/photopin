@@ -64,7 +64,11 @@ final appRouter = GoRouter(
 
         viewModel.init(journalId, userId);
 
-        return MapScreenRoot(mapViewModel: viewModel);
+        return MapScreenRoot(
+          mapViewModel: viewModel,
+          userId: userId,
+          isShareScreen: false,
+        );
       },
     ),
     GoRoute(
@@ -113,7 +117,11 @@ final appRouter = GoRouter(
 
         viewModel.init(compareJournalId, compareUserId);
 
-        return MapScreenRoot(mapViewModel: viewModel);
+        return MapScreenRoot(
+          mapViewModel: viewModel,
+          userId: compareUserId,
+          isShareScreen: true,
+        );
       },
     ),
     StatefulShellRoute.indexedStack(

@@ -7,7 +7,7 @@ sealed class MapAction {
     required DateTime endDate,
   }) = OnDateRangeClick;
   const factory MapAction.onPhotoClick(String photoId) = OnPhotoClick;
-  const factory MapAction.onShareClick() = OnShareClick;
+  const factory MapAction.onShareClick(String journalId) = OnShareClick;
 }
 
 @immutable
@@ -32,5 +32,7 @@ class OnPhotoClick implements MapAction {
 
 @immutable
 class OnShareClick implements MapAction {
-  const OnShareClick();
+  final String journalId;
+
+  const OnShareClick(this.journalId);
 }

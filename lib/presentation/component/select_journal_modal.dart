@@ -7,11 +7,13 @@ import 'package:photopin/presentation/component/base_button.dart';
 
 class SelectJournalModal extends StatefulWidget {
   final List<JournalModel> journals;
+  final String title;
   final void Function(String journalId) onApply;
   const SelectJournalModal({
     super.key,
     required this.journals,
     required this.onApply,
+    this.title = '비교할 Journal 을 골라주세요.',
   });
 
   @override
@@ -25,7 +27,7 @@ class _SelectJournalModalState extends State<SelectJournalModal> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: AppColors.white,
-      title: Text('비교할 Journal 을 골라주세요.', style: AppFonts.normalTextRegular),
+      title: Text(widget.title, style: AppFonts.normalTextRegular),
       content: SizedBox(
         height: 180,
         child: Column(

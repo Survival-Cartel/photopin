@@ -14,9 +14,15 @@ import 'package:photopin/presentation/screen/map/map_state.dart';
 
 class MapScreen extends StatelessWidget {
   final MapState mapState;
+  final bool isShareScreen;
   final void Function(MapAction) onAction;
 
-  const MapScreen({super.key, required this.mapState, required this.onAction});
+  const MapScreen({
+    super.key,
+    required this.mapState,
+    required this.onAction,
+    required this.isShareScreen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +32,22 @@ class MapScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColors.white,
         surfaceTintColor: AppColors.white,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: GestureDetector(child: const Icon(Icons.share)),
-          ),
-        ],
+        actions:
+            !(isShareScreen)
+                ? [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: GestureDetector(
+                      child: const Icon(Icons.share),
+                      onTap: () {
+                        onAction(
+                          MapAction.onShareClick(mapState.mapModel.journal.id),
+                        );
+                      },
+                    ),
+                  ),
+                ]
+                : null,
       ),
       bottomSheet:
           mapState.mapModel.journal.id != ''
