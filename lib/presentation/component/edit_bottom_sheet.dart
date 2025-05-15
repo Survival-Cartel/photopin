@@ -9,21 +9,22 @@ import 'package:photopin/presentation/component/base_icon_button.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
 
 class EditBottomSheet extends StatefulWidget {
-  final String imageUrl;
+  final String? imageUrl;
   final DateTime dateTime;
   final String title;
   final String comment;
   final String journalId;
+  final bool showJournalDropdown;
   final List<JournalModel> journals;
 
   final VoidCallback onTapClose;
-  final Function(String photoName, String journalId, String comment) onTapApply;
+  final Function(String title, String journalId, String comment) onTapApply;
   final VoidCallback onTapCancel;
   final VoidCallback? onClosing;
 
   const EditBottomSheet({
     super.key,
-    required this.imageUrl,
+    this.imageUrl,
     required this.dateTime,
     required this.title,
     required this.comment,
@@ -32,6 +33,7 @@ class EditBottomSheet extends StatefulWidget {
     required this.onTapCancel,
     required this.journals,
     this.onClosing,
+    this.showJournalDropdown = true,
     this.journalId = '',
   });
 
@@ -66,7 +68,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       backgroundColor: AppColors.white,
       builder: (context) {
         return SingleChildScrollView(
@@ -77,7 +81,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             bottom: 16 + MediaQuery.of(context).viewPadding.bottom,
           ),
           child: Column(
-            spacing: 16,
+            spacing: 12,
             children: [
               Row(
                 spacing: 12,
@@ -109,14 +113,17 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                      image: NetworkImage(widget.imageUrl),
+                      image: NetworkImage(
+                        widget.imageUrl ??
+                            'https://web.cau.ac.kr/_images/_board/skin/album/1//no_image.gif',
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
               Column(
-                spacing: 12,
+                spacing: 8,
                 children: [
                   Row(
                     spacing: 12,
@@ -149,51 +156,55 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      const BaseIcon(
-                        iconColor: AppColors.primary80,
-                        size: 16,
-                        iconData: Icons.note,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: DropdownMenu<String>(
-                          controller: journalController,
-                          inputDecorationTheme: const InputDecorationTheme(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
+                  widget.showJournalDropdown
+                      ? Row(
+                        children: [
+                          const BaseIcon(
+                            iconColor: AppColors.primary80,
+                            size: 16,
+                            iconData: Icons.note,
                           ),
-                          initialSelection:
-                              widget.journals.isNotEmpty
-                                  ? widget.journalId
-                                  : null,
-                          menuStyle: MenuStyle(
-                            backgroundColor: WidgetStateProperty.all(
-                              AppColors.white,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: DropdownMenu<String>(
+                              controller: journalController,
+                              inputDecorationTheme: const InputDecorationTheme(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                              ),
+                              initialSelection:
+                                  widget.journals.isNotEmpty
+                                      ? widget.journalId
+                                      : null,
+                              menuStyle: MenuStyle(
+                                backgroundColor: WidgetStateProperty.all(
+                                  AppColors.white,
+                                ),
+                                padding: WidgetStateProperty.all(
+                                  EdgeInsets.zero,
+                                ),
+                                elevation: WidgetStateProperty.all(2),
+                              ),
+                              onSelected: (value) {
+                                _journalId = value!;
+                              },
+                              textStyle: AppFonts.smallTextRegular,
+                              dropdownMenuEntries:
+                                  widget.journals.isEmpty
+                                      ? []
+                                      : List.generate(widget.journals.length, (
+                                        int index,
+                                      ) {
+                                        return DropdownMenuEntry(
+                                          label: widget.journals[index].name,
+                                          value: widget.journals[index].id,
+                                        );
+                                      }),
                             ),
-                            padding: WidgetStateProperty.all(EdgeInsets.zero),
-                            elevation: WidgetStateProperty.all(2),
                           ),
-                          onSelected: (value) {
-                            _journalId = value!;
-                          },
-                          textStyle: AppFonts.smallTextRegular,
-                          dropdownMenuEntries:
-                              widget.journals.isEmpty
-                                  ? []
-                                  : List.generate(widget.journals.length, (
-                                    int index,
-                                  ) {
-                                    return DropdownMenuEntry(
-                                      label: widget.journals[index].name,
-                                      value: widget.journals[index].id,
-                                    );
-                                  }),
-                        ),
-                      ),
-                    ],
-                  ),
+                        ],
+                      )
+                      : const SizedBox(),
                 ],
               ),
               Row(
