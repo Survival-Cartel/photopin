@@ -3,31 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/extensions/datetime_extension.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/trip_with_chips.dart';
 
 class CompareCard extends StatelessWidget {
   final String profileImageUrl;
   final String nameString;
-  final DateTime dateTime;
-  final String timeMessage;
-  final String photoMessage;
-  final String location;
+  final JournalModel journal;
+  final String photoString;
   final Color color;
 
   const CompareCard({
     super.key,
     required this.profileImageUrl,
     required this.nameString,
-    required this.dateTime,
-    required this.timeMessage,
-    required this.photoMessage,
-    required this.location,
+    required this.journal,
+    required this.photoString,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 220,
+      height: 180,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
@@ -61,7 +59,7 @@ class CompareCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        dateTime.formatDateTimeString(),
+                        journal.startDate.formatDateRange(journal.endDate),
                         style: AppFonts.smallTextRegular.copyWith(
                           color: AppColors.gray2,
                         ),
@@ -75,19 +73,22 @@ class CompareCard extends StatelessWidget {
               ],
             ),
           ),
-          _IconText(
-            color: color,
-            timeMessage: timeMessage,
-            iconData: CupertinoIcons.timer_fill,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TripWithChips(
+              tripWith: journal.tripWith,
+              color: color,
+              maxLength: 3,
+            ),
           ),
           _IconText(
             color: color,
-            timeMessage: photoMessage,
+            timeMessage: photoString,
             iconData: CupertinoIcons.photo,
           ),
           _IconText(
             color: color,
-            timeMessage: timeMessage,
+            timeMessage: journal.name,
             iconData: CupertinoIcons.map_pin_ellipse,
           ),
         ],
@@ -113,7 +114,13 @@ class _IconText extends StatelessWidget {
       spacing: 8,
       children: [
         Icon(iconData, color: color, size: 20),
-        Text(timeMessage, style: AppFonts.smallTextRegular),
+        Text(
+          timeMessage,
+          style: AppFonts.smallTextRegular,
+          softWrap: true,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }
