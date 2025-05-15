@@ -29,8 +29,6 @@ class _MainScreenState extends State<MainScreen> {
     if (index == 2) {
       context.push(Routes.camera);
       return;
-    } else if (index > 2) {
-      index = index - 1;
     }
 
     widget.navigationShell.goBranch(index);

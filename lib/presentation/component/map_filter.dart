@@ -1,111 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 
-/// [labels]와 [icons] 리스트의 각 요소는 1:1로 매칭되어야 하며, 그렇지 않을 경우 ArgumentError가 발생합니다.
-/// 즉, [labels]의 길이와 [icons]의 길이가 같아야 합니다.
 class MapFilter extends StatefulWidget {
-  final List<Icon> icons;
   final List<String> labels;
-  final int initialIndex;
+  final int selectedIndex;
   final Function(int) onSelected;
 
-  MapFilter({
+  const MapFilter({
     super.key,
-    required this.icons,
     required this.labels,
-    required this.initialIndex,
+    required this.selectedIndex,
     required this.onSelected,
-  }) {
-    if (labels.length != icons.length) {
-      throw ArgumentError('labels와 icons의 길이가 같아야 합니다.');
-    }
-  }
+  });
 
   @override
   State<MapFilter> createState() => _MapFilterState();
 }
 
 class _MapFilterState extends State<MapFilter> {
-  late int selectedIndex;
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-    selectedIndex = widget.initialIndex;
+    _currentIndex = widget.selectedIndex;
+  }
+
+  @override
+  void didUpdateWidget(MapFilter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 부모 위젯에서 selectedIndex가 변경되면 내부 상태도 업데이트
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      _currentIndex = widget.selectedIndex;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 24,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-      ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Row(
-        children: List.generate(
-          widget.icons.length,
-          (index) => Expanded(
+        children: List.generate(widget.labels.length, (index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedIndex = index;
+                  _currentIndex = index;
                 });
                 widget.onSelected(index);
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color:
-                        selectedIndex == index
-                            ? AppColors.primary100
-                            : AppColors.gray4,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow:
-                        selectedIndex == index
-                            ? const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                spreadRadius: 1,
-                                blurRadius: 2,
-                                offset: Offset(0, 1.5),
-                              ),
-                            ]
-                            : null,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconTheme(
-                        data: IconThemeData(
-                          color:
-                              selectedIndex == index
-                                  ? Colors.white
-                                  : AppColors.gray1,
-                          size: 16,
-                        ),
-                        child: widget.icons[index],
+              child: Container(
+                height: 24, // 높이는 고정
+                decoration: BoxDecoration(
+                  color:
+                      _currentIndex == index
+                          ? AppColors.primary100
+                          : AppColors.gray4,
+                  borderRadius: BorderRadius.circular(26),
+                  boxShadow:
+                      _currentIndex == index
+                          ? const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: Offset(0, 1.5),
+                            ),
+                          ]
+                          : null,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Center(
+                    child: Text(
+                      widget.labels[index],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color:
+                            _currentIndex == index
+                                ? Colors.white
+                                : AppColors.gray1,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.labels[index],
-                        style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              selectedIndex == index
-                                  ? Colors.white
-                                  : AppColors.gray1,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

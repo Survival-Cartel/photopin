@@ -2,10 +2,10 @@ import 'package:flutter/services.dart';
 import 'package:photopin/core/enums/image_mime.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
 
-class UploadFileUseCase {
+class UploadFileInStorageUseCase {
   final StorageDataSource _storageDataSource;
 
-  const UploadFileUseCase(this._storageDataSource);
+  const UploadFileInStorageUseCase(this._storageDataSource);
 
   Future<String> execute(
     String fileName,

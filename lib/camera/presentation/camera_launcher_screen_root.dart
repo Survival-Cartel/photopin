@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/enums/camera_stream_event.dart';
-import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
+import 'package:photopin/camera/presentation/camera_view_model.dart';
 
 class CameraLauncherScreenRoot extends StatefulWidget {
   final CameraViewModel viewModel;

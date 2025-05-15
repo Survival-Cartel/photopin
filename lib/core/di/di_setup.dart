@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -6,15 +7,33 @@ import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source_impl.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/auth/data/repository/auth_repository_impl.dart';
+import 'package:photopin/camera/data/repository/image_save_plus_local_device_repository.dart';
+import 'package:photopin/camera/data/repository/local_device_repository.dart';
+import 'package:photopin/camera/helper/camera_helper.dart';
+import 'package:photopin/camera/helper/image_picker_camera_helper.dart';
+import 'package:photopin/camera/presentation/camera_view_model.dart';
+import 'package:photopin/camera/usecase/launch_camera_check_permission_use_case.dart';
+import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
+import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/service/geolocator_location_service.dart';
+import 'package:photopin/core/service/location_service.dart';
+import 'package:photopin/core/service/push_service.dart';
+import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
+import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
-import 'package:photopin/core/usecase/launch_camera_use_case.dart';
-import 'package:photopin/core/usecase/permission_checker_use_case.dart';
+import 'package:photopin/core/usecase/link_access_notification_use_case.dart';
+import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
-import 'package:photopin/core/usecase/upload_file_use_case.dart';
+import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/repository/token_repository.dart';
+import 'package:photopin/fcm/data/repository/token_repository_impl.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -24,15 +43,13 @@ import 'package:photopin/photo/data/data_source/photo_data_source_impl.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
-import 'package:photopin/presentation/screen/camera/camera_view_model.dart';
-import 'package:photopin/presentation/screen/camera/handler/camera_handler.dart';
-import 'package:photopin/presentation/screen/camera/handler/image_picker_camera_handler.dart';
-import 'package:photopin/presentation/screen/camera/handler/permission_checker.dart';
-import 'package:photopin/presentation/screen/camera/handler/permisson_handler_checker.dart';
+import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_view_model.dart';
+import 'package:photopin/presentation/screen/compare_map/compare_map_view_model.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/presentation/screen/photos/photos_view_model.dart';
 import 'package:photopin/presentation/screen/settings/settings_view_model.dart';
 import 'package:photopin/storage/data/data_source/firebase_storage_data_source.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
@@ -46,6 +63,7 @@ final getIt = GetIt.instance;
 void di() {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
   getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
+  getIt.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
   getIt.registerLazySingleton<FirestoreSetup>(() => FirestoreSetup());
   getIt.registerSingleton<UserDataSource>(
     UserDataSourceImpl(userStore: getIt.get<FirestoreSetup>().userFirestore()),
@@ -81,6 +99,12 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<GetPhotoListUseCase, String, void>(
+    (userId, _) => GetPhotoListUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerLazySingleton<AuthDataSource>(
     () => AuthDataSourceImpl(auth: getIt()),
   );
@@ -104,14 +128,28 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<PermissionChecker>(PermissionHandlerChecker());
-
-  getIt.registerSingleton<PermissionCheckerUseCase>(
-    PermissionCheckerUseCase(permissionChecker: getIt<PermissionChecker>()),
+  getIt.registerFactoryParam<GetPhotoListWithJournalIdUseCase, String, void>(
+    (userId, _) => GetPhotoListWithJournalIdUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
   );
 
   getIt.registerSingleton<GetCurrentUserUseCase>(
     GetCurrentUserUseCase(getIt()),
+  );
+
+  getIt.registerSingleton<LocationService>(GeolocatorLocationService());
+
+  getIt.registerSingleton<GetCurrentLocationUseCase>(
+    GetCurrentLocationUseCase(geoService: getIt<LocationService>()),
+  );
+
+  getIt.registerSingleton<PermissionCheckUseCase>(PermissionCheckUseCase());
+
+  getIt.registerSingleton<LaunchCameraCheckPermissionUseCase>(
+    LaunchCameraCheckPermissionUseCase(
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+    ),
   );
 
   getIt.registerFactoryParam<WatchJournalsUseCase, String, void>(
@@ -128,23 +166,47 @@ void di() {
     ),
   );
 
-  getIt.registerSingleton<CameraHandler>(ImagePickerCameraHandler());
+  getIt.registerSingleton<CameraHelper>(ImagePickerCameraHelper());
 
   getIt.registerSingleton<LaunchCameraUseCase>(
-    LaunchCameraUseCase(cameraHandler: getIt<CameraHandler>()),
+    LaunchCameraUseCase(cameraHelper: getIt<CameraHelper>()),
   );
 
-  getIt.registerFactoryParam<UploadFileUseCase, String, void>(
-    (userId, _) => UploadFileUseCase(getIt<StorageDataSource>(param1: userId)),
+  getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(
+    (userId, _) =>
+        UploadFileInStorageUseCase(getIt<StorageDataSource>(param1: userId)),
+  );
+
+  getIt.registerFactoryParam<SavePictureInFirebaseUseCase, String, void>(
+    (userId, _) => SavePictureInFirebaseUseCase(
+      getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
+      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
+      uploadFileInStorageUseCase: getIt<UploadFileInStorageUseCase>(
+        param1: userId,
+      ),
+      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+    ),
+  );
+
+  getIt.registerSingleton<LocalDeviceRepository>(
+    ImageSavePlusLocalDeviceRepository(),
+  );
+
+  getIt.registerSingleton<SavePictureInDeviceUseCase>(
+    SavePictureInDeviceUseCase(
+      localDeviceRepository: getIt<LocalDeviceRepository>(),
+    ),
   );
 
   getIt.registerFactoryParam<CameraViewModel, String, void>(
     (userId, _) => CameraViewModel(
+      savePictureInDeviceUseCase: getIt<SavePictureInDeviceUseCase>(),
       launchCameraUseCase: getIt<LaunchCameraUseCase>(),
-      permisionCheckerUseCase: getIt<PermissionCheckerUseCase>(),
-      uploadFileUseCase: getIt<UploadFileUseCase>(param1: userId),
-      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
-      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+      launchCameraCheckPermissionUseCase:
+          getIt<LaunchCameraCheckPermissionUseCase>(),
+      savePictureInFirebaseUseCase: getIt<SavePictureInFirebaseUseCase>(
+        param1: userId,
+      ),
     ),
   );
 
@@ -173,7 +235,53 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<PhotosViewModel, String, void>(
+    (userId, _) => PhotosViewModel(
+      getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      getPhotoListWithJournalIdUseCase: getIt<GetPhotoListWithJournalIdUseCase>(
+        param1: userId,
+      ),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerSingleton<SettingsViewModel>(
-    SettingsViewModel(getIt<PermissionCheckerUseCase>()),
+    SettingsViewModel(permissionCheckUseCase: getIt<PermissionCheckUseCase>()),
+  );
+
+  getIt.registerFactoryParam<GetCompareModelUseCase, String, void>(
+    (userId, _) => GetCompareModelUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+      userRepository: getIt<UserRepository>(),
+    ),
+  );
+
+  getIt.registerFactoryParam<CompareMapViewModel, String, String>(
+    (compareUserId, myUserId) => CompareMapViewModel(
+      sharedUseCase: getIt<GetCompareModelUseCase>(param1: compareUserId),
+      myUseCase: getIt<GetCompareModelUseCase>(param1: myUserId),
+    ),
+  );
+
+  getIt.registerLazySingleton<TokenRepository>(
+    () => TokenRepositoryImpl(getIt<FirebaseFirestore>()),
+  );
+
+  getIt.registerLazySingleton<PushService>(() => PushService());
+
+  getIt.registerSingleton<LinkAccessNotificationUseCase>(
+    LinkAccessNotificationUseCase(
+      tokenRepository: getIt<TokenRepository>(),
+      pushService: getIt<PushService>(),
+    ),
+  );
+
+  getIt.registerFactoryParam<CompareDialogViewModel, String, void>(
+    (userId, _) => CompareDialogViewModel(
+      repository: getIt<JournalRepository>(param1: userId),
+      linkAccessNotificationuseCase: getIt<LinkAccessNotificationUseCase>(),
+    ),
   );
 }

@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "13c1e6c6fd460522ea840abec3f677cc226f5fec7872c04ad7b425517ccf54f7"
+      sha256: "904ae5bb474d32c38fb9482e2d925d5454cda04ddd0e55d2e6826bc72f6ba8c0"
       url: "https://pub.dev"
     source: hosted
-    version: "7.4.4"
+    version: "7.4.5"
   animated_toggle_switch:
     dependency: "direct main"
     description:
@@ -1193,18 +1193,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "458fb70ad9a6a5fa286a0062ddafa536038d21d6afffe2b0cd057e091108311f"
+      sha256: "32649080c81f8699386988e27ea37b51f9c468f1e3a78a26f0540b665c762327"
       url: "https://pub.dev"
     source: hosted
-    version: "29.1.40"
+    version: "29.2.4"
   syncfusion_flutter_sliders:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_sliders
-      sha256: "1d1403755b6a89de780712d026813857fa2d995eb4d9ee953699380d1968d838"
+      sha256: "36c47dd7d04e2e21afd97f09da29f250e68b9e643e9b5ac24a1f803aac7a94b3"
       url: "https://pub.dev"
     source: hosted
-    version: "29.1.39"
+    version: "29.2.4"
   term_glyph:
     dependency: transitive
     description:

@@ -7,28 +7,17 @@ import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_screen.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 
-class HomeScreenRoot extends StatefulWidget {
+class HomeScreenRoot extends StatelessWidget {
   final HomeViewModel viewModel;
   const HomeScreenRoot({super.key, required this.viewModel});
 
   @override
-  State<HomeScreenRoot> createState() => _HomeScreenRootState();
-}
-
-class _HomeScreenRootState extends State<HomeScreenRoot> {
-  @override
-  void initState() {
-    super.initState();
-    widget.viewModel.init();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.viewModel,
+      listenable: viewModel,
       builder: (context, child) {
         return HomeScreen(
-          state: widget.viewModel.state,
+          state: viewModel.state,
           onAction: (action) {
             switch (action) {
               case CameraClick():
@@ -38,9 +27,9 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
                   context: context,
                   builder: (context) {
                     return NewJournalModal(
-                      userName: widget.viewModel.state.currentUser.displayName,
+                      userName: viewModel.state.currentUser.displayName,
                       onSave: ({required JournalModel journal}) {
-                        widget.viewModel.onAction(
+                        viewModel.onAction(
                           HomeAction.newJournalSave(journal: journal),
                         );
                         context.pop();
@@ -60,9 +49,9 @@ class _HomeScreenRootState extends State<HomeScreenRoot> {
               case MyJournalClick(id: final journalId):
                 context.push('${Routes.map}/$journalId');
               case FindUser():
-                widget.viewModel.onAction(action);
+                viewModel.onAction(action);
               case FindJounals():
-                widget.viewModel.onAction(action);
+                viewModel.onAction(action);
               case NewJournalSave():
                 break;
             }

@@ -24,32 +24,28 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 Future<void> _showNotification(RemoteMessage message) async {
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-        'high_importance_channel',
-        'Hight Importance Notifications',
-        channelDescription: 'This channel is used for important notifications',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker',
-      );
-  const NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
+  final androidDetails = AndroidNotificationDetails(
+    channel.id,
+    channel.name,
+    channelDescription: channel.description,
+    importance: Importance.max,
+    priority: Priority.high,
+    ticker: 'ticker',
   );
+  final platformDetails = NotificationDetails(android: androidDetails);
   await flutterLocalNotificationsPlugin.show(
     message.hashCode,
     message.data['title'],
     message.data['body'],
-    platformChannelSpecifics,
+    platformDetails,
     payload: jsonEncode(message.data),
   );
 }
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // 백그라운드에서도 Firebase 앱이 초기화되어 있어야 합니다
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  print('Handling a background message: ${message.messageId}');
   await _showNotification(message);
 }
 
@@ -64,41 +60,36 @@ void notificationTapBackground(NotificationResponse response) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  // 1) .env 로드
+  await dotenv.load(fileName: 'assets/.env');
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('photopin_icon');
+  // 2) Firebase 앱 초기화
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-
+  // 3) 로컬 알림 초기화
+  const androidInit = AndroidInitializationSettings('photopin_icon');
   await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) async {
-      final payload = response.payload;
-      if (payload != null) {
-        debugPrint('Notification tapped with payload: $payload');
+    InitializationSettings(android: androidInit),
+    onDidReceiveNotificationResponse: (resp) {
+      if (resp.payload != null) {
+        debugPrint('Notification tapped: ${resp.payload}');
       }
     },
-
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
-
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin
       >()
       ?.createNotificationChannel(channel);
 
+  // 4) FCM 백그라운드 메시지 핸들러 등록
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  await dotenv.load(fileName: "assets/.env");
+  // 5) DI 설정 (FirebaseAuth.instance 등 안전히 사용 가능)
   di();
 
+  // 6) 앱 실행
   runApp(const MyApp());
 }
 
@@ -116,38 +107,22 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
     _messaging = FirebaseMessaging.instance;
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      if (message.notification != null) {
-        print('Notification: ${message.notification}');
+    // 포그라운드 메시지 리스너
+    FirebaseMessaging.onMessage.listen(_showNotification);
+
+    // 권한 요청 및 토큰/갱신 처리
+    _messaging.requestPermission(alert: true, badge: true, sound: true).then((
+      settings,
+    ) {
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        _messaging.getToken().then(debugPrint);
+        _messaging.onTokenRefresh.listen(debugPrint);
+      } else {
+        debugPrint('알림 권한 거부: ${settings.authorizationStatus}');
       }
-
-      // notification.showNotification(1, 'test', 'test');
     });
-
-    _initFCM();
-  }
-
-  Future<void> _initFCM() async {
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      final token = await _messaging.getToken();
-      print('FCM 토큰: $token');
-      _messaging.onTokenRefresh.listen((newToken) {
-        print('새 FCM 토큰: $newToken');
-      });
-    } else {
-      print('알림 권한 거부: ${settings.authorizationStatus}');
-    }
   }
 
   @override
@@ -174,9 +149,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() => _counter++);
-  }
+  void _incrementCounter() => setState(() => _counter++);
 
   @override
   Widget build(BuildContext context) {

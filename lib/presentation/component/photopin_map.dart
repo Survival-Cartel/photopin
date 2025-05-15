@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photopin/core/styles/app_color.dart';
 
 // todo: 모델 클래스 생성 후 업데이트
 /// [initialZoomLevel] 의 경우 맵이 생성 될 때의 줌 정도를 나타냅니다. 값이 클 수록 확대가 됩니다.
@@ -13,6 +14,7 @@ class PhotoPinMap extends StatefulWidget {
   final Set<Marker> markers;
   final Map<String, List<LatLng>> polylines;
   final Color polyLineColor;
+  final Color comparePolylineColor;
   final void Function(GoogleMapController)? onMapCreated;
   final void Function()? onCameraIdle;
   final void Function(CameraPosition)? onCameraMove;
@@ -27,6 +29,7 @@ class PhotoPinMap extends StatefulWidget {
     this.onMapCreated,
     this.onCameraIdle,
     this.onCameraMove,
+    this.comparePolylineColor = AppColors.primary80,
   });
 
   @override
@@ -61,13 +64,28 @@ class PhotoPinMapState extends State<PhotoPinMap> {
         onMapCreated: widget.onMapCreated,
         buildingsEnabled: false,
         polylines:
-            widget.polylines.keys.map((id) {
-              return Polyline(
-                polylineId: PolylineId(id),
-                points: widget.polylines[id]!,
-                color: widget.polyLineColor,
-                width: 6,
-              );
+            List.generate(widget.polylines.keys.length, (index) {
+              if (index == 0) {
+                return Polyline(
+                  polylineId: PolylineId(
+                    widget.polylines.keys.elementAt(index),
+                  ),
+                  points:
+                      widget.polylines[widget.polylines.keys.elementAt(index)]!,
+                  color: widget.polyLineColor,
+                  width: 6,
+                );
+              } else {
+                return Polyline(
+                  polylineId: PolylineId(
+                    widget.polylines.keys.elementAt(index),
+                  ),
+                  points:
+                      widget.polylines[widget.polylines.keys.elementAt(index)]!,
+                  color: widget.comparePolylineColor,
+                  width: 6,
+                );
+              }
             }).toSet(),
         onCameraMove: widget.onCameraMove,
         onCameraIdle: () async {

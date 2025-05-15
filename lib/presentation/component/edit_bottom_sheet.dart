@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/enums/button_type.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/base_icon.dart';
 import 'package:photopin/core/extensions/datetime_extension.dart';
 import 'package:photopin/presentation/component/base_icon_button.dart';
@@ -10,11 +11,13 @@ import 'package:photopin/presentation/component/text_limit_input_field.dart';
 class EditBottomSheet extends StatefulWidget {
   final String imageUrl;
   final DateTime dateTime;
+  final String title;
   final String comment;
-  final List<String> journalNames;
+  final String journalId;
+  final List<JournalModel> journals;
 
   final VoidCallback onTapClose;
-  final Function(String journalName, String comment) onTapApply;
+  final Function(String photoName, String journalId, String comment) onTapApply;
   final VoidCallback onTapCancel;
   final VoidCallback? onClosing;
 
@@ -22,12 +25,14 @@ class EditBottomSheet extends StatefulWidget {
     super.key,
     required this.imageUrl,
     required this.dateTime,
+    required this.title,
     required this.comment,
     required this.onTapClose,
     required this.onTapApply,
     required this.onTapCancel,
-    required this.journalNames,
+    required this.journals,
     this.onClosing,
+    this.journalId = '',
   });
 
   @override
@@ -35,20 +40,24 @@ class EditBottomSheet extends StatefulWidget {
 }
 
 class _EditBottomSheetState extends State<EditBottomSheet> {
+  final TextEditingController titleController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final TextEditingController journalController = TextEditingController();
+  String _journalId = '';
 
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
   @override
   void initState() {
     super.initState();
+    titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
   }
 
   @override
   void dispose() {
     widget.onClosing?.call();
+    titleController.dispose();
     commentController.dispose();
     journalController.dispose();
     super.dispose();
@@ -71,15 +80,16 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             spacing: 16,
             children: [
               Row(
+                spacing: 12,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Edit',
-                    style: AppFonts.mediumTextBold.copyWith(
-                      color: AppColors.textColor,
+                  Expanded(
+                    child: TextLimitInputField(
+                      controller: titleController,
+                      hintText: 'Write Title',
+                      maxLength: 30,
                     ),
                   ),
-                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       widget.onTapClose();
@@ -154,7 +164,10 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
                           ),
-                          initialSelection: widget.journalNames[0],
+                          initialSelection:
+                              widget.journals.isNotEmpty
+                                  ? widget.journalId
+                                  : null,
                           menuStyle: MenuStyle(
                             backgroundColor: WidgetStateProperty.all(
                               AppColors.white,
@@ -162,16 +175,21 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                             padding: WidgetStateProperty.all(EdgeInsets.zero),
                             elevation: WidgetStateProperty.all(2),
                           ),
+                          onSelected: (value) {
+                            _journalId = value!;
+                          },
                           textStyle: AppFonts.smallTextRegular,
-                          dropdownMenuEntries: List.generate(
-                            widget.journalNames.length,
-                            (int index) {
-                              return DropdownMenuEntry(
-                                label: widget.journalNames[index],
-                                value: widget.journalNames[index],
-                              );
-                            },
-                          ),
+                          dropdownMenuEntries:
+                              widget.journals.isEmpty
+                                  ? []
+                                  : List.generate(widget.journals.length, (
+                                    int index,
+                                  ) {
+                                    return DropdownMenuEntry(
+                                      label: widget.journals[index].name,
+                                      value: widget.journals[index].id,
+                                    );
+                                  }),
                         ),
                       ),
                     ],
@@ -189,7 +207,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       buttonName: 'Apply',
                       onClick: () {
                         widget.onTapApply(
-                          journalController.text,
+                          titleController.text,
+                          _journalId,
                           commentController.text,
                         );
                       },
@@ -210,7 +229,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           ),
         );
       },
-      onClosing: () {},
+      onClosing: widget.onClosing ?? () {},
     );
   }
 }

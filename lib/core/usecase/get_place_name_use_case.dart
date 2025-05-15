@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:photopin/core/domain/location.dart';
 
 class GetPlaceNameUseCase {
   final http.Client _client;
 
   const GetPlaceNameUseCase(this._client);
 
-  Future<String> execute({required Position position}) async {
+  Future<String> execute({required Location location}) async {
     final String googlePlaceApiKey = dotenv.env['GOOGLE_PLACE_API_KEY']!;
 
     final Uri uri =
         Uri.https('maps.googleapis.com', '/maps/api/place/textsearch/json', {
-          'query': '${position.latitude}, ${position.longitude}',
+          'query': '${location.latitude}, ${location.longitude}',
           'key': googlePlaceApiKey,
         });
 
