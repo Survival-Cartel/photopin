@@ -12,6 +12,7 @@ import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/component/compare_card.dart';
 import 'package:photopin/presentation/component/custom_map_marker.dart';
 import 'package:photopin/presentation/component/grouplist_photos_timeline_tile.dart';
+import 'package:photopin/presentation/component/move_bottom_sheet.dart';
 import 'package:photopin/presentation/component/photopin_head.dart';
 import 'package:photopin/presentation/component/photopin_map.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_action.dart';
@@ -181,10 +182,12 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
       ),
       bottomSheet:
           widget.state.sharedData.journal.id != ''
-              ? MapBottomDragWidget(
-                onAction: widget.onAction,
-                sharedModel: widget.state.sharedData,
-                myModel: widget.state.myData,
+              ? MoveBottomSheet(
+                body: MapBottomDragWidget(
+                  myModel: widget.state.myData,
+                  sharedModel: widget.state.sharedData,
+                  onAction: widget.onAction,
+                ),
               )
               : const SizedBox(),
       body:
@@ -300,7 +303,7 @@ class _LineInfo extends StatelessWidget {
   }
 }
 
-class MapBottomDragWidget extends StatefulWidget {
+class MapBottomDragWidget extends StatelessWidget {
   final void Function(CompareMapAction) onAction;
   final IntegrationModel sharedModel;
   final IntegrationModel myModel;
@@ -313,138 +316,67 @@ class MapBottomDragWidget extends StatefulWidget {
   });
 
   @override
-  State<MapBottomDragWidget> createState() => _MapBottomDragWidgetState();
-}
-
-class _MapBottomDragWidgetState extends State<MapBottomDragWidget> {
-  static const double _minHeight = 60;
-  static const double _maxHeight = 400;
-  double _sheetHeight = _maxHeight;
-
-  void _onHandleDragEnd(DragEndDetails details) {
-    final mid = (_maxHeight + _minHeight) / 2;
-    setState(() {
-      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
-    });
-  }
-
-  void _onHandleDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
-        _minHeight,
-        _maxHeight,
-      );
-    });
-  }
-
-  void _onHandleTap() {
-    setState(() {
-      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      duration: const Duration(milliseconds: 200),
-      height: _sheetHeight,
-      decoration: const BoxDecoration(
-        color: AppColors.gray5,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      child: Column(
+    return Expanded(
+      child: Row(
         spacing: 8,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onVerticalDragUpdate: _onHandleDragUpdate,
-            onVerticalDragEnd: _onHandleDragEnd,
-            onTap: _onHandleTap,
-            child: Container(
-              width: double.infinity,
-              height: 6,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Center(
-                child: Container(
-                  width: 40,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(3),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: CompareCard(
+                    profileImageUrl: myModel.user.profileImg,
+                    nameString: myModel.user.displayName,
+                    journal: myModel.journal,
+                    color: AppColors.secondary100,
+                    photoString: '${myModel.photos.length} Photos',
                   ),
                 ),
-              ),
+                Expanded(
+                  child: GrouplistPhotosTimelineTile(
+                    photos: myModel.photos,
+                    onTap: (id) {
+                      onAction(
+                        CompareMapAction.onPhotoClick(
+                          photoId: id,
+                          isCompare: false,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          (_sheetHeight == _maxHeight)
-              ? Expanded(
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: CompareCard(
-                              profileImageUrl: widget.myModel.user.profileImg,
-                              nameString: widget.myModel.user.displayName,
-                              journal: widget.myModel.journal,
-                              color: AppColors.secondary100,
-                              photoString:
-                                  '${widget.myModel.photos.length} Photos',
-                            ),
-                          ),
-                          Expanded(
-                            child: GrouplistPhotosTimelineTile(
-                              photos: widget.myModel.photos,
-                              onTap: (id) {
-                                widget.onAction(
-                                  CompareMapAction.onPhotoClick(
-                                    photoId: id,
-                                    isCompare: false,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: CompareCard(
-                              profileImageUrl:
-                                  widget.sharedModel.user.profileImg,
-                              nameString: widget.sharedModel.user.displayName,
-                              journal: widget.sharedModel.journal,
-                              color: AppColors.primary100,
-                              photoString:
-                                  '${widget.sharedModel.photos.length} Photos',
-                            ),
-                          ),
-                          Expanded(
-                            child: GrouplistPhotosTimelineTile(
-                              photos: widget.sharedModel.photos,
-                              onTap: (id) {
-                                widget.onAction(
-                                  CompareMapAction.onPhotoClick(
-                                    photoId: id,
-                                    isCompare: true,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: CompareCard(
+                    profileImageUrl: sharedModel.user.profileImg,
+                    nameString: sharedModel.user.displayName,
+                    journal: sharedModel.journal,
+                    color: AppColors.primary100,
+                    photoString: '${sharedModel.photos.length} Photos',
+                  ),
                 ),
-              )
-              : const SizedBox(),
+                Expanded(
+                  child: GrouplistPhotosTimelineTile(
+                    photos: sharedModel.photos,
+                    onTap: (id) {
+                      onAction(
+                        CompareMapAction.onPhotoClick(
+                          photoId: id,
+                          isCompare: true,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
