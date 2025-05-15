@@ -70,7 +70,9 @@ class _MoveBottomSheetState extends State<MoveBottomSheet> {
               ),
             ),
           ),
-          (_sheetHeight == _maxHeight) ? widget.body : const SizedBox(),
+          (_sheetHeight == _maxHeight)
+              ? Expanded(child: widget.body)
+              : const SizedBox(),
         ],
       ),
     );

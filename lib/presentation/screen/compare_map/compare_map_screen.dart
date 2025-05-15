@@ -317,68 +317,66 @@ class MapBottomDragWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        spacing: 8,
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: CompareCard(
-                    profileImageUrl: myModel.user.profileImg,
-                    nameString: myModel.user.displayName,
-                    journal: myModel.journal,
-                    color: AppColors.secondary100,
-                    photoString: '${myModel.photos.length} Photos',
-                  ),
+    return Row(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              Expanded(
+                child: CompareCard(
+                  profileImageUrl: myModel.user.profileImg,
+                  nameString: myModel.user.displayName,
+                  journal: myModel.journal,
+                  color: AppColors.secondary100,
+                  photoString: '${myModel.photos.length} Photos',
                 ),
-                Expanded(
-                  child: GrouplistPhotosTimelineTile(
-                    photos: myModel.photos,
-                    onTap: (id) {
-                      onAction(
-                        CompareMapAction.onPhotoClick(
-                          photoId: id,
-                          isCompare: false,
-                        ),
-                      );
-                    },
-                  ),
+              ),
+              Expanded(
+                child: GrouplistPhotosTimelineTile(
+                  photos: myModel.photos,
+                  onTap: (id) {
+                    onAction(
+                      CompareMapAction.onPhotoClick(
+                        photoId: id,
+                        isCompare: false,
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: CompareCard(
-                    profileImageUrl: sharedModel.user.profileImg,
-                    nameString: sharedModel.user.displayName,
-                    journal: sharedModel.journal,
-                    color: AppColors.primary100,
-                    photoString: '${sharedModel.photos.length} Photos',
-                  ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Expanded(
+                child: CompareCard(
+                  profileImageUrl: sharedModel.user.profileImg,
+                  nameString: sharedModel.user.displayName,
+                  journal: sharedModel.journal,
+                  color: AppColors.primary100,
+                  photoString: '${sharedModel.photos.length} Photos',
                 ),
-                Expanded(
-                  child: GrouplistPhotosTimelineTile(
-                    photos: sharedModel.photos,
-                    onTap: (id) {
-                      onAction(
-                        CompareMapAction.onPhotoClick(
-                          photoId: id,
-                          isCompare: true,
-                        ),
-                      );
-                    },
-                  ),
+              ),
+              Expanded(
+                child: GrouplistPhotosTimelineTile(
+                  photos: sharedModel.photos,
+                  onTap: (id) {
+                    onAction(
+                      CompareMapAction.onPhotoClick(
+                        photoId: id,
+                        isCompare: true,
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

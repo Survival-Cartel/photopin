@@ -240,38 +240,36 @@ class MapBottomDragWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        spacing: 8,
-        children: [
-          DateRangeSlider(
-            startDate: journal.startDate,
-            endDate: journal.endDate,
-            onChanged: (start, end) {
-              onAction(
-                MapAction.onDateRangeClick(
-                  startDate: start,
-                  endDate: end,
-                  journalId: journal.id,
-                ),
-              );
-            },
+    return Column(
+      spacing: 8,
+      children: [
+        DateRangeSlider(
+          startDate: journal.startDate,
+          endDate: journal.endDate,
+          onChanged: (start, end) {
+            onAction(
+              MapAction.onDateRangeClick(
+                startDate: start,
+                endDate: end,
+                journalId: journal.id,
+              ),
+            );
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Timeline', style: AppFonts.smallTextRegular),
+            TextChip(text: '${photos.length} Places'),
+          ],
+        ),
+        Expanded(
+          child: GrouplistPhotosTimelineTile(
+            photos: photos,
+            onTap: (id) => onAction(MapAction.onPhotoClick(id)),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Timeline', style: AppFonts.smallTextRegular),
-              TextChip(text: '${photos.length} Places'),
-            ],
-          ),
-          Expanded(
-            child: GrouplistPhotosTimelineTile(
-              photos: photos,
-              onTap: (id) => onAction(MapAction.onPhotoClick(id)),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
