@@ -192,6 +192,21 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: Routes.unknown,
+              builder: (context, state) {
+                return const Center(
+                  child: Text(
+                    'Page not found',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: Routes.photos,
               builder: (context, state) {
                 final String userId = getIt<FirebaseAuth>().currentUser!.uid;
@@ -202,7 +217,6 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-
         StatefulShellBranch(
           routes: [
             GoRoute(
