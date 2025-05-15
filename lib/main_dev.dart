@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -14,7 +18,7 @@ const String hostIp = '192.168.0.32';
 const runMode = String.fromEnvironment("mode", defaultValue: 'dev');
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel',
@@ -66,6 +70,22 @@ void main() async {
   // 2) Firebase 앱 초기화
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  if (Platform.isAndroid) {
+    if (runMode == 'device') {
+      FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
+      await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
+      await FirebaseStorage.instance.useStorageEmulator(hostIp, 9199);
+    } else {
+      FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+      await FirebaseStorage.instance.useStorageEmulator('10.0.2.2', 9199);
+    }
+  } else {
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+  }
+
   // 3) 로컬 알림 초기화
   const androidInit = AndroidInitializationSettings('photopin_icon');
   await flutterLocalNotificationsPlugin.initialize(
@@ -79,8 +99,8 @@ void main() async {
   );
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin
-      >()
+      AndroidFlutterLocalNotificationsPlugin
+  >()
       ?.createNotificationChannel(channel);
 
   // 4) FCM 백그라운드 메시지 핸들러 등록
@@ -114,8 +134,7 @@ class _MyAppState extends State<MyApp> {
 
     // 권한 요청 및 토큰/갱신 처리
     _messaging.requestPermission(alert: true, badge: true, sound: true).then((
-      settings,
-    ) {
+        settings,) {
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         _messaging.getToken().then(debugPrint);
         _messaging.onTokenRefresh.listen(debugPrint);
@@ -155,7 +174,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
@@ -165,7 +187,10 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineMedium,
             ),
           ],
         ),
