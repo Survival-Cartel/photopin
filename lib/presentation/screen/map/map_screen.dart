@@ -21,9 +21,15 @@ import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MapScreen extends StatefulWidget {
   final MapState mapState;
+  final bool isShareScreen;
   final void Function(MapAction) onAction;
 
-  const MapScreen({super.key, required this.mapState, required this.onAction});
+  const MapScreen({
+    super.key,
+    required this.mapState,
+    required this.onAction,
+    required this.isShareScreen,
+  });
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -164,12 +170,22 @@ class _MapScreenState extends State<MapScreen> {
         centerTitle: true,
         backgroundColor: AppColors.white,
         surfaceTintColor: AppColors.white,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: GestureDetector(child: const Icon(Icons.share)),
-          ),
-        ],
+        actions:
+            !(widget.isShareScreen)
+                ? [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: GestureDetector(
+                      child: const Icon(Icons.share),
+                      onTap: () {
+                        widget.onAction(
+                          MapAction.onShareClick(widget.mapState.journal.id),
+                        );
+                      },
+                    ),
+                  ),
+                ]
+                : null,
       ),
       bottomSheet:
           widget.mapState.journal.id != ''
