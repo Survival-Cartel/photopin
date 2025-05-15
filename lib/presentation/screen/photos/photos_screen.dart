@@ -30,6 +30,7 @@ class PhotosScreen extends StatelessWidget {
                 onAction(PhotosAction.photoFilterClick(index));
               },
             ),
+            const SizedBox(height: 20),
             Expanded(
               child: Builder(
                 builder: (context) {
@@ -53,7 +54,7 @@ class PhotosScreen extends StatelessWidget {
                           crossAxisCount: 2, // 가로로 2개씩 표시
                           crossAxisSpacing: 10, // 가로 간격
                           mainAxisSpacing: 10, // 세로 간격
-                          childAspectRatio: 0.75, // 아이템의 가로:세로 비율
+                          childAspectRatio: 1, // 아이템의 가로:세로 비율
                         ),
                     itemCount: state.photos.length,
                     itemBuilder: (context, index) {

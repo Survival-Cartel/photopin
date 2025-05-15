@@ -57,11 +57,13 @@ class JournalCardImage extends StatelessWidget {
             children: [
               Text(
                 journeyTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppFonts.normalTextBold.copyWith(color: AppColors.white),
               ),
               Text(
                 description,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppFonts.smallerTextRegular.copyWith(
                   color: AppColors.white,
