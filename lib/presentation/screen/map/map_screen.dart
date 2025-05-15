@@ -12,6 +12,7 @@ import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/component/custom_map_marker.dart';
 import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:photopin/presentation/component/grouplist_photos_timeline_tile.dart';
+import 'package:photopin/presentation/component/move_bottom_sheet.dart';
 import 'package:photopin/presentation/component/photopin_map.dart';
 import 'package:photopin/presentation/component/text_chip.dart';
 import 'package:photopin/presentation/component/trip_with_chips.dart';
@@ -30,18 +31,13 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  static const double _minHeight = 160;
   late package.ClusterManager<PhotoClusterItem> _clusterManager;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   bool showPolyline = true;
   double showPolylineZoomLevel = 17;
 
-  static const double _maxHeight = 400;
-
   Set<Marker> markers = {};
-
-  double _sheetHeight = _maxHeight;
 
   @override
   void initState() {
@@ -133,29 +129,6 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _onHandleDragEnd(DragEndDetails details) {
-    // 반쯤 이상 펼쳐져 있으면 완전 확장, 아니면 접기
-    final mid = (_maxHeight + _minHeight) / 2;
-    setState(() {
-      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
-    });
-  }
-
-  void _onHandleDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
-        _minHeight,
-        _maxHeight,
-      );
-    });
-  }
-
-  void _onHandleTap() {
-    setState(() {
-      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,14 +146,12 @@ class _MapScreenState extends State<MapScreen> {
       ),
       bottomSheet:
           widget.mapState.journal.id != ''
-              ? MapBottomDragWidget(
-                sheetHeight: _sheetHeight,
-                onHandleDragUpdate: _onHandleDragUpdate,
-                onHandleDragEnd: _onHandleDragEnd,
-                onHandleTap: _onHandleTap,
-                photos: widget.mapState.photos,
-                journal: widget.mapState.journal,
-                onAction: widget.onAction,
+              ? MoveBottomSheet(
+                body: MapBottomDragWidget(
+                  photos: widget.mapState.photos,
+                  journal: widget.mapState.journal,
+                  onAction: widget.onAction,
+                ),
               )
               : const SizedBox(),
       body:
@@ -256,20 +227,12 @@ class _MapScreenState extends State<MapScreen> {
 }
 
 class MapBottomDragWidget extends StatelessWidget {
-  final double sheetHeight;
-  final void Function(DragUpdateDetails details) onHandleDragUpdate;
-  final void Function(DragEndDetails details) onHandleDragEnd;
-  final void Function() onHandleTap;
   final void Function(MapAction) onAction;
   final List<PhotoModel> photos;
   final JournalModel journal;
 
   const MapBottomDragWidget({
     super.key,
-    required this.sheetHeight,
-    required this.onHandleDragUpdate,
-    required this.onHandleDragEnd,
-    required this.onHandleTap,
     required this.photos,
     required this.journal,
     required this.onAction,
@@ -277,66 +240,36 @@ class MapBottomDragWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      duration: const Duration(milliseconds: 200),
-      height: sheetHeight,
-      decoration: const BoxDecoration(
-        color: AppColors.gray5,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      child: Column(
-        spacing: 8,
-        children: [
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onVerticalDragUpdate: onHandleDragUpdate,
-            onVerticalDragEnd: onHandleDragEnd,
-            onTap: onHandleTap,
-            child: Container(
-              width: double.infinity,
-              height: 6,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Center(
-                child: Container(
-                  width: 40,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
+    return Column(
+      spacing: 8,
+      children: [
+        DateRangeSlider(
+          startDate: journal.startDate,
+          endDate: journal.endDate,
+          onChanged: (start, end) {
+            onAction(
+              MapAction.onDateRangeClick(
+                startDate: start,
+                endDate: end,
+                journalId: journal.id,
               ),
-            ),
+            );
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Timeline', style: AppFonts.smallTextRegular),
+            TextChip(text: '${photos.length} Places'),
+          ],
+        ),
+        Expanded(
+          child: GrouplistPhotosTimelineTile(
+            photos: photos,
+            onTap: (id) => onAction(MapAction.onPhotoClick(id)),
           ),
-          DateRangeSlider(
-            startDate: journal.startDate,
-            endDate: journal.endDate,
-            onChanged: (start, end) {
-              onAction(
-                MapAction.onDateRangeClick(
-                  startDate: start,
-                  endDate: end,
-                  journalId: journal.id,
-                ),
-              );
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Timeline', style: AppFonts.smallTextRegular),
-              TextChip(text: '${photos.length} Places'),
-            ],
-          ),
-          Expanded(
-            child: GrouplistPhotosTimelineTile(
-              photos: photos,
-              onTap: (id) => onAction(MapAction.onPhotoClick(id)),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
