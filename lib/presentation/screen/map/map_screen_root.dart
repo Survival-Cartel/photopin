@@ -31,10 +31,14 @@ class _MapScreenRootState extends State<MapScreenRoot> {
                 showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    final PhotoModel photo = widget.mapViewModel.state.photos
+                    final PhotoModel photo = widget
+                        .mapViewModel
+                        .state
+                        .mapModel
+                        .photos
                         .firstWhere((photo) => photo.id == action.photoId);
                     return MapBottomSheet(
-                      title: widget.mapViewModel.state.journal.name,
+                      title: widget.mapViewModel.state.mapModel.journal.name,
                       imageUrl: photo.imageUrl,
                       dateTime: photo.dateTime,
                       location: photo.name,
@@ -47,15 +51,6 @@ class _MapScreenRootState extends State<MapScreenRoot> {
                     );
                   },
                 );
-              case OnCancelClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
-              case OnApplyFilterClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
-              case OnEditClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
               case OnShareClick():
                 // TODO: Handle this case.
                 throw UnimplementedError();
