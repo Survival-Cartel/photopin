@@ -129,7 +129,14 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
         markerId: MarkerId(photo.id),
         position: cluster.location,
         icon: icon,
-        // onTap: () => widget.onAction(MapAction.onPhotoClick(photo.id)),
+        consumeTapEvents: true,
+        onTap:
+            () => widget.onAction(
+              CompareMapAction.onPhotoClick(
+                photoId: photo.id,
+                isCompare: isCompare,
+              ),
+            ),
       );
     }
   };
@@ -391,7 +398,14 @@ class _MapBottomDragWidgetState extends State<MapBottomDragWidget> {
                           Expanded(
                             child: GrouplistPhotosTimelineTile(
                               photos: widget.myModel.photos,
-                              onTap: (id) {},
+                              onTap: (id) {
+                                widget.onAction(
+                                  CompareMapAction.onPhotoClick(
+                                    photoId: id,
+                                    isCompare: false,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -414,7 +428,14 @@ class _MapBottomDragWidgetState extends State<MapBottomDragWidget> {
                           Expanded(
                             child: GrouplistPhotosTimelineTile(
                               photos: widget.sharedModel.photos,
-                              onTap: (id) {},
+                              onTap: (id) {
+                                widget.onAction(
+                                  CompareMapAction.onPhotoClick(
+                                    photoId: id,
+                                    isCompare: true,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
