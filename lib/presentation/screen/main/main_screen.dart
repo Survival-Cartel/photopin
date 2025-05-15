@@ -33,7 +33,9 @@ class _MainScreenState extends State<MainScreen> {
       index = index - 1;
     }
 
-    widget.navigationShell.goBranch(index);
+    final int routeIndex = index > 2 ? index - 1 : index;
+
+    widget.navigationShell.goBranch(routeIndex);
     setState(() {
       _selectedIndex = index;
     });

@@ -19,6 +19,8 @@ import 'package:photopin/core/firebase/firestore_setup.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
@@ -39,6 +41,7 @@ import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 import 'package:photopin/presentation/screen/map/map_view_model.dart';
+import 'package:photopin/presentation/screen/photos/photos_view_model.dart';
 import 'package:photopin/presentation/screen/settings/settings_view_model.dart';
 import 'package:photopin/storage/data/data_source/firebase_storage_data_source.dart';
 import 'package:photopin/storage/data/data_source/storage_data_source.dart';
@@ -87,6 +90,12 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<GetPhotoListUseCase, String, void>(
+    (userId, _) => GetPhotoListUseCase(
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerLazySingleton<AuthDataSource>(
     () => AuthDataSourceImpl(auth: getIt()),
   );
@@ -106,6 +115,12 @@ void di() {
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(
     (userId, _) => GetJournalListUseCase(
       journalRepository: getIt<JournalRepository>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+    ),
+  );
+
+  getIt.registerFactoryParam<GetPhotoListWithJournalIdUseCase, String, void>(
+    (userId, _) => GetPhotoListWithJournalIdUseCase(
       photoRepository: getIt<PhotoRepository>(param1: userId),
     ),
   );
@@ -208,6 +223,17 @@ void di() {
     (userId, _) => MapViewModel(
       getIt<PhotoRepository>(param1: userId),
       getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
+  getIt.registerFactoryParam<PhotosViewModel, String, void>(
+    (userId, _) => PhotosViewModel(
+      getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
+      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      getPhotoListWithJournalIdUseCase: getIt<GetPhotoListWithJournalIdUseCase>(
+        param1: userId,
+      ),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
     ),
   );
 

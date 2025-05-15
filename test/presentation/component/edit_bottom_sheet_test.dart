@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:photopin/core/enums/button_type.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/base_button.dart';
 import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
 
+import '../../journal/fixtures/journal_model_fixtures.dart';
+
 final String comment = 'A';
-final List<String> journalNames = ['Journal 1', 'Journal 2'];
+final List<JournalModel> journals = journalModelFixtures;
 final String imageUrl = '';
 final DateTime dateTime = DateTime(2025, 05, 07, 15, 30);
+final String title = 'trip';
 
 void main() {
   testWidgets('버튼 클릭 시 EditBottomSheet가 열리고 구성 요소가 정상적으로 보여야한다.', (
@@ -31,10 +35,15 @@ void main() {
                             return EditBottomSheet(
                               comment: comment,
                               dateTime: dateTime,
-                              journalNames: journalNames,
+                              title: title,
+                              journals: const [],
                               imageUrl: imageUrl,
                               onTapApply:
-                                  (String journalName, String comment) {},
+                                  (
+                                    String photoName,
+                                    String journalId,
+                                    String comment,
+                                  ) {},
                               onTapCancel: () {},
                               onTapClose: () {},
                             );
@@ -89,10 +98,15 @@ void main() {
                               return EditBottomSheet(
                                 comment: comment,
                                 dateTime: dateTime,
-                                journalNames: journalNames,
+                                title: title,
+                                journals: journals,
                                 imageUrl: imageUrl,
                                 onTapApply:
-                                    (String journalName, String comment) {},
+                                    (
+                                      String photoName,
+                                      String journalId,
+                                      String comment,
+                                    ) {},
                                 onTapCancel: () {},
                                 onClosing: () => calledClosing = true,
                                 onTapClose: () {
@@ -132,10 +146,10 @@ void main() {
   );
 
   testWidgets(
-    'EditBottomSheet를 변경하고 Apply를 탭하면 onTapApply 콜백 함수로 journalName과 comment의 값이 반환되야한다.',
+    'EditBottomSheet를 변경하고 Apply를 탭하면 onTapApply 콜백 함수로 photoName, journalId와 comment의 값이 반환되야한다.',
     (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
-        String expectJournalName = '';
+        String expectPhotoName = '';
         String expectComment = '';
 
         await tester.pumpWidget(
@@ -153,13 +167,16 @@ void main() {
                               return EditBottomSheet(
                                 comment: comment,
                                 dateTime: dateTime,
-                                journalNames: journalNames,
+                                title: title,
+                                journals: journals,
+                                journalId: journals[0].id,
                                 imageUrl: imageUrl,
                                 onTapApply: (
-                                  String journalName,
+                                  String photoName,
+                                  String journalId,
                                   String comment,
                                 ) {
-                                  expectJournalName = journalName;
+                                  expectPhotoName = photoName;
                                   expectComment = comment;
                                 },
                                 onTapCancel: () {},
@@ -183,16 +200,25 @@ void main() {
         await tester.tap(find.text('Open Bottom Sheet'));
         await tester.pumpAndSettle();
 
-        await tester.enterText(find.byType(TextLimitInputField), 'Hello');
+        // 제목 필드 찾기 및 업데이트
+        await tester.enterText(
+          find.byType(TextLimitInputField).first,
+          'Updated Title',
+        );
         await tester.pumpAndSettle();
 
+        // 코멘트 필드 찾기 및 업데이트
+        await tester.enterText(find.byType(TextLimitInputField).last, 'Hello');
+        await tester.pumpAndSettle();
+
+        // Apply 버튼 찾아서 탭하기
         await tester.ensureVisible(find.text('Apply'));
         await tester.pumpAndSettle();
         await tester.tap(find.text('Apply'));
         await tester.pumpAndSettle();
 
+        expect(expectPhotoName, 'Updated Title');
         expect(expectComment, 'Hello');
-        expect(expectJournalName, journalNames[0]);
       });
     },
   );
@@ -216,10 +242,15 @@ void main() {
                             return EditBottomSheet(
                               comment: comment,
                               dateTime: dateTime,
-                              journalNames: journalNames,
+                              title: title,
+                              journals: journals,
                               imageUrl: imageUrl,
                               onTapApply:
-                                  (String journalName, String comment) {},
+                                  (
+                                    String photoName,
+                                    String journalId,
+                                    String comment,
+                                  ) {},
                               onTapCancel: () {
                                 Navigator.pop(context);
                               },

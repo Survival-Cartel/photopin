@@ -6,4 +6,5 @@ abstract interface class PhotoDataSource {
   Future<List<PhotoDto>> findPhotos();
   Future<void> savePhoto(PhotoDto dto);
   Future<void> deletePhoto(String photoId);
+  Future<void> updatePhoto(PhotoDto photoDto);
 }
