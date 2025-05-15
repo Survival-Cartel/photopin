@@ -48,8 +48,12 @@ class AlertShareLink extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                       children: [
-                        Text(url, style: AppFonts.smallTextRegular),
-
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(url, style: AppFonts.smallTextRegular),
+                          ),
+                        ),
                         GestureDetector(
                           onTap: () {
                             onClick();
