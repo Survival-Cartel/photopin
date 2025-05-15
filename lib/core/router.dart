@@ -175,9 +175,14 @@ final appRouter = GoRouter(
               path: Routes.journal,
               builder: (context, state) {
                 final String userId = getIt<FirebaseAuth>().currentUser!.uid;
-                return JournalScreenRoot(
-                  viewModel: getIt<JournalViewModel>(param1: userId),
+
+                final JournalViewModel viewModel = getIt<JournalViewModel>(
+                  param1: userId,
                 );
+
+                viewModel.init();
+
+                return JournalScreenRoot(viewModel: viewModel);
               },
             ),
           ],
