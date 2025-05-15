@@ -21,7 +21,7 @@ class HomeScreenRoot extends StatelessWidget {
           onAction: (action) {
             switch (action) {
               case CameraClick():
-                break;
+                context.push('/camera');
               case NewJournalClick():
                 showDialog(
                   context: context,
