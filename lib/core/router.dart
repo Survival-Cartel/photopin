@@ -192,6 +192,16 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: Routes.unkown,
+              builder: (context, state) {
+                return Container();
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: Routes.photos,
               builder: (context, state) {
                 final String userId = getIt<FirebaseAuth>().currentUser!.uid;
@@ -202,7 +212,6 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-
         StatefulShellBranch(
           routes: [
             GoRoute(

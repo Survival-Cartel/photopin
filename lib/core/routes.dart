@@ -10,4 +10,5 @@ abstract class Routes {
   static const String compare = '/compare';
   static const String camera = '/camera';
   static const String settings = '/settings';
+  static const String unkown = '/unkown';
 }
