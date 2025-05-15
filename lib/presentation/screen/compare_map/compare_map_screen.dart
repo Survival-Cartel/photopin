@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
@@ -8,7 +7,6 @@ import 'package:photopin/presentation/component/grouplist_photos_timeline_tile.d
 import 'package:photopin/presentation/component/integration_map.dart';
 import 'package:photopin/presentation/component/move_bottom_sheet.dart';
 import 'package:photopin/presentation/component/photopin_head.dart';
-import 'package:photopin/presentation/component/photopin_map.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_action.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_state.dart';
 
@@ -45,25 +43,17 @@ class CompareMapScreen extends StatelessWidget {
               ? Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  state.sharedData.photos.isNotEmpty
-                      ? IntegrationMap(
-                        models: [state.myData, state.sharedData],
-                        onPhotoClick: (photoId, isCompare) {
-                          onAction(
-                            CompareMapAction.onPhotoClick(
-                              photoId: photoId,
-                              isCompare: isCompare,
-                            ),
-                          );
-                        },
-                      )
-                      : const PhotoPinMap(
-                        initialLocation: LatLng(37.5125, 127.1025),
-                        initialZoomLevel: 16,
-                        markers: {},
-                        polylines: {},
-                        polyLineColor: AppColors.marker70,
-                      ),
+                  IntegrationMap(
+                    models: [state.myData, state.sharedData],
+                    onPhotoClick: (photoId, isCompare) {
+                      onAction(
+                        CompareMapAction.onPhotoClick(
+                          photoId: photoId,
+                          isCompare: isCompare,
+                        ),
+                      );
+                    },
+                  ),
                   Positioned(
                     top: 4,
                     left: 4,

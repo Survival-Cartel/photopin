@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -8,7 +7,6 @@ import 'package:photopin/presentation/component/date_range_slider.dart';
 import 'package:photopin/presentation/component/grouplist_photos_timeline_tile.dart';
 import 'package:photopin/presentation/component/integration_map.dart';
 import 'package:photopin/presentation/component/move_bottom_sheet.dart';
-import 'package:photopin/presentation/component/photopin_map.dart';
 import 'package:photopin/presentation/component/text_chip.dart';
 import 'package:photopin/presentation/component/trip_with_chips.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
@@ -50,20 +48,12 @@ class MapScreen extends StatelessWidget {
               ? Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  mapState.mapModel.photos.isNotEmpty
-                      ? IntegrationMap(
-                        models: [mapState.mapModel],
-                        onPhotoClick: (photoId, isCompare) {
-                          onAction(MapAction.onPhotoClick(photoId));
-                        },
-                      )
-                      : const PhotoPinMap(
-                        initialLocation: LatLng(37.5125, 127.1025),
-                        initialZoomLevel: 16,
-                        markers: {},
-                        polylines: {},
-                        polyLineColor: AppColors.marker70,
-                      ),
+                  IntegrationMap(
+                    models: [mapState.mapModel],
+                    onPhotoClick: (photoId, isCompare) {
+                      onAction(MapAction.onPhotoClick(photoId));
+                    },
+                  ),
                   Positioned(
                     top: 4,
                     left: 4,
