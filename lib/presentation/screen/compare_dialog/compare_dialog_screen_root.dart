@@ -27,7 +27,10 @@ class CompareDialogScreenRoot extends StatelessWidget {
             switch (action) {
               case OnApply():
                 if (action.journalId == '') {
-                  break;
+                  context.push(
+                    '${Routes.map}/$compareUserId/$compareJournalId',
+                  );
+                  return;
                 }
                 context.push(
                   '${Routes.compareMap}/$compareUserId/$compareJournalId/${action.journalId}',
