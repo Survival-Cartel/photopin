@@ -47,23 +47,25 @@ class JournalCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                top: 15,
-                right: 15,
-                child: GestureDetector(
-                  onTap: () => onTapEdit?.call(journal.id),
-                  behavior: HitTestBehavior.opaque,
-                  child: CircleAvatar(
-                    maxRadius: 18,
-                    backgroundColor: AppColors.black.withValues(alpha: 0.4),
-                    child: Icon(
-                      Icons.edit,
-                      color: AppColors.primary60,
-                      size: 20,
+              showEditButton
+                  ? Positioned(
+                    top: 15,
+                    right: 15,
+                    child: GestureDetector(
+                      onTap: () => onTapEdit?.call(journal.id),
+                      behavior: HitTestBehavior.opaque,
+                      child: CircleAvatar(
+                        maxRadius: 18,
+                        backgroundColor: AppColors.black.withValues(alpha: 0.4),
+                        child: Icon(
+                          Icons.edit,
+                          color: AppColors.primary60,
+                          size: 20,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  )
+                  : const SizedBox(),
             ],
           ),
         ),
