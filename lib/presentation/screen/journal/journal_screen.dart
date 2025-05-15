@@ -70,6 +70,50 @@ class JournalScreen extends StatelessWidget {
                         imageUrl: thumbnailUrl,
                         journal: state.journals[index],
                         photoCount: photoCount ?? 0,
+                        onTapEdit: (String journalId) {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (BuildContext context) {
+                              final JournalModel journal =
+                                  state.journals[index];
+
+                              return FittedBox(
+                                // decoration                                child: EditBottomSheet(
+                                  title: journal.name,
+                                  imageUrl: thumbnailUrl,
+                                  dateTime: journal.startDate,
+                                  comment: journal.comment,
+                                  journalId: journalId,
+                                  onTapClose: () => Navigator.pop(context),
+                                  showJournalDropdown: false,
+                                  onTapApply: (
+                                    title,
+                                    selectJournal,
+                                    newComment,
+                                  ) {
+                                    // 여기서 photo를 업데이트하는 적절한 액션을 생성
+                                    // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
+                                    // onAction(
+                                    //   PhotosAction.applyClick(
+                                    //     photo.copyWith(
+                                    //       name: photoName,
+                                    //       comment: newComment,
+                                    //       journalId: selectJournal,
+                                    //     ),
+                                    //   ),
+                                    // );
+                                    Navigator.pop(context);
+                                  },
+                                  onTapCancel: () => Navigator.pop(context),
+                                  journals: state.journals,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        showEditButton: true,
                         onTap:
                             (String journalId) => onAction(
                               JournalScreenAction.onTapJournalCard(
