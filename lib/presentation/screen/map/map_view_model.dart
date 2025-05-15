@@ -1,18 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:photopin/journal/data/repository/journal_repository.dart';
-import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/core/domain/integration_model.dart';
+import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/map/map_action.dart';
 import 'package:photopin/presentation/screen/map/map_state.dart';
 
 class MapViewModel with ChangeNotifier {
-  final JournalRepository _journalRepository;
   final PhotoRepository _photoRepository;
+  final GetCompareModelUseCase _getCompareModelUseCase;
   MapState _state = const MapState();
 
-  MapViewModel(this._photoRepository, this._journalRepository);
+  MapViewModel({
+    required PhotoRepository photoRepository,
+    required GetCompareModelUseCase getCompareModelUseCase,
+  }) : _photoRepository = photoRepository,
+       _getCompareModelUseCase = getCompareModelUseCase;
 
   MapState get state => _state;
 
@@ -46,19 +50,22 @@ class MapViewModel with ChangeNotifier {
           endDate: endDate,
         );
 
-    _state = state.copyWith(isLoading: false, photos: photos);
+    final IntegrationModel model = state.mapModel.copyWith(photos: photos);
+
+    _state = state.copyWith(isLoading: false, mapModel: model);
     notifyListeners();
   }
 
-  Future<void> init(String journalId) async {
+  Future<void> init(String journalId, String userId) async {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
-    final List<PhotoModel> photos = await _photoRepository
-        .findPhotosByJournalId(journalId);
-    final JournalModel jounal = (await _journalRepository.findOne(journalId))!;
+    final IntegrationModel model = await _getCompareModelUseCase.execute(
+      userId: userId,
+      journalId: journalId,
+    );
 
-    _state = state.copyWith(isLoading: false, photos: photos, journal: jounal);
+    _state = state.copyWith(isLoading: false, mapModel: model);
     notifyListeners();
   }
 }

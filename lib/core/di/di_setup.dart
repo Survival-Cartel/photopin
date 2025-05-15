@@ -224,8 +224,8 @@ void di() {
 
   getIt.registerFactoryParam<MapViewModel, String, void>(
     (userId, _) => MapViewModel(
-      getIt<PhotoRepository>(param1: userId),
-      getIt<JournalRepository>(param1: userId),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+      getCompareModelUseCase: getIt<GetCompareModelUseCase>(param1: userId),
     ),
   );
 
