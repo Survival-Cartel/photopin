@@ -131,12 +131,6 @@ void di() {
 
   getIt.registerSingleton<LocationService>(GeolocatorLocationService());
 
-  getIt.registerSingleton<GetCurrentUserUseCase>(
-    GetCurrentUserUseCase(getIt()),
-  );
-
-  getIt.registerSingleton<LocationService>(GeolocatorLocationService());
-
   getIt.registerSingleton<GetCurrentLocationUseCase>(
     GetCurrentLocationUseCase(geoService: getIt<LocationService>()),
   );
