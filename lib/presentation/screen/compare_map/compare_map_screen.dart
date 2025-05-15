@@ -32,21 +32,15 @@ class CompareMapScreen extends StatefulWidget {
 }
 
 class _CompareMapScreenState extends State<CompareMapScreen> {
-  static const double _minHeight = 60;
-
   late package.ClusterManager<PhotoClusterItem> _clusterManager;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
+
   bool showPolyline = true;
-  bool isHide = false;
   double showPolylineZoomLevel = 17;
   LatLng initailLatLng = const LatLng(37.513, 127.1027);
 
-  static const double _maxHeight = 400;
-
   Set<Marker> markers = {};
-
-  double _sheetHeight = _maxHeight;
 
   @override
   void initState() {
@@ -169,32 +163,6 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
     });
   }
 
-  void _onHandleDragEnd(DragEndDetails details) {
-    final mid = (_maxHeight + _minHeight) / 2;
-    setState(() {
-      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
-      if (_sheetHeight == _minHeight) {
-        isHide = !isHide;
-      }
-    });
-  }
-
-  void _onHandleDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
-        _minHeight,
-        _maxHeight,
-      );
-    });
-  }
-
-  void _onHandleTap() {
-    setState(() {
-      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
-      isHide = !isHide;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,14 +175,9 @@ class _CompareMapScreenState extends State<CompareMapScreen> {
       bottomSheet:
           widget.state.sharedData.journal.id != ''
               ? MapBottomDragWidget(
-                sheetHeight: _sheetHeight,
-                onHandleDragUpdate: _onHandleDragUpdate,
-                onHandleDragEnd: _onHandleDragEnd,
-                onHandleTap: _onHandleTap,
                 onAction: widget.onAction,
                 sharedModel: widget.state.sharedData,
                 myModel: widget.state.myData,
-                isHide: isHide,
               )
               : const SizedBox(),
       body:
@@ -330,34 +293,55 @@ class _LineInfo extends StatelessWidget {
   }
 }
 
-class MapBottomDragWidget extends StatelessWidget {
-  final double sheetHeight;
-  final bool isHide;
-  final void Function(DragUpdateDetails details) onHandleDragUpdate;
-  final void Function(DragEndDetails details) onHandleDragEnd;
-  final void Function() onHandleTap;
+class MapBottomDragWidget extends StatefulWidget {
   final void Function(CompareMapAction) onAction;
   final IntegrationModel sharedModel;
   final IntegrationModel myModel;
 
   const MapBottomDragWidget({
     super.key,
-    required this.sheetHeight,
-    required this.onHandleDragUpdate,
-    required this.onHandleDragEnd,
-    required this.onHandleTap,
     required this.onAction,
     required this.sharedModel,
     required this.myModel,
-    required this.isHide,
   });
+
+  @override
+  State<MapBottomDragWidget> createState() => _MapBottomDragWidgetState();
+}
+
+class _MapBottomDragWidgetState extends State<MapBottomDragWidget> {
+  static const double _minHeight = 60;
+  static const double _maxHeight = 400;
+  double _sheetHeight = _maxHeight;
+
+  void _onHandleDragEnd(DragEndDetails details) {
+    final mid = (_maxHeight + _minHeight) / 2;
+    setState(() {
+      _sheetHeight = _sheetHeight >= mid ? _maxHeight : _minHeight;
+    });
+  }
+
+  void _onHandleDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      _sheetHeight = (_sheetHeight - details.delta.dy).clamp(
+        _minHeight,
+        _maxHeight,
+      );
+    });
+  }
+
+  void _onHandleTap() {
+    setState(() {
+      _sheetHeight = _sheetHeight == _minHeight ? _maxHeight : _minHeight;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       duration: const Duration(milliseconds: 200),
-      height: sheetHeight,
+      height: _sheetHeight,
       decoration: const BoxDecoration(
         color: AppColors.gray5,
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -367,9 +351,9 @@ class MapBottomDragWidget extends StatelessWidget {
         children: [
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onVerticalDragUpdate: onHandleDragUpdate,
-            onVerticalDragEnd: onHandleDragEnd,
-            onTap: onHandleTap,
+            onVerticalDragUpdate: _onHandleDragUpdate,
+            onVerticalDragEnd: _onHandleDragEnd,
+            onTap: _onHandleTap,
             child: Container(
               width: double.infinity,
               height: 6,
@@ -386,7 +370,7 @@ class MapBottomDragWidget extends StatelessWidget {
               ),
             ),
           ),
-          !isHide
+          (_sheetHeight == _maxHeight)
               ? Expanded(
                 child: Row(
                   spacing: 8,
@@ -396,16 +380,17 @@ class MapBottomDragWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: CompareCard(
-                              profileImageUrl: myModel.user.profileImg,
-                              nameString: myModel.user.displayName,
-                              journal: myModel.journal,
+                              profileImageUrl: widget.myModel.user.profileImg,
+                              nameString: widget.myModel.user.displayName,
+                              journal: widget.myModel.journal,
                               color: AppColors.secondary100,
-                              photoString: '${myModel.photos.length} Photos',
+                              photoString:
+                                  '${widget.myModel.photos.length} Photos',
                             ),
                           ),
                           Expanded(
                             child: GrouplistPhotosTimelineTile(
-                              photos: myModel.photos,
+                              photos: widget.myModel.photos,
                               onTap: (id) {},
                             ),
                           ),
@@ -417,17 +402,18 @@ class MapBottomDragWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: CompareCard(
-                              profileImageUrl: sharedModel.user.profileImg,
-                              nameString: sharedModel.user.displayName,
-                              journal: sharedModel.journal,
+                              profileImageUrl:
+                                  widget.sharedModel.user.profileImg,
+                              nameString: widget.sharedModel.user.displayName,
+                              journal: widget.sharedModel.journal,
                               color: AppColors.primary100,
                               photoString:
-                                  '${sharedModel.photos.length} Photos',
+                                  '${widget.sharedModel.photos.length} Photos',
                             ),
                           ),
                           Expanded(
                             child: GrouplistPhotosTimelineTile(
-                              photos: sharedModel.photos,
+                              photos: widget.sharedModel.photos,
                               onTap: (id) {},
                             ),
                           ),
