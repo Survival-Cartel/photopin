@@ -99,6 +99,21 @@ final appRouter = GoRouter(
         return CompareMapScreenRoot(viewModel: viewModel);
       },
     ),
+    GoRoute(
+      path: '${Routes.map}/:userId/:journalId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String compareUserId = state.pathParameters['userId']!;
+        final String compareJournalId = state.pathParameters['journalId']!;
+
+        final MapViewModel viewModel = getIt<MapViewModel>(
+          param1: compareUserId,
+        );
+
+        viewModel.init(compareJournalId);
+
+        return MapScreenRoot(mapViewModel: viewModel);
+      },
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         final MainScreenViewModel mainScreenViewModel = getIt();
@@ -117,13 +132,18 @@ final appRouter = GoRouter(
               path: Routes.home,
               builder: (context, state) {
                 final String userId = getIt<FirebaseAuth>().currentUser!.uid;
-                return HomeScreenRoot(
-                  viewModel: getIt<HomeViewModel>(param1: userId),
+
+                final HomeViewModel viewModel = getIt<HomeViewModel>(
+                  param1: userId,
                 );
+
+                viewModel.init();
+
+                return HomeScreenRoot(viewModel: viewModel);
               },
               routes: [
                 GoRoute(
-                  path: '${Routes.map}/:userId/:journalId',
+                  path: '${Routes.compare}/:userId/:journalId',
                   builder: (BuildContext context, GoRouterState state) {
                     final String compareUserId =
                         state.pathParameters['userId']!;
