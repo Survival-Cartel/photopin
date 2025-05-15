@@ -12,7 +12,7 @@ exports.sendFcm = functions.https.onRequest(async (req, res) => {
  // functions.logger.info("Hello logs!", {structuredData: true});
  const message = {
    token:
-     "dIMYu12pTTGxAP2E0xdzn0:APA91bE79qFdy0g8w62iP9lpCaMjAlU7TPrYp5sikYrVqhIlp3o7VUXjf2ImxjdYqx5tohy75LPvGhR9RkfGvFwON4dH-Jz8yje07mzLdHUrVsxJkKop8kQ",
+     req.body.token,
    data: {
      title: req.body.title,
      body: req.body.body,
