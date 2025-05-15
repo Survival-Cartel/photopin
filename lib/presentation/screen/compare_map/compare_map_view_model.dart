@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/integration_model.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
+import 'package:photopin/presentation/screen/compare_map/compare_map_action.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_state.dart';
 
 class CompareMapViewModel with ChangeNotifier {
@@ -15,6 +16,13 @@ class CompareMapViewModel with ChangeNotifier {
        _myUseCase = myUseCase;
 
   CompareMapState get state => _state;
+
+  Future<void> onAction(CompareMapAction action) async {
+    switch (action) {
+      case OnPhotoClick():
+        break;
+    }
+  }
 
   Future<void> init({
     required String sharedUserId,
