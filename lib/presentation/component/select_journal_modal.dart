@@ -38,14 +38,16 @@ class _SelectJournalModalState extends State<SelectJournalModal> {
                   journalId = value ?? '';
                 });
               },
-              dropdownMenuEntries: List.generate(widget.journals.length, (
-                index,
-              ) {
-                return DropdownMenuEntry(
-                  label: widget.journals[index].name,
-                  value: widget.journals[index].id,
-                );
-              }),
+              initialSelection: journalId,
+              dropdownMenuEntries: [
+                const DropdownMenuEntry(label: '선택 없음', value: ''),
+                ...List.generate(widget.journals.length, (index) {
+                  return DropdownMenuEntry(
+                    label: widget.journals[index].name,
+                    value: widget.journals[index].id,
+                  );
+                }),
+              ],
             ),
             BaseButton(
               buttonName: '선택하기',
