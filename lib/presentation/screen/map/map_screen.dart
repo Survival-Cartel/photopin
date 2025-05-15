@@ -97,6 +97,7 @@ class _MapScreenState extends State<MapScreen> {
       return Marker(
         markerId: MarkerId(photo.id),
         position: cluster.location,
+        consumeTapEvents: true,
         icon: icon,
         onTap: () => widget.onAction(MapAction.onPhotoClick(photo.id)),
       );
