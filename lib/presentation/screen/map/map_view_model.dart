@@ -25,20 +25,9 @@ class MapViewModel with ChangeNotifier {
           endDate: action.endDate,
         );
       case OnPhotoClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case OnCancelClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case OnApplyFilterClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case OnEditClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        break;
       case OnShareClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        break;
     }
   }
 
