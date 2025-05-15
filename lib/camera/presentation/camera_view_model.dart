@@ -39,8 +39,11 @@ class CameraViewModel {
 
       if (imageData != null) {
         _eventController.add(CameraStreamEvent.done);
-        await _savePictureInDeviceUseCase.execute(imageData.xFile.path);
-        await _savePictureInFirebaseUseCase.execute(imageData, ImageMime.jpg);
+
+        Future.wait([
+          _savePictureInDeviceUseCase.execute(imageData.xFile.path),
+          _savePictureInFirebaseUseCase.execute(imageData, ImageMime.jpg),
+        ]);
       }
     }
     _eventController.add(CameraStreamEvent.cancel);
