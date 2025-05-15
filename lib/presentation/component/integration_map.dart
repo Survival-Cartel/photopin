@@ -32,7 +32,7 @@ class _IntegrationMapState extends State<IntegrationMap> {
       Completer<GoogleMapController>();
 
   bool _showPolyline = true;
-  final double _showPolylineZoomLevel = 17;
+  final double _showPolylineZoomLevel = 10;
   late LatLng _initialLatLng;
 
   Set<Marker> _markers = {};
@@ -87,7 +87,7 @@ class _IntegrationMapState extends State<IntegrationMap> {
       items,
       _updateMarkers,
       markerBuilder: _markerBuilder,
-      stopClusteringZoom: 18,
+      stopClusteringZoom: _showPolylineZoomLevel,
     );
   }
 
@@ -213,7 +213,9 @@ class _IntegrationMapState extends State<IntegrationMap> {
 
   /// 폴리라인 데이터 생성
   Map<String, List<LatLng>> _buildPolylines() {
-    if (!_showPolyline) return {};
+    if (!_showPolyline) {
+      return {};
+    }
 
     return Map.fromEntries(
       widget.models.map(
