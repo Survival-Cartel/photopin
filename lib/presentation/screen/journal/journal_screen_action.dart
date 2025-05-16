@@ -16,6 +16,10 @@ sealed class JournalScreenAction {
   const factory JournalScreenAction.setSerchFilter({
     required SearchFilterOption option,
   }) = SetSearchFilter;
+
+  const factory JournalScreenAction.onSearchDateRange({
+    required DateTimeRange range,
+  }) = OnSearchDateRange;
 }
 
 @immutable
@@ -37,6 +41,13 @@ class OnTapEdit implements JournalScreenAction {
   final JournalModel journal;
 
   const OnTapEdit({required this.journal});
+}
+
+@immutable
+class OnSearchDateRange implements JournalScreenAction {
+  final DateTimeRange range;
+
+  const OnSearchDateRange({required this.range});
 }
 
 @immutable
