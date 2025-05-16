@@ -31,12 +31,18 @@ class JournalEditBottomSheet extends EditBottomSheet {
 class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
+  final TextEditingController tripWithController = TextEditingController();
+
+  List<String> tripWith = [];
 
   @override
   void initState() {
     super.initState();
     titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
+    tripWithController.value = TextEditingValue(
+      text: widget.journal.tripWith.join(', '),
+    );
   }
 
   @override
@@ -172,6 +178,34 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       ),
                     ],
                   ),
+                  Row(
+                    spacing: 12,
+                    children: [
+                      const BaseIcon(
+                        iconColor: AppColors.secondary100,
+                        size: 16,
+                        iconData: Icons.person,
+                      ),
+                      Expanded(
+                        child: TextLimitInputField(
+                          controller: tripWithController,
+                          hintText: '여행한 친구 "," 로 구분하여 입력해주세요.',
+                          onChange: (String value) {
+                            if (value.isEmpty) {
+                              tripWith.clear();
+                            } else {
+                              tripWith =
+                                  value
+                                      .split(',')
+                                      .map((item) => item.trim())
+                                      .where((item) => item.isNotEmpty)
+                                      .toList();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               Row(
@@ -188,6 +222,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                           widget.journal.copyWith(
                             name: titleController.text,
                             comment: commentController.text,
+                            tripWith: tripWith,
                           ),
                         );
                       },
