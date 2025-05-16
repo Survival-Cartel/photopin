@@ -22,7 +22,7 @@ class JournalCard extends StatelessWidget {
     required this.imageUrl,
     required this.photoCount,
     this.showEditButton = false,
-    this.onTapEdit = null,
+    this.onTapEdit,
   });
 
   @override
@@ -57,7 +57,7 @@ class JournalCard extends StatelessWidget {
                       child: CircleAvatar(
                         maxRadius: 18,
                         backgroundColor: AppColors.black.withValues(alpha: 0.4),
-                        child: Icon(
+                        child: const Icon(
                           Icons.edit,
                           color: AppColors.primary60,
                           size: 20,
