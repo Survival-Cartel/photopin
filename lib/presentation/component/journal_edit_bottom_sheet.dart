@@ -172,7 +172,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       ),
                       Expanded(
                         child: TextLimitInputField(
-                          key: Key('comment_field'),
+                          key: const Key('comment_field'),
                           controller: commentController,
                           hintText: 'Write Comment',
                           maxLength: 30,
@@ -190,7 +190,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       ),
                       Expanded(
                         child: TextLimitInputField(
-                          key: Key('trip_with_field'),
+                          key: const Key('trip_with_field'),
                           controller: tripWithController,
                           hintText: '여행한 친구 "," 로 구분하여 입력해주세요.',
                           onChange: (String value) {
