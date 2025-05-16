@@ -1,0 +1,2 @@
+
+enum SearchFilterOption { title, date }
