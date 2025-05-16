@@ -9,14 +9,19 @@ import 'package:photopin/presentation/component/base_icon_button.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
 import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 
-class JournalEditBottomSheet extends EditBottomSheet<JournalModel> {
+class JournalEditBottomSheet extends EditBottomSheet {
+  final JournalModel journal;
+  final Function(JournalModel journal) onTapApply;
+
   const JournalEditBottomSheet({
     super.key,
-    required super.item,
-    required super.onTapClose,
-    required super.onTapApply,
-    required super.onTapCancel,
     super.thumbnailUrl,
+    required super.title,
+    required super.comment,
+    required super.onTapCancel,
+    required super.onTapClose,
+    required this.journal,
+    required this.onTapApply,
   });
 
   @override
@@ -30,7 +35,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
   @override
   void initState() {
     super.initState();
-    setController(title: widget.item.name, comment: widget.item.comment);
+    titleController.value = TextEditingValue(text: widget.title);
+    commentController.value = TextEditingValue(text: widget.comment);
   }
 
   @override
@@ -111,8 +117,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                         firstDate: DateTime(1999),
                         lastDate: DateTime(2100, 12, 31),
                         initialDateRange: DateTimeRange(
-                          start: widget.item.startDate,
-                          end: widget.item.endDate,
+                          start: widget.journal.startDate,
+                          end: widget.journal.endDate,
                         ),
                         saveText: '저장',
                         builder: (BuildContext context, Widget? child) {
@@ -129,7 +135,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       );
 
                       if (range != null) {
-                        final updatedJournal = widget.item.copyWith(
+                        final updatedJournal = widget.journal.copyWith(
                           startDateMilli: range.start.millisecondsSinceEpoch,
                           endDateMilli: range.end.millisecondsSinceEpoch,
                         );
@@ -146,8 +152,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                           iconData: Icons.calendar_month,
                         ),
                         Text(
-                          widget.item.startDate.formatDateRange(
-                            widget.item.endDate,
+                          widget.journal.startDate.formatDateRange(
+                            widget.journal.endDate,
                           ),
                           style: AppFonts.smallTextRegular,
                         ),
@@ -184,7 +190,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       buttonName: 'Apply',
                       onClick: () {
                         widget.onTapApply(
-                          widget.item.copyWith(
+                          widget.journal.copyWith(
                             name: titleController.text,
                             comment: commentController.text,
                           ),
