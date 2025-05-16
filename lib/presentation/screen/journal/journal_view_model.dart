@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -37,16 +38,20 @@ class JournalViewModel with ChangeNotifier {
   Future<void> onAction(JournalScreenAction action) async {
     switch (action) {
       case SearchJournal(:final String query):
-        await _search(query);
+        await _searchTitle(query);
       case OnTapJournalCard():
         // 추후에 go_router로 화면 이동이 필요하기 때문에 구현하지 않음
         throw UnimplementedError();
       case OnTapEdit(:final JournalModel journal):
         await _update(journal);
+      case SetSearchFilter(:final SearchFilterOption option):
+        await _setSearchFilter(option);
+      case OnSearchDateRange(:final DateTimeRange range):
+        await _searchDateRange(range);
     }
   }
 
-  Future<void> _search(String query) async {
+  Future<void> _searchTitle(String query) async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
@@ -66,6 +71,11 @@ class JournalViewModel with ChangeNotifier {
       isLoading: false,
     );
 
+    notifyListeners();
+  }
+
+  Future<void> _searchDateRange(DateTimeRange range) async {
+    _state = _state.copyWith(searchDateTimeRange: range);
     notifyListeners();
   }
 
@@ -101,6 +111,11 @@ class JournalViewModel with ChangeNotifier {
     await _updateJournalUseCase.execute(journal);
 
     _state = _state.copyWith(isLoading: false);
+    notifyListeners();
+  }
+
+  Future<void> _setSearchFilter(SearchFilterOption option) async {
+    _state = _state.copyWith(searchFilterOption: option);
     notifyListeners();
   }
 }
