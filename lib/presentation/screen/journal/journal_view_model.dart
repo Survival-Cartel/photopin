@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -17,14 +18,20 @@ class JournalViewModel with ChangeNotifier {
   final GetJournalListUseCase _getJournalListUseCase;
   final WatchJournalsUseCase _watchJournalsUserCase;
   final UpdateJournalUseCase _updateJournalUseCase;
+  final SearchJournalByDateTimeRangeUseCase
+  _searchJournalByDateTimeRangeUseCase;
 
   JournalViewModel({
     required GetJournalListUseCase getJournalListUseCase,
     required WatchJournalsUseCase watchJournalsUserCase,
     required UpdateJournalUseCase updateJournalUseCase,
+    required SearchJournalByDateTimeRangeUseCase
+    searchJournalByDateTimeRangeUseCase,
   }) : _getJournalListUseCase = getJournalListUseCase,
        _watchJournalsUserCase = watchJournalsUserCase,
-       _updateJournalUseCase = updateJournalUseCase;
+       _updateJournalUseCase = updateJournalUseCase,
+       _searchJournalByDateTimeRangeUseCase =
+           searchJournalByDateTimeRangeUseCase;
 
   JournalState get state => _state;
   bool get isLoading => _state.isLoading;
@@ -75,7 +82,17 @@ class JournalViewModel with ChangeNotifier {
   }
 
   Future<void> _searchDateRange(DateTimeRange range) async {
-    _state = _state.copyWith(searchDateTimeRange: range);
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    List<JournalModel> journals = await _searchJournalByDateTimeRangeUseCase
+        .execute(range);
+
+    _state = _state.copyWith(
+      searchDateTimeRange: range,
+      journals: journals,
+      isLoading: false,
+    );
     notifyListeners();
   }
 
