@@ -19,7 +19,7 @@ class EditBottomSheet extends StatefulWidget {
 
   final VoidCallback onTapClose;
   final Function(String title, String journalId, String comment) onTapApply;
-  final VoidCallback onTapCancel;
+  final VoidCallback onTapDelete;
   final VoidCallback? onClosing;
 
   const EditBottomSheet({
@@ -30,7 +30,7 @@ class EditBottomSheet extends StatefulWidget {
     required this.comment,
     required this.onTapClose,
     required this.onTapApply,
-    required this.onTapCancel,
+    required this.onTapDelete,
     required this.journals,
     this.onClosing,
     this.showJournalDropdown = true,
@@ -68,7 +68,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       backgroundColor: AppColors.white,
@@ -229,9 +229,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     child: BaseIconButton(
                       buttonType: ButtonType.small,
                       buttonColor: AppColors.warning,
-                      iconName: Icons.cancel,
-                      buttonName: 'Cancel',
-                      onClick: widget.onTapCancel,
+                      iconName: Icons.delete,
+                      buttonName: 'Delete',
+                      onClick: widget.onTapDelete,
                     ),
                   ),
                 ],
