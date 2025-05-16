@@ -14,9 +14,7 @@ class CompareDialogViewModel with ChangeNotifier {
     required JournalRepository repository,
     required LinkAccessNotificationUseCase linkAccessNotificationuseCase,
   }) : _repository = repository,
-       _accessNotificationUseCase = linkAccessNotificationuseCase {
-    init();
-  }
+       _accessNotificationUseCase = linkAccessNotificationuseCase;
 
   CompareDialogState get state => _state;
 
