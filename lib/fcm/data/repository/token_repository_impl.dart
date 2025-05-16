@@ -8,9 +8,12 @@ class TokenRepositoryImpl implements TokenRepository {
 
   @override
   Future<String?> fetchToken(String userId) async {
-    final snap =
-    await _firebaseFirestore.collection('tokens').doc(userId).get();
-    return snap.data()?['token'] as String?;
+    final DocumentSnapshot snap =
+        await _firebaseFirestore.collection('tokens').doc(userId).get();
+
+    final Map<String, dynamic> maps = snap.data() as Map<String, dynamic>;
+
+    return maps['token'];
   }
 
   @override
