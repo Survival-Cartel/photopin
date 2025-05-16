@@ -8,4 +8,5 @@ abstract interface class JournalRepository
   Future<void> deleteJournal(String journalId);
   Future<void> saveJournal(JournalDto dto);
   Stream<List<JournalModel>> watchJournals();
+  Future<void> update(JournalModel journal);
 }

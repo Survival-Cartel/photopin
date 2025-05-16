@@ -17,7 +17,7 @@ class JournalDto {
   const JournalDto({
     this.id,
     this.name,
-    this.tripWith,
+    this.tripWith = const [],
     this.startDateMilli,
     this.endDateMilli,
     this.comment,
@@ -27,8 +27,8 @@ class JournalDto {
     id: json['id'],
     name: json['name'],
     tripWith:
-        (json['tripWith'] as List<dynamic>)
-            .map((data) => data.toString())
+        (json['tripWith'] as List<dynamic>?)
+            ?.map((data) => data.toString())
             .toList(),
     startDateMilli: (json['startDate'] as Timestamp).millisecondsSinceEpoch,
     endDateMilli: (json['endDate'] as Timestamp).millisecondsSinceEpoch,
@@ -38,7 +38,7 @@ class JournalDto {
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
-    'tripWith': tripWith,
+    'tripWith': tripWith ?? [],
     'startDate': Timestamp.fromMillisecondsSinceEpoch(startDateMilli ?? 0),
     'endDate': Timestamp.fromMillisecondsSinceEpoch(endDateMilli ?? 0),
     'comment': comment,

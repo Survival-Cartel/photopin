@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 import 'package:photopin/presentation/component/journal_card_image.dart';
 import 'package:photopin/presentation/component/map_filter.dart';
 import 'package:photopin/presentation/screen/photos/photos_action.dart';
@@ -61,51 +60,51 @@ class PhotosScreen extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (BuildContext context) {
-                              return Container(
-                                height: 500,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(16),
-                                    topRight: Radius.circular(16),
-                                  ),
-                                ),
-                                child: EditBottomSheet(
-                                  title: photo.name,
-                                  imageUrl: photo.imageUrl,
-                                  dateTime: photo.dateTime,
-                                  comment: photo.comment,
-                                  journalId: photo.journalId,
-                                  onTapClose: () => Navigator.pop(context),
-                                  onTapApply: (
-                                    photoName,
-                                    selectJournal,
-                                    newComment,
-                                  ) {
-                                    // 여기서 photo를 업데이트하는 적절한 액션을 생성
-                                    // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
-                                    onAction(
-                                      PhotosAction.applyClick(
-                                        photo.copyWith(
-                                          name: photoName,
-                                          comment: newComment,
-                                          journalId: selectJournal,
-                                        ),
-                                      ),
-                                    );
-                                    Navigator.pop(context);
-                                  },
-                                  onTapCancel: () => Navigator.pop(context),
-                                  journals: state.journals,
-                                ),
-                              );
-                            },
-                          );
+                          // showModalBottomSheet(
+                          //   context: context,
+                          //   isScrollControlled: true,
+                          //   backgroundColor: Colors.transparent,
+                          //   builder: (BuildContext context) {
+                          //     return Container(
+                          //       height: 500,
+                          //       decoration: const BoxDecoration(
+                          //         color: Colors.white,
+                          //         borderRadius: BorderRadius.only(
+                          //           topLeft: Radius.circular(16),
+                          //           topRight: Radius.circular(16),
+                          //         ),
+                          //       ),
+                          //       child: EditBottomSheet(
+                          //         title: photo.name,
+                          //         thumbnailUrl: photo.imageUrl,
+                          //         dateTime: photo.dateTime,
+                          //         comment: photo.comment,
+                          //         journalId: photo.journalId,
+                          //         onTapClose: () => Navigator.pop(context),
+                          //         onTapApply: (
+                          //           photoName,
+                          //           selectJournal,
+                          //           newComment,
+                          //         ) {
+                          //           // 여기서 photo를 업데이트하는 적절한 액션을 생성
+                          //           // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
+                          //           onAction(
+                          //             PhotosAction.applyClick(
+                          //               photo.copyWith(
+                          //                 name: photoName,
+                          //                 comment: newComment,
+                          //                 journalId: selectJournal,
+                          //               ),
+                          //             ),
+                          //           );
+                          //           Navigator.pop(context);
+                          //         },
+                          //         onTapCancel: () => Navigator.pop(context),
+                          //         journals: state.journals,
+                          //       ),
+                          //     );
+                          //   },
+                          // );
                         },
                         child: JournalCardImage(
                           imageUrl: photo.imageUrl,
