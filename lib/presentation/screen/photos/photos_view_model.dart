@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/domain/photo_journal_list_model.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_use_case.dart';
-import 'package:photopin/core/usecase/watch_photos_use_case.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/photos/photos_action.dart';
@@ -17,9 +17,9 @@ class PhotosViewModel with ChangeNotifier {
   final GetJournalListUseCase _getJournalListUseCase;
   final GetPhotoListWithJournalIdUseCase _getPhotoListWithJournalIdUseCase;
   final PhotoRepository _photoRepository;
-  final WatchJournalsUseCase _watchJournalsUserCase;
+  final GetPhotoJournalListUseCase _getPhotoJournalListUseCase;
 
-  StreamSubscription<JournalPhotoCollection>? _journalSubscription;
+  StreamSubscription<PhotoJournalListModel>? _listStream;
   PhotosState _state = PhotosState();
 
   PhotosViewModel({
@@ -27,18 +27,18 @@ class PhotosViewModel with ChangeNotifier {
     required GetJournalListUseCase getJournalListUseCase,
     required GetPhotoListWithJournalIdUseCase getPhotoListWithJournalIdUseCase,
     required PhotoRepository photoRepository,
-    required WatchJournalsUseCase watchJournalsUserCase,
+    required GetPhotoJournalListUseCase getPhotoJournalListUseCase,
   }) : _getPhotoListUseCase = getPhotoListUseCase,
        _getJournalListUseCase = getJournalListUseCase,
        _getPhotoListWithJournalIdUseCase = getPhotoListWithJournalIdUseCase,
-       _watchJournalsUserCase = watchJournalsUserCase,
-       _photoRepository = photoRepository;
+       _photoRepository = photoRepository,
+       _getPhotoJournalListUseCase = getPhotoJournalListUseCase;
 
   PhotosState get state => _state;
 
   @override
   void dispose() {
-    _journalSubscription?.cancel();
+    _listStream?.cancel();
     super.dispose();
   }
 
@@ -86,11 +86,9 @@ class PhotosViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    _journalSubscription = _watchJournalsUserCase.execute().listen((
-      collection,
-    ) {
+    _listStream = _getPhotoJournalListUseCase.execute().listen((collection) {
       _state = _state.copyWith(
-        photos: collection.photoMap.values.expand((photos) => photos).toList(),
+        photos: collection.photos,
         journals: collection.journals,
         isLoading: false,
       );
