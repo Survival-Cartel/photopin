@@ -82,6 +82,10 @@ class PhotosViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _photoDeleteClick(String photoId) async {
+    await _photoRepository.deletePhoto(photoId);
+  }
+
   Future<void> init() async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
@@ -105,9 +109,8 @@ class PhotosViewModel with ChangeNotifier {
         throw UnimplementedError();
       case PhotoApplyClick():
         _photoApplyClick(action.photoModel);
-      case PhotoShareClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case PhotoDeleteClick():
+        _photoDeleteClick(action.photoId);
     }
   }
 }

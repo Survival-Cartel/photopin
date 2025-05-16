@@ -34,9 +34,8 @@ class _PhotosScreenRootState extends State<PhotosScreenRoot> {
                 throw UnimplementedError();
               case PhotoApplyClick():
                 widget.viewModel.onAction(action);
-              case PhotoShareClick():
-                // TODO: Handle this case.
-                throw UnimplementedError();
+              case PhotoDeleteClick():
+                widget.viewModel.onAction(action);
             }
           },
         );
