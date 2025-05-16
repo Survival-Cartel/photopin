@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/journal_edit_bottom_sheet.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 import 'package:photopin/presentation/component/base_tab.dart';
@@ -79,36 +81,22 @@ class JournalScreen extends StatelessWidget {
                               final JournalModel journal =
                                   state.journals[index];
 
-                              return FittedBox(
-                                // decoration                                child: EditBottomSheet(
-                                  title: journal.name,
-                                  imageUrl: thumbnailUrl,
-                                  dateTime: journal.startDate,
-                                  comment: journal.comment,
-                                  journalId: journalId,
-                                  onTapClose: () => Navigator.pop(context),
-                                  showJournalDropdown: false,
-                                  onTapApply: (
-                                    title,
-                                    selectJournal,
-                                    newComment,
-                                  ) {
-                                    // 여기서 photo를 업데이트하는 적절한 액션을 생성
-                                    // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
-                                    // onAction(
-                                    //   PhotosAction.applyClick(
-                                    //     photo.copyWith(
-                                    //       name: photoName,
-                                    //       comment: newComment,
-                                    //       journalId: selectJournal,
-                                    //     ),
-                                    //   ),
-                                    // );
-                                    Navigator.pop(context);
-                                  },
-                                  onTapCancel: () => Navigator.pop(context),
-                                  journals: state.journals,
-                                ),
+                              return JournalEditBottomSheet(
+                                journal: journal,
+                                title: journal.name,
+                                thumbnailUrl: thumbnailUrl,
+                                comment: journal.comment,
+                                onTapClose: () => Navigator.pop(context),
+                                onTapApply: (JournalModel journal) {
+                                  onAction(
+                                    JournalScreenAction.onTapEdit(
+                                      journal: journal,
+                                    ),
+                                  );
+
+                                  Navigator.pop(context);
+                                },
+                                onTapCancel: () => Navigator.pop(context),
                               );
                             },
                           );
