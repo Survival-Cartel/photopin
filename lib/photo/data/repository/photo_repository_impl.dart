@@ -60,4 +60,11 @@ class PhotoRepositoryImpl implements PhotoRepository {
   Future<void> updatePhoto(PhotoModel photoModel) async {
     await _photoDataSource.updatePhoto(photoModel.toDto());
   }
+
+  @override
+  Stream<List<PhotoModel>> watchPhotos() {
+    return _photoDataSource.watchPhotos().map(
+      (dtoList) => dtoList.map((dto) => dto.toModel()).toList(),
+    );
+  }
 }

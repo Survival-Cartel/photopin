@@ -13,4 +13,5 @@ abstract interface class PhotoRepository
   Future<void> savePhoto(PhotoModel model);
   Future<void> deletePhoto(String photoId);
   Future<void> updatePhoto(PhotoModel photoModel);
+  Stream<List<PhotoModel>> watchPhotos();
 }
