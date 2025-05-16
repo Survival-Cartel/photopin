@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -30,23 +31,32 @@ class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
 class MockUpdateJournalUseCase extends Mock implements UpdateJournalUseCase {}
 
+class MockSearchJournalByDateTimeRangeUseCase extends Mock
+    implements SearchJournalByDateTimeRangeUseCase {}
+
 void main() {
   late JournalViewModel viewModel;
   late JournalPhotoCollection mockJournalPhotoCollection;
   late GetJournalListUseCase mockGetJournalListUseCase;
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late UpdateJournalUseCase mockUpdateJournalUseCase;
+  late SearchJournalByDateTimeRangeUseCase
+  mockSearchJournalByDateTimeRangeUseCase;
 
   setUp(() {
     mockJournalPhotoCollection = MockJournalPhotoCollection();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
     mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     mockUpdateJournalUseCase = MockUpdateJournalUseCase();
+    mockSearchJournalByDateTimeRangeUseCase =
+        MockSearchJournalByDateTimeRangeUseCase();
 
     viewModel = JournalViewModel(
       getJournalListUseCase: mockGetJournalListUseCase,
       updateJournalUseCase: mockUpdateJournalUseCase,
       watchJournalsUserCase: mockWatchJournalsUseCase,
+      searchJournalByDateTimeRangeUseCase:
+          mockSearchJournalByDateTimeRangeUseCase,
     );
 
     when(() => mockGetJournalListUseCase.execute()).thenAnswer((_) async {
