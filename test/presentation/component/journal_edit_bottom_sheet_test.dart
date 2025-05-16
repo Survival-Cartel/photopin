@@ -4,7 +4,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:photopin/core/enums/button_type.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/base_button.dart';
-import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
+import 'package:photopin/presentation/component/journal_edit_bottom_sheet.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
 
 import '../../journal/fixtures/journal_model_fixtures.dart';
@@ -14,9 +14,10 @@ final List<JournalModel> journals = journalModelFixtures;
 final String imageUrl = '';
 final DateTime dateTime = DateTime(2025, 05, 07, 15, 30);
 final String title = 'trip';
+final JournalModel journal = journalModelFixtures[0];
 
 void main() {
-  testWidgets('버튼 클릭 시 EditBottomSheet가 열리고 구성 요소가 정상적으로 보여야한다.', (
+  testWidgets('버튼 클릭 시 JournalEditBottomSheet가 열리고 구성 요소가 정상적으로 보여야한다.', (
     WidgetTester tester,
   ) async {
     await mockNetworkImagesFor(() async {
@@ -32,20 +33,14 @@ void main() {
                       onClick: () {
                         showModalBottomSheet(
                           builder: (BuildContext context) {
-                            return EditBottomSheet(
+                            return JournalEditBottomSheet(
                               comment: comment,
-                              dateTime: dateTime,
                               title: title,
-                              journals: const [],
-                              imageUrl: imageUrl,
-                              onTapApply:
-                                  (
-                                    String photoName,
-                                    String journalId,
-                                    String comment,
-                                  ) {},
-                              onTapDelete: () {},
+                              thumbnailUrl: imageUrl,
+                              onTapApply: (JournalModel journal) {},
+                              onTapCancel: () {},
                               onTapClose: () {},
+                              journal: journal,
                             );
                           },
                           context: context,
@@ -64,12 +59,11 @@ void main() {
       await tester.tap(find.text('Open Bottom Sheet'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(EditBottomSheet), findsOneWidget);
+      expect(find.byType(JournalEditBottomSheet), findsOneWidget);
       expect(find.text(comment), findsOneWidget);
       expect(find.byIcon(Icons.calendar_month), findsOneWidget);
       expect(find.byIcon(Icons.comment), findsOneWidget);
       expect(find.byIcon(Icons.edit), findsOneWidget);
-      expect(find.byIcon(Icons.note), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.close));
       await tester.pumpAndSettle();
@@ -77,10 +71,9 @@ void main() {
   });
 
   testWidgets(
-    'EditBottomSheet의 close 아이콘을 탭하면 onTapClose 콜백과 onClosing 콜백이 호출되고 EditBottomSheet가 닫혀야한다.',
+    'JournalEditBottomSheet의 close 아이콘을 탭하면 onTapClose 콜백이 호출되고 JournalEditBottomSheet가 닫혀야한다.',
     (WidgetTester tester) async {
       bool tappedClose = false;
-      bool calledClosing = false;
 
       await mockNetworkImagesFor(() async {
         await tester.pumpWidget(
@@ -95,20 +88,13 @@ void main() {
                         onClick: () {
                           showModalBottomSheet(
                             builder: (BuildContext context) {
-                              return EditBottomSheet(
+                              return JournalEditBottomSheet(
                                 comment: comment,
-                                dateTime: dateTime,
+                                journal: journal,
                                 title: title,
-                                journals: journals,
-                                imageUrl: imageUrl,
-                                onTapApply:
-                                    (
-                                      String photoName,
-                                      String journalId,
-                                      String comment,
-                                    ) {},
-                                onTapDelete: () {},
-                                onClosing: () => calledClosing = true,
+                                thumbnailUrl: imageUrl,
+                                onTapApply: (JournalModel journal) {},
+                                onTapCancel: () {},
                                 onTapClose: () {
                                   tappedClose = true;
                                   Navigator.pop(context);
@@ -135,22 +121,22 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(
-          find.byType(EditBottomSheet),
+          find.byType(JournalEditBottomSheet),
           findsNothing,
-          reason: 'EditBottomSheet가 닫히지 않음',
+          reason: 'JournalEditBottomSheet가 닫히지 않음',
         );
         expect(tappedClose, true, reason: 'tappedClose가 true로 변경되지 않음');
-        expect(calledClosing, true, reason: 'calledClosing이 true로 변경되지 않음');
       });
     },
   );
 
   testWidgets(
-    'EditBottomSheet를 변경하고 Apply를 탭하면 onTapApply 콜백 함수로 photoName, journalId와 comment의 값이 반환되야한다.',
+    'JournalEditBottomSheet를 변경하고 Apply를 탭하면 onTapApply 콜백 함수로 journal을 반환하고, 해당 journal의 내용으로 업데이트 되야한다.',
     (WidgetTester tester) async {
       await mockNetworkImagesFor(() async {
-        String expectPhotoName = '';
-        String expectComment = '';
+        String expectJournalName = 'N/A';
+        String expectComment = 'N/A';
+        List<String> expectTripWith = [];
 
         await tester.pumpWidget(
           MaterialApp(
@@ -164,23 +150,17 @@ void main() {
                         onClick: () {
                           showModalBottomSheet(
                             builder: (BuildContext context) {
-                              return EditBottomSheet(
+                              return JournalEditBottomSheet(
                                 comment: comment,
-                                dateTime: dateTime,
                                 title: title,
-                                journals: journals,
-                                journalId: journals[0].id,
-                                imageUrl: imageUrl,
-                                onTapApply: (
-                                  String photoName,
-                                  String journalId,
-                                  String comment,
-                                ) {
-                                  expectPhotoName = photoName;
-                                  expectComment = comment;
+                                journal: journal,
+                                thumbnailUrl: imageUrl,
+                                onTapApply: (JournalModel journal) {
+                                  expectJournalName = journal.name;
+                                  expectComment = journal.comment;
+                                  expectTripWith = journal.tripWith;
                                 },
-                                onTapDelete: () {},
-                                onClosing: () {},
+                                onTapCancel: () {},
                                 onTapClose: () {},
                               );
                             },
@@ -203,12 +183,22 @@ void main() {
         // 제목 필드 찾기 및 업데이트
         await tester.enterText(
           find.byType(TextLimitInputField).first,
-          'Updated Title',
+          'Spain Sagrada Famillia',
         );
         await tester.pumpAndSettle();
 
         // 코멘트 필드 찾기 및 업데이트
-        await tester.enterText(find.byType(TextLimitInputField).last, 'Hello');
+        await tester.enterText(
+          find.byKey(const Key('comment_field')),
+          'Sagrada',
+        );
+        await tester.pumpAndSettle();
+
+        // tripWith 필드 찾기 및 업데이트
+        await tester.enterText(
+          find.byKey(const Key('trip_with_field')),
+          '최태호, 아우아',
+        );
         await tester.pumpAndSettle();
 
         // Apply 버튼 찾아서 탭하기
@@ -217,13 +207,14 @@ void main() {
         await tester.tap(find.text('Apply'));
         await tester.pumpAndSettle();
 
-        expect(expectPhotoName, 'Updated Title');
-        expect(expectComment, 'Hello');
+        expect(expectJournalName, journal.name);
+        expect(expectComment, 'Sagrada');
+        expect(expectTripWith, ['최태호', '아우아']);
       });
     },
   );
 
-  testWidgets('EditBottomSheet의 Cancel을 탭하면 onTapCancel 콜백이 호출되야한다.', (
+  testWidgets('JournalEditBottomSheet의 Cancel을 탭하면 onTapCancel 콜백이 호출되야한다.', (
     WidgetTester tester,
   ) async {
     await mockNetworkImagesFor(() async {
@@ -239,22 +230,15 @@ void main() {
                       onClick: () {
                         showModalBottomSheet(
                           builder: (BuildContext context) {
-                            return EditBottomSheet(
+                            return JournalEditBottomSheet(
                               comment: comment,
-                              dateTime: dateTime,
                               title: title,
-                              journals: journals,
-                              imageUrl: imageUrl,
-                              onTapApply:
-                                  (
-                                    String photoName,
-                                    String journalId,
-                                    String comment,
-                                  ) {},
-                              onTapDelete: () {
+                              journal: journal,
+                              thumbnailUrl: imageUrl,
+                              onTapApply: (JournalModel journal) {},
+                              onTapCancel: () {
                                 Navigator.pop(context);
                               },
-                              onClosing: () {},
                               onTapClose: () {},
                             );
                           },
@@ -280,9 +264,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.byType(EditBottomSheet),
+        find.byType(JournalEditBottomSheet),
         findsNothing,
-        reason: 'EditBottomSheet가 닫히지 않음',
+        reason: 'JournalEditBottomSheet가 닫히지 않음',
       );
     });
   });

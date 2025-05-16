@@ -4,13 +4,14 @@ import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/dto/journal_dto.dart';
 
 class JournalDataSourceImpl implements JournalDataSource {
-  final CollectionReference<JournalDto> journalStore;
+  final CollectionReference<JournalDto> _journalStore;
 
-  JournalDataSourceImpl({required this.journalStore});
+  JournalDataSourceImpl({required CollectionReference<JournalDto> journalStore})
+    : _journalStore = journalStore;
 
   @override
   Future<JournalDto> findJournalById(String id) async {
-    final QuerySnapshot<JournalDto> snapshot = await journalStore
+    final QuerySnapshot<JournalDto> snapshot = await _journalStore
         .where('id', isEqualTo: id)
         .get()
         .timeout(
@@ -27,7 +28,7 @@ class JournalDataSourceImpl implements JournalDataSource {
 
   @override
   Future<JournalDto> findJournalByName(String name) async {
-    final QuerySnapshot<JournalDto> snapshot = await journalStore
+    final QuerySnapshot<JournalDto> snapshot = await _journalStore
         .where('name', isEqualTo: name)
         .get()
         .timeout(
@@ -44,23 +45,23 @@ class JournalDataSourceImpl implements JournalDataSource {
 
   @override
   Future<void> deleteJournal(String journalId) async {
-    await journalStore.doc(journalId).delete();
+    await _journalStore.doc(journalId).delete();
   }
 
   @override
   Future<void> saveJournal(JournalDto dto) async {
-    final DocumentReference<JournalDto> journaldoc = await journalStore.add(
+    final DocumentReference<JournalDto> journaldoc = await _journalStore.add(
       dto,
     );
     final String docId = journaldoc.id;
 
-    await journalStore.doc(docId).update({'id': docId});
+    await _journalStore.doc(docId).update({'id': docId});
   }
 
   @override
   Future<List<JournalDto>> findJournals() async {
     try {
-      final snapshot = await journalStore.get().timeout(
+      final snapshot = await _journalStore.get().timeout(
         const Duration(seconds: 8),
         onTimeout: () => throw FirestoreError.timeOutError,
       );
@@ -75,11 +76,16 @@ class JournalDataSourceImpl implements JournalDataSource {
   @override
   Stream<List<JournalDto>> watchJournals() {
     try {
-      return journalStore.snapshots().map(
+      return _journalStore.snapshots().map(
         (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
       );
     } catch (e) {
       throw FirestoreError.notFoundError;
     }
+  }
+
+  @override
+  Future<void> update(JournalDto journal) async {
+    await _journalStore.doc(journal.id).set(journal, SetOptions(merge: true));
   }
 }

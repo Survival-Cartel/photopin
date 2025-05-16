@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
+import 'package:photopin/presentation/component/journal_card_image.dart';
 
 void main() {
   group('journey card 컴포넌트 테스트 : ', () {
@@ -55,8 +56,37 @@ void main() {
         );
       });
 
-      await tester.tap(find.byType(JournalCard));
-      await tester.pump(); // 탭 이벤트 후 UI 갱신을 기다림
+      await tester.tap(find.byType(JournalCardImage));
+      await tester.pump();
+
+      expect(id, 'testJournal');
+    });
+    testWidgets('카드의 Edit 버튼 클릭시 onTapEdit 콜백이 작동되어서 journal의 ID를 반환해야한다.', (
+      tester,
+    ) async {
+      String id = '';
+
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: JournalCard(
+                  journal: journal,
+                  onTap: (String journalId) => {},
+                  imageUrl: '',
+                  photoCount: 1,
+                  showEditButton: true,
+                  onTapEdit: (String journalId) => id = journalId,
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+
+      await tester.tap(find.byType(CircleAvatar));
+      await tester.pump();
 
       expect(id, 'testJournal');
     });

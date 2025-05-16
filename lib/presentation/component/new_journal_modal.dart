@@ -98,7 +98,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
             TextLimitInputField(
               controller: tripWithController,
               hintText: '여행한 친구 "," 로 구분하여 입력해주세요.',
-              onChage: (value) {
+              onChange: (value) {
                 setState(() {
                   if (value.isEmpty) {
                     tripWith.clear();

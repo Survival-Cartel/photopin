@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 import 'package:photopin/presentation/component/journal_card_image.dart';
 import 'package:photopin/presentation/component/map_filter.dart';
 import 'package:photopin/presentation/screen/photos/photos_action.dart';

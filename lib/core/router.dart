@@ -62,9 +62,13 @@ final appRouter = GoRouter(
 
         final MapViewModel viewModel = getIt<MapViewModel>(param1: userId);
 
-        viewModel.init(journalId);
+        viewModel.init(journalId, userId);
 
-        return MapScreenRoot(mapViewModel: viewModel);
+        return MapScreenRoot(
+          mapViewModel: viewModel,
+          userId: userId,
+          isShareScreen: false,
+        );
       },
     ),
     GoRoute(
@@ -111,9 +115,13 @@ final appRouter = GoRouter(
           param1: compareUserId,
         );
 
-        viewModel.init(compareJournalId);
+        viewModel.init(compareJournalId, compareUserId);
 
-        return MapScreenRoot(mapViewModel: viewModel);
+        return MapScreenRoot(
+          mapViewModel: viewModel,
+          userId: compareUserId,
+          isShareScreen: true,
+        );
       },
     ),
     StatefulShellRoute.indexedStack(
