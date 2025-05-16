@@ -7,20 +7,17 @@ class JournalState {
   final bool isLoading;
   final List<JournalModel> journals;
   final Map<String, List<PhotoModel>> photoMap;
-  final DateTimeRange searchDateTimeRange;
+  final DateTimeRange? searchDateTimeRange;
   final SearchFilterOption searchFilterOption;
 
   JournalState({
     this.isLoading = false,
     List<JournalModel> journals = const [],
-    DateTimeRange? searchDateTimeRange,
+    this.searchDateTimeRange,
     this.searchFilterOption = SearchFilterOption.title,
     Map<String, List<PhotoModel>> photoMap = const {},
   }) : journals = List.unmodifiable(journals),
-       photoMap = Map.unmodifiable(photoMap),
-       searchDateTimeRange =
-           searchDateTimeRange ??
-           DateTimeRange(start: DateTime.now(), end: DateTime.now());
+       photoMap = Map.unmodifiable(photoMap);
 
   JournalState copyWith({
     bool? isLoading,
