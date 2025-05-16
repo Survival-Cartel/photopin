@@ -34,7 +34,7 @@ class CompareDialogViewModel with ChangeNotifier {
     required String targetUserId,
     required String journalId,
   }) async {
-    final success = await _accessNotificationUseCase.call(
+    final success = await _accessNotificationUseCase.execute(
       userId: targetUserId,
       journalId: journalId,
     );
