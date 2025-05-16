@@ -7,7 +7,7 @@ abstract class EditBottomSheet extends StatefulWidget {
 
   final VoidCallback onTapClose;
   // final Function(String photoName, String journalId, String comment) onTapApply;
-  final VoidCallback onTapCancel;
+  final VoidCallback onTapDelete;
 
   const EditBottomSheet({
     super.key,
@@ -15,7 +15,7 @@ abstract class EditBottomSheet extends StatefulWidget {
     required this.title,
     required this.comment,
     required this.onTapClose,
-    required this.onTapCancel,
+    required this.onTapDelete,
   });
 
   @override

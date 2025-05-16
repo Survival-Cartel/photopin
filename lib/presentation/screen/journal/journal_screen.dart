@@ -96,7 +96,7 @@ class JournalScreen extends StatelessWidget {
 
                                   Navigator.pop(context);
                                 },
-                                onTapCancel: () => Navigator.pop(context),
+                                onTapDelete: () => Navigator.pop(context),
                               );
                             },
                           );
