@@ -44,7 +44,7 @@ void main() {
                                     String journalId,
                                     String comment,
                                   ) {},
-                              onTapCancel: () {},
+                              onTapDelete: () {},
                               onTapClose: () {},
                             );
                           },
@@ -107,7 +107,7 @@ void main() {
                                       String journalId,
                                       String comment,
                                     ) {},
-                                onTapCancel: () {},
+                                onTapDelete: () {},
                                 onClosing: () => calledClosing = true,
                                 onTapClose: () {
                                   tappedClose = true;
@@ -179,7 +179,7 @@ void main() {
                                   expectPhotoName = photoName;
                                   expectComment = comment;
                                 },
-                                onTapCancel: () {},
+                                onTapDelete: () {},
                                 onClosing: () {},
                                 onTapClose: () {},
                               );
@@ -251,7 +251,7 @@ void main() {
                                     String journalId,
                                     String comment,
                                   ) {},
-                              onTapCancel: () {
+                              onTapDelete: () {
                                 Navigator.pop(context);
                               },
                               onClosing: () {},
