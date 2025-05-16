@@ -12,7 +12,7 @@ class PushService {
   PushService._internal();
 
   final String _baseUrl =
-      'https://us-central1-survival-photopin.cloudfunctions.net';
+      'https://us-central1-survival-photopin.cloudfunctions.net/sendFcm';
 
   Future<bool> sendPush({
     required String token,
@@ -20,7 +20,7 @@ class PushService {
     required String body,
   }) async {
     try {
-      final uri = Uri.parse('$_baseUrl/send_push_to_token');
+      final uri = Uri.parse('$_baseUrl');
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
