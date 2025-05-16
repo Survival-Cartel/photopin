@@ -27,6 +27,10 @@ class JournalScreenRoot extends StatelessWidget {
                 context.push('${Routes.map}/${action.journalId}');
               case OnTapEdit():
                 await viewModel.onAction(action);
+              case SetSearchFilter():
+                await viewModel.onAction(action);
+              case OnSearchDateRange():
+                await viewModel.onAction(action);
             }
           },
         );
