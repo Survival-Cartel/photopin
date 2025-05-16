@@ -30,6 +30,7 @@ import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/link_access_notification_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
+import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/fcm/data/repository/token_repository.dart';
@@ -69,69 +70,83 @@ void di() {
     UserDataSourceImpl(userStore: getIt.get<FirestoreSetup>().userFirestore()),
   );
 
+
   getIt.registerSingleton<UserRepository>(UserRepositoryImpl(getIt()));
 
   getIt.registerFactory<MainScreenViewModel>(
-    () => MainScreenViewModel(getCurrentUserUseCase: getIt()),
+        () => MainScreenViewModel(getCurrentUserUseCase: getIt()),
+  );
+  getIt.registerLazySingleton<TokenRepository>(
+        () => TokenRepositoryImpl(getIt<FirebaseFirestore>()),
   );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
   getIt.registerFactoryParam<PhotoDataSource, String, void>(
-    (userId, _) => PhotoDataSourceImpl(
-      photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
-    ),
+        (userId, _) =>
+        PhotoDataSourceImpl(
+          photoStore: getIt<FirestoreSetup>().photoFirestore(userId),
+        ),
   );
 
   getIt.registerFactoryParam<SavePhotoUseCase, String, void>(
-    (userId, _) => SavePhotoUseCase(getIt<PhotoRepository>(param1: userId)),
+        (userId, _) => SavePhotoUseCase(getIt<PhotoRepository>(param1: userId)),
   );
 
   getIt.registerFactoryParam<PhotoRepository, String, void>(
-    (userId, _) => PhotoRepositoryImpl(
-      photoDataSource: getIt<PhotoDataSource>(param1: userId),
-    ),
+        (userId, _) =>
+        PhotoRepositoryImpl(
+          photoDataSource: getIt<PhotoDataSource>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<StorageDataSource, String, void>(
-    (userId, _) => FirebaseStorageDataSource(
-      storage: getIt<FirebaseStorage>(),
-      path: userId,
-    ),
+        (userId, _) =>
+        FirebaseStorageDataSource(
+          storage: getIt<FirebaseStorage>(),
+          path: userId,
+        ),
   );
 
   getIt.registerFactoryParam<GetPhotoListUseCase, String, void>(
-    (userId, _) => GetPhotoListUseCase(
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        GetPhotoListUseCase(
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+        ),
   );
 
   getIt.registerLazySingleton<AuthDataSource>(
-    () => AuthDataSourceImpl(auth: getIt()),
+        () => AuthDataSourceImpl(auth: getIt()),
   );
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(dataSource: getIt()),
+        () =>
+        AuthRepositoryImpl(
+            dataSource: getIt()),
   );
 
   getIt.registerFactoryParam<HomeViewModel, String, void>(
-    (userId, _) => HomeViewModel(
-      getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
-      journalRepository: getIt<JournalRepository>(param1: userId),
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
-    ),
+        (userId, _) =>
+        HomeViewModel(
+          getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+          journalRepository: getIt<JournalRepository>(param1: userId),
+          getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+          watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
+          permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+        ),
   );
 
   getIt.registerFactoryParam<GetJournalListUseCase, String, void>(
-    (userId, _) => GetJournalListUseCase(
-      journalRepository: getIt<JournalRepository>(param1: userId),
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        GetJournalListUseCase(
+          journalRepository: getIt<JournalRepository>(param1: userId),
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<GetPhotoListWithJournalIdUseCase, String, void>(
-    (userId, _) => GetPhotoListWithJournalIdUseCase(
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        GetPhotoListWithJournalIdUseCase(
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+        ),
   );
 
   getIt.registerSingleton<GetCurrentUserUseCase>(
@@ -153,17 +168,19 @@ void di() {
   );
 
   getIt.registerFactoryParam<WatchJournalsUseCase, String, void>(
-    (userId, _) => WatchJournalsUseCase(
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-      journalRepository: getIt<JournalRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        WatchJournalsUseCase(
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+          journalRepository: getIt<JournalRepository>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<JournalViewModel, String, void>(
-    (userId, _) => JournalViewModel(
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
-    ),
+        (userId, _) =>
+        JournalViewModel(
+          getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+          watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
+        ),
   );
 
   getIt.registerSingleton<CameraHelper>(ImagePickerCameraHelper());
@@ -173,19 +190,20 @@ void di() {
   );
 
   getIt.registerFactoryParam<UploadFileInStorageUseCase, String, void>(
-    (userId, _) =>
+        (userId, _) =>
         UploadFileInStorageUseCase(getIt<StorageDataSource>(param1: userId)),
   );
 
   getIt.registerFactoryParam<SavePictureInFirebaseUseCase, String, void>(
-    (userId, _) => SavePictureInFirebaseUseCase(
-      getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
-      savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
-      uploadFileInStorageUseCase: getIt<UploadFileInStorageUseCase>(
-        param1: userId,
-      ),
-      getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
-    ),
+        (userId, _) =>
+        SavePictureInFirebaseUseCase(
+          getCurrentLocationUseCase: getIt<GetCurrentLocationUseCase>(),
+          savePhotoUseCase: getIt<SavePhotoUseCase>(param1: userId),
+          uploadFileInStorageUseCase: getIt<UploadFileInStorageUseCase>(
+            param1: userId,
+          ),
+          getPlaceNameUseCase: getIt<GetPlaceNameUseCase>(),
+        ),
   );
 
   getIt.registerSingleton<LocalDeviceRepository>(
@@ -199,51 +217,63 @@ void di() {
   );
 
   getIt.registerFactoryParam<CameraViewModel, String, void>(
-    (userId, _) => CameraViewModel(
-      savePictureInDeviceUseCase: getIt<SavePictureInDeviceUseCase>(),
-      launchCameraUseCase: getIt<LaunchCameraUseCase>(),
-      launchCameraCheckPermissionUseCase:
+        (userId, _) =>
+        CameraViewModel(
+          savePictureInDeviceUseCase: getIt<SavePictureInDeviceUseCase>(),
+          launchCameraUseCase: getIt<LaunchCameraUseCase>(),
+          launchCameraCheckPermissionUseCase:
           getIt<LaunchCameraCheckPermissionUseCase>(),
-      savePictureInFirebaseUseCase: getIt<SavePictureInFirebaseUseCase>(
-        param1: userId,
-      ),
-    ),
+          savePictureInFirebaseUseCase: getIt<SavePictureInFirebaseUseCase>(
+            param1: userId,
+          ),
+        ),
   );
 
   getIt.registerSingleton<GetPlaceNameUseCase>(
     GetPlaceNameUseCase(http.Client()),
   );
 
-  getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
+  getIt.registerFactory<AuthViewModel>(
+        () =>
+        AuthViewModel(
+          getIt<AuthRepository>(),
+          getIt<SaveTokenUseCase>(),
+        ),
+  );
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
-    (userId, _) => JournalDataSourceImpl(
-      journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
-    ),
+        (userId, _) =>
+        JournalDataSourceImpl(
+          journalStore: getIt<FirestoreSetup>().journalFirestore(userId),
+        ),
   );
 
   getIt.registerFactoryParam<JournalRepository, String, void>(
-    (userId, _) => JournalRepositoryImpl(
-      dataSource: getIt<JournalDataSource>(param1: userId),
-    ),
+        (userId, _) =>
+        JournalRepositoryImpl(
+          dataSource: getIt<JournalDataSource>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<MapViewModel, String, void>(
-    (userId, _) => MapViewModel(
-      getIt<PhotoRepository>(param1: userId),
-      getIt<JournalRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        MapViewModel(
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+          getCompareModelUseCase: getIt<GetCompareModelUseCase>(param1: userId),
+        ),
   );
 
   getIt.registerFactoryParam<PhotosViewModel, String, void>(
-    (userId, _) => PhotosViewModel(
-      getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-      getPhotoListWithJournalIdUseCase: getIt<GetPhotoListWithJournalIdUseCase>(
-        param1: userId,
-      ),
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-    ),
+        (userId, _) =>
+        PhotosViewModel(
+          getPhotoListUseCase: getIt<GetPhotoListUseCase>(param1: userId),
+          getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+          getPhotoListWithJournalIdUseCase: getIt<
+              GetPhotoListWithJournalIdUseCase>(
+            param1: userId,
+          ),
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+        ),
   );
 
   getIt.registerSingleton<SettingsViewModel>(
@@ -251,22 +281,20 @@ void di() {
   );
 
   getIt.registerFactoryParam<GetCompareModelUseCase, String, void>(
-    (userId, _) => GetCompareModelUseCase(
-      journalRepository: getIt<JournalRepository>(param1: userId),
-      photoRepository: getIt<PhotoRepository>(param1: userId),
-      userRepository: getIt<UserRepository>(),
-    ),
+        (userId, _) =>
+        GetCompareModelUseCase(
+          journalRepository: getIt<JournalRepository>(param1: userId),
+          photoRepository: getIt<PhotoRepository>(param1: userId),
+          userRepository: getIt<UserRepository>(),
+        ),
   );
 
   getIt.registerFactoryParam<CompareMapViewModel, String, String>(
-    (compareUserId, myUserId) => CompareMapViewModel(
-      sharedUseCase: getIt<GetCompareModelUseCase>(param1: compareUserId),
-      myUseCase: getIt<GetCompareModelUseCase>(param1: myUserId),
-    ),
-  );
-
-  getIt.registerLazySingleton<TokenRepository>(
-    () => TokenRepositoryImpl(getIt<FirebaseFirestore>()),
+        (compareUserId, myUserId) =>
+        CompareMapViewModel(
+          sharedUseCase: getIt<GetCompareModelUseCase>(param1: compareUserId),
+          myUseCase: getIt<GetCompareModelUseCase>(param1: myUserId),
+        ),
   );
 
   getIt.registerLazySingleton<PushService>(() => PushService());
@@ -279,9 +307,12 @@ void di() {
   );
 
   getIt.registerFactoryParam<CompareDialogViewModel, String, void>(
-    (userId, _) => CompareDialogViewModel(
-      repository: getIt<JournalRepository>(param1: userId),
-      linkAccessNotificationuseCase: getIt<LinkAccessNotificationUseCase>(),
-    ),
+        (userId, _) =>
+        CompareDialogViewModel(
+          repository: getIt<JournalRepository>(param1: userId),
+          linkAccessNotificationuseCase: getIt<LinkAccessNotificationUseCase>(),
+        ),
   );
+
+  getIt.registerSingleton<SaveTokenUseCase>(SaveTokenUseCase(getIt()));
 }
