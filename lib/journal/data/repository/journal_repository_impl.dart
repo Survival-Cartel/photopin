@@ -6,34 +6,40 @@ import 'package:photopin/journal/domain/model/journal_model.dart';
 import '../dto/journal_dto.dart';
 
 class JournalRepositoryImpl implements JournalRepository {
-  final JournalDataSource dataSource;
+  final JournalDataSource _dataSource;
 
-  const JournalRepositoryImpl({required this.dataSource});
+  const JournalRepositoryImpl({required JournalDataSource dataSource})
+    : _dataSource = dataSource;
 
   @override
   Future<List<JournalModel>> findAll() async {
-    return (await dataSource.findJournals()).map((e) => e.toModel()).toList();
+    return (await _dataSource.findJournals()).map((e) => e.toModel()).toList();
   }
 
   @override
   Future<JournalModel?> findOne(String id) async {
-    return (await dataSource.findJournalById(id)).toModel();
+    return (await _dataSource.findJournalById(id)).toModel();
   }
 
   @override
   Future<void> saveJournal(JournalDto dto) async {
-    await dataSource.saveJournal(dto);
+    await _dataSource.saveJournal(dto);
   }
 
   @override
   Future<void> deleteJournal(String journalId) async {
-    await dataSource.deleteJournal(journalId);
+    await _dataSource.deleteJournal(journalId);
   }
 
   @override
   Stream<List<JournalModel>> watchJournals() {
-    return dataSource.watchJournals().map(
+    return _dataSource.watchJournals().map(
       (dtoList) => dtoList.map((dto) => dto.toModel()).toList(),
     );
+  }
+
+  @override
+  Future<void> update(JournalModel journal) async {
+    await _dataSource.update(journal.toDto());
   }
 }
