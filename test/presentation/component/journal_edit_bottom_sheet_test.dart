@@ -188,11 +188,17 @@ void main() {
         await tester.pumpAndSettle();
 
         // 코멘트 필드 찾기 및 업데이트
-        await tester.enterText(find.byKey(Key('comment_field')), 'Sagrada');
+        await tester.enterText(
+          find.byKey(const Key('comment_field')),
+          'Sagrada',
+        );
         await tester.pumpAndSettle();
 
         // tripWith 필드 찾기 및 업데이트
-        await tester.enterText(find.byKey(Key('trip_with_field')), '최태호, 아우아');
+        await tester.enterText(
+          find.byKey(const Key('trip_with_field')),
+          '최태호, 아우아',
+        );
         await tester.pumpAndSettle();
 
         // Apply 버튼 찾아서 탭하기
