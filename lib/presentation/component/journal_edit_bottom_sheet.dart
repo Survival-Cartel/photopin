@@ -46,11 +46,6 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
     super.dispose();
   }
 
-  void setController({String title = '', String comment = ''}) {
-    titleController.value = TextEditingValue(text: title);
-    commentController.value = TextEditingValue(text: comment);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
