@@ -18,7 +18,7 @@ const String hostIp = '192.168.0.32';
 const runMode = String.fromEnvironment("mode", defaultValue: 'dev');
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel',
@@ -70,21 +70,32 @@ void main() async {
   // 2) Firebase 앱 초기화
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  final String projectId = 'survival-photopin';
+  late final String functionsBaseUrl;
+
   if (Platform.isAndroid) {
     if (runMode == 'device') {
       FirebaseFirestore.instance.useFirestoreEmulator(hostIp, 8080);
       await FirebaseAuth.instance.useAuthEmulator(hostIp, 9099);
       await FirebaseStorage.instance.useStorageEmulator(hostIp, 9199);
+      functionsBaseUrl = 'http://$hostIp:5001/$projectId/us-central1';
     } else {
       FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
       await FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
       await FirebaseStorage.instance.useStorageEmulator('10.0.2.2', 9199);
+      functionsBaseUrl = 'http://10.0.2.2:5001/$projectId/us-central1';
     }
   } else {
     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+    functionsBaseUrl = 'http://localhost:5001/$projectId/us-central1';
   }
+
+  getIt.registerSingleton<String>(
+    functionsBaseUrl,
+    instanceName: 'FunctionsBaseUrl',
+  );
 
   // 3) 로컬 알림 초기화
   const androidInit = AndroidInitializationSettings('photopin_icon');
@@ -99,8 +110,8 @@ void main() async {
   );
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin
-  >()
+        AndroidFlutterLocalNotificationsPlugin
+      >()
       ?.createNotificationChannel(channel);
 
   // 4) FCM 백그라운드 메시지 핸들러 등록
@@ -121,27 +132,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final FirebaseMessaging _messaging;
-
   @override
   void initState() {
     super.initState();
 
-    _messaging = FirebaseMessaging.instance;
-
     // 포그라운드 메시지 리스너
     FirebaseMessaging.onMessage.listen(_showNotification);
-
-    // 권한 요청 및 토큰/갱신 처리
-    _messaging.requestPermission(alert: true, badge: true, sound: true).then((
-        settings,) {
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        _messaging.getToken().then(debugPrint);
-        _messaging.onTokenRefresh.listen(debugPrint);
-      } else {
-        debugPrint('알림 권한 거부: ${settings.authorizationStatus}');
-      }
-    });
   }
 
   @override
@@ -174,10 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Center(
@@ -187,10 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineMedium,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
