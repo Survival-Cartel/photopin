@@ -136,6 +136,7 @@ void main() {
       await mockNetworkImagesFor(() async {
         String expectJournalName = 'N/A';
         String expectComment = 'N/A';
+        List<String> expectTripWith = [];
 
         await tester.pumpWidget(
           MaterialApp(
@@ -157,6 +158,7 @@ void main() {
                                 onTapApply: (JournalModel journal) {
                                   expectJournalName = journal.name;
                                   expectComment = journal.comment;
+                                  expectTripWith = journal.tripWith;
                                 },
                                 onTapCancel: () {},
                                 onTapClose: () {},
@@ -186,10 +188,11 @@ void main() {
         await tester.pumpAndSettle();
 
         // 코멘트 필드 찾기 및 업데이트
-        await tester.enterText(
-          find.byType(TextLimitInputField).last,
-          'Sagrada',
-        );
+        await tester.enterText(find.byKey(Key('comment_field')), 'Sagrada');
+        await tester.pumpAndSettle();
+
+        // tripWith 필드 찾기 및 업데이트
+        await tester.enterText(find.byKey(Key('trip_with_field')), '최태호, 아우아');
         await tester.pumpAndSettle();
 
         // Apply 버튼 찾아서 탭하기
@@ -200,6 +203,7 @@ void main() {
 
         expect(expectJournalName, journal.name);
         expect(expectComment, 'Sagrada');
+        expect(expectTripWith, ['최태호', '아우아']);
       });
     },
   );
