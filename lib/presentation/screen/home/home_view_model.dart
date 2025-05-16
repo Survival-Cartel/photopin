@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
+import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
-import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
@@ -17,6 +19,8 @@ class HomeViewModel with ChangeNotifier {
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
   final WatchJournalsUseCase _watchJournalsUserCase;
+  final PermissionCheckUseCase _permissionCheckUseCase;
+
   StreamSubscription<JournalPhotoCollection>? _streamSubscription;
   HomeState _state = HomeState();
 
@@ -25,8 +29,10 @@ class HomeViewModel with ChangeNotifier {
     required JournalRepository journalRepository,
     required this.getJournalListUseCase,
     required WatchJournalsUseCase watchJournalsUserCase,
+    required PermissionCheckUseCase permissionCheckUseCase,
   }) : _journalRepository = journalRepository,
-       _watchJournalsUserCase = watchJournalsUserCase;
+       _watchJournalsUserCase = watchJournalsUserCase,
+       _permissionCheckUseCase = permissionCheckUseCase;
 
   HomeState get state => _state;
 
@@ -75,6 +81,8 @@ class HomeViewModel with ChangeNotifier {
   Future<void> init() async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
+
+    await _permissionCheckUseCase.execute(PermissionType.notification);
 
     final UserModel user = await getCurrentUserUseCase.execute();
 
