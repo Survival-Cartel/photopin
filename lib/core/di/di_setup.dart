@@ -25,6 +25,7 @@ import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.da
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
+import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -123,6 +124,12 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<SearchJournalByDateTimeRangeUseCase, String, void>(
+    (userId, _) => SearchJournalByDateTimeRangeUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerFactoryParam<GetPhotoListWithJournalIdUseCase, String, void>(
     (userId, _) => GetPhotoListWithJournalIdUseCase(
       photoRepository: getIt<PhotoRepository>(param1: userId),
@@ -163,6 +170,8 @@ void di() {
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      searchJournalByDateTimeRangeUseCase:
+          getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
       watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
     ),
