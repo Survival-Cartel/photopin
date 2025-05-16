@@ -32,7 +32,7 @@ class JournalScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             SearchBarWidget(
-              placeholder: 'Active Routes: ',
+              placeholder: 'Search',
               onChanged:
                   (String query) =>
                       onAction(JournalScreenAction.searchJournal(query: query)),
