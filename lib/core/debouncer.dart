@@ -6,10 +6,11 @@ class Debouncer {
   Timer? _timer;
   final int milliseconds;
 
-  Debouncer({required this.milliseconds});
+  Debouncer({required this.milliseconds, Timer? timer}) : _timer = timer;
 
   void execute(VoidCallback action) {
-    _timer = Timer(Duration(milliseconds: milliseconds), () => action());
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 
   void dispose() {
