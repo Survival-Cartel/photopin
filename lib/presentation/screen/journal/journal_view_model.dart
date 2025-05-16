@@ -85,8 +85,6 @@ class JournalViewModel with ChangeNotifier {
     _journalSubscription = _watchJournalsUserCase.execute().listen((
       collection,
     ) {
-      collection.journals.sort((a, b) => a.startDate.compareTo(b.startDate));
-
       _state = _state.copyWith(
         journals: collection.journals,
         photoMap: collection.photoMap,
