@@ -8,6 +8,7 @@ import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 
 class AuthScreenRoot extends StatefulWidget {
   final AuthViewModel authViewModel;
+
   const AuthScreenRoot({super.key, required this.authViewModel});
 
   @override
@@ -16,6 +17,7 @@ class AuthScreenRoot extends StatefulWidget {
 
 class _AuthScreenRootState extends State<AuthScreenRoot> {
   StreamSubscription? _errorSubscription;
+  bool _tokenSaved = false;
 
   @override
   void initState() {
