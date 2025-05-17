@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:photopin/auth/data/data_source/auth_data_source.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
 import 'package:photopin/user/data/mapper/user_mapper.dart';
@@ -20,8 +19,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserCredential> login() async {
-    return await dataSource.login();
+  Future<UserModel?> login() async {
+    return (await dataSource.login())?.toModel();
   }
 
   @override
