@@ -22,6 +22,7 @@ import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
 import 'package:photopin/core/service/geolocator_location_service.dart';
 import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/push_service.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
@@ -190,8 +191,15 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<DeleteJournalUseCase, String, void>(
+    (userId, _) => DeleteJournalUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
+      deleteJournalUseCase: getIt<DeleteJournalUseCase>(param1: userId),
       searchJournalByDateTimeRangeUseCase:
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
