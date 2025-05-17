@@ -30,20 +30,7 @@ class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 class MockPermissionCheckUseCase extends Mock
     implements PermissionCheckUseCase {}
 
-class StubTokenRepository implements TokenRepository {
-  bool called = false;
-  String? lastUserId, lastToken;
-
-  @override
-  Future<void> saveToken(String userId, String token) async {
-    called = true;
-    lastUserId = userId;
-    lastToken = token;
-  }
-
-  @override
-  Future<String?> fetchToken(String userId) async => null;
-}
+class MockTokenRepository extends Mock implements TokenRepository {}
 
 class MockFirebaseMessagingDataSource extends Mock
     implements FirebaseMessagingDataSource {}
@@ -55,7 +42,7 @@ void main() {
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late JournalPhotoCollection testCollection;
   late MockPermissionCheckUseCase mockPermissionCheckUseCase;
-  late StubTokenRepository tokenRepository;
+  late MockTokenRepository mockTokenRepository;
   late SaveTokenUseCase saveTokenUseCase;
   late MockFirebaseMessagingDataSource mockFirebaseMessagingDataSource;
 
@@ -72,8 +59,12 @@ void main() {
     mockPermissionCheckUseCase = MockPermissionCheckUseCase();
     mockFirebaseMessagingDataSource = MockFirebaseMessagingDataSource();
 
-    tokenRepository = StubTokenRepository();
-    saveTokenUseCase = SaveTokenUseCase(tokenRepository);
+    mockTokenRepository = MockTokenRepository();
+    saveTokenUseCase = SaveTokenUseCase(mockTokenRepository);
+
+    when(
+      () => mockTokenRepository.saveToken(any(), any()),
+    ).thenAnswer((_) async {});
 
     when(
       () => mockPermissionCheckUseCase.execute(any()),
