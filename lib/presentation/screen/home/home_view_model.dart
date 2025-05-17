@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/permission_type.dart';
@@ -9,6 +8,7 @@ import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
@@ -23,6 +23,7 @@ class HomeViewModel with ChangeNotifier {
   final WatchJournalsUseCase _watchJournalsUserCase;
   final PermissionCheckUseCase _permissionCheckUseCase;
   final SaveTokenUseCase _saveTokenUseCase;
+  final FirebaseMessagingDataSource _firebaseMessagingDataSource;
 
   StreamSubscription<JournalPhotoCollection>? _streamSubscription;
   HomeState _state = HomeState();
@@ -34,9 +35,11 @@ class HomeViewModel with ChangeNotifier {
     required WatchJournalsUseCase watchJournalsUserCase,
     required PermissionCheckUseCase permissionCheckUseCase,
     required SaveTokenUseCase saveTokenUseCase,
+    required FirebaseMessagingDataSource firebaseMessagingDataSource,
   }) : _journalRepository = journalRepository,
        _watchJournalsUserCase = watchJournalsUserCase,
        _permissionCheckUseCase = permissionCheckUseCase,
+       _firebaseMessagingDataSource = firebaseMessagingDataSource,
        _saveTokenUseCase = saveTokenUseCase;
 
   HomeState get state => _state;
@@ -94,11 +97,11 @@ class HomeViewModel with ChangeNotifier {
     _state = _state.copyWith(currentUser: user);
     notifyListeners();
 
-    final token = await FirebaseMessaging.instance.getToken();
+    final token = await _firebaseMessagingDataSource.fetchToken();
     if (token != null) {
       await _saveTokenUseCase.execute(user.id, token);
     }
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    _firebaseMessagingDataSource.tokenRefreshStream().listen((newToken) {
       _saveTokenUseCase.execute(user.id, newToken);
     });
 
