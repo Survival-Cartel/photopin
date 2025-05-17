@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
-import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -15,20 +14,17 @@ class JournalViewModel with ChangeNotifier {
   JournalState _state = JournalState();
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
-  final GetJournalListUseCase _getJournalListUseCase;
   final WatchJournalsUseCase _watchJournalsUserCase;
   final UpdateJournalUseCase _updateJournalUseCase;
   final SearchJournalByDateTimeRangeUseCase
   _searchJournalByDateTimeRangeUseCase;
 
   JournalViewModel({
-    required GetJournalListUseCase getJournalListUseCase,
     required WatchJournalsUseCase watchJournalsUserCase,
     required UpdateJournalUseCase updateJournalUseCase,
     required SearchJournalByDateTimeRangeUseCase
     searchJournalByDateTimeRangeUseCase,
-  }) : _getJournalListUseCase = getJournalListUseCase,
-       _watchJournalsUserCase = watchJournalsUserCase,
+  }) : _watchJournalsUserCase = watchJournalsUserCase,
        _updateJournalUseCase = updateJournalUseCase,
        _searchJournalByDateTimeRangeUseCase =
            searchJournalByDateTimeRangeUseCase;
@@ -62,23 +58,24 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    final JournalPhotoCollection collection =
-        await _getJournalListUseCase.execute();
+    _journalSubscription = _watchJournalsUserCase.execute().listen((
+      collection,
+    ) {
+      _state = _state.copyWith(
+        journals:
+            collection.journals
+                .where(
+                  (journal) => journal.name.toLowerCase().contains(
+                    query.trim().toLowerCase(),
+                  ),
+                )
+                .toList(),
+        photoMap: collection.photoMap,
+        isLoading: false,
+      );
 
-    _state = _state.copyWith(
-      journals:
-          collection.journals
-              .where(
-                (journal) => journal.name.toLowerCase().contains(
-                  query.trim().toLowerCase(),
-                ),
-              )
-              .toList(),
-      photoMap: collection.photoMap,
-      isLoading: false,
-    );
-
-    notifyListeners();
+      notifyListeners();
+    });
   }
 
   Future<void> _searchDateRange(DateTimeRange range) async {
