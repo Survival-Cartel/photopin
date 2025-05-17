@@ -6,7 +6,7 @@ import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
-import 'package:photopin/core/usecase/watch_journal_photo_collection_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
@@ -15,7 +15,7 @@ class JournalViewModel with ChangeNotifier {
   JournalState _state = JournalState();
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
-  final WatchPhotoCollectionUseCase _watchJournalPhotoCollectionUseCase;
+  final WatchPhotoCollectionUseCase _watchPhotoCollectionUseCase;
   final UpdateJournalUseCase _updateJournalUseCase;
   final DeleteJournalUseCase _deleteJournalUseCase;
   final SearchJournalByDateTimeRangeUseCase
@@ -23,12 +23,12 @@ class JournalViewModel with ChangeNotifier {
 
   JournalViewModel({
     required UpdateJournalUseCase updateJournalUseCase,
-    required WatchPhotoCollectionUseCase watchJournalPhotoCollectionUseCase,
+    required WatchPhotoCollectionUseCase watchPhotoCollectionUseCase,
     required SearchJournalByDateTimeRangeUseCase
     searchJournalByDateTimeRangeUseCase,
     required DeleteJournalUseCase deleteJournalUseCase,
   }) : _updateJournalUseCase = updateJournalUseCase,
-       _watchJournalPhotoCollectionUseCase = watchJournalPhotoCollectionUseCase,
+       _watchPhotoCollectionUseCase = watchPhotoCollectionUseCase,
        _searchJournalByDateTimeRangeUseCase =
            searchJournalByDateTimeRangeUseCase,
        _deleteJournalUseCase = deleteJournalUseCase;
@@ -64,7 +64,7 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    _journalSubscription = _watchJournalPhotoCollectionUseCase.execute().listen(
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
       (collection) {
         _state = _state.copyWith(
           journals:
@@ -107,7 +107,7 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    _journalSubscription = _watchJournalPhotoCollectionUseCase.execute().listen(
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
       (JournalPhotoCollection collection) {
         _state = _state.copyWith(
           journals: collection.journals,

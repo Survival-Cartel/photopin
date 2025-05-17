@@ -21,6 +21,7 @@ class HomeViewModel with ChangeNotifier {
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
   final WatchJournalsUseCase _watchJournalsUserCase;
+
   final PermissionCheckUseCase _permissionCheckUseCase;
   final SaveTokenUseCase _saveTokenUseCase;
   final FirebaseMessagingDataSource _firebaseMessagingDataSource;
