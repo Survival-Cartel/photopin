@@ -7,7 +7,6 @@ import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
-import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
@@ -25,8 +24,6 @@ class MockJournalPhotoCollection extends Mock
   };
 }
 
-class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
-
 class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
 class MockUpdateJournalUseCase extends Mock implements UpdateJournalUseCase {}
@@ -37,7 +34,6 @@ class MockSearchJournalByDateTimeRangeUseCase extends Mock
 void main() {
   late JournalViewModel viewModel;
   late JournalPhotoCollection mockJournalPhotoCollection;
-  late GetJournalListUseCase mockGetJournalListUseCase;
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late UpdateJournalUseCase mockUpdateJournalUseCase;
   late SearchJournalByDateTimeRangeUseCase
@@ -45,23 +41,18 @@ void main() {
 
   setUp(() {
     mockJournalPhotoCollection = MockJournalPhotoCollection();
-    mockGetJournalListUseCase = MockGetJournalListUseCase();
     mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     mockUpdateJournalUseCase = MockUpdateJournalUseCase();
     mockSearchJournalByDateTimeRangeUseCase =
         MockSearchJournalByDateTimeRangeUseCase();
 
     viewModel = JournalViewModel(
-      getJournalListUseCase: mockGetJournalListUseCase,
       updateJournalUseCase: mockUpdateJournalUseCase,
       watchJournalsUserCase: mockWatchJournalsUseCase,
       searchJournalByDateTimeRangeUseCase:
           mockSearchJournalByDateTimeRangeUseCase,
     );
 
-    when(() => mockGetJournalListUseCase.execute()).thenAnswer((_) async {
-      return mockJournalPhotoCollection;
-    });
     when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
       yield mockJournalPhotoCollection;
     });
@@ -142,7 +133,7 @@ void main() {
           contains(journalModelFixtures[0].name),
         );
 
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
 
       test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
@@ -158,7 +149,7 @@ void main() {
           viewModel.state.journals.first.name,
           contains(journalModelFixtures[0].name),
         );
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
 
       test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
@@ -174,7 +165,7 @@ void main() {
           viewModel.state.journals.first.name,
           contains(journalModelFixtures[0].name),
         );
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
 
       test('존재하지 않는 저널 이름으로 검색 시 비어있는 저널로 상태를 업데이트해야한다.', () async {
@@ -185,7 +176,7 @@ void main() {
         expect(viewModel.state.isLoading, false);
         expect(viewModel.state.journals.length, 0);
         expect(viewModel.state.journals.isEmpty, true);
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
 
       test('비어있는 문자열(Empty String)으로 검색 시 전체 리스트를 반환해야한다.', () async {
@@ -198,7 +189,7 @@ void main() {
           viewModel.state.journals.length,
           mockJournalPhotoCollection.journals.length,
         );
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
 
       test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
@@ -226,7 +217,7 @@ void main() {
           contains(journalModelFixtures[0].name),
         );
 
-        verify(() => mockGetJournalListUseCase.execute()).called(1);
+        verify(() => mockWatchJournalsUseCase.execute()).called(1);
       });
     });
   });
