@@ -19,8 +19,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> login() async {
-    await dataSource.login();
+  Future<UserModel?> login() async {
+    return (await dataSource.login())?.toModel();
   }
 
   @override

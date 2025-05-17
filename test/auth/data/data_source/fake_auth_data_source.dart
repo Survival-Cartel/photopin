@@ -23,8 +23,9 @@ class FakeAuthDataSource extends Fake implements AuthDataSource {
   }
 
   @override
-  Future<void> login() async {
+  Future<UserDto?> login() async {
     authDataFixtures.add(authFixture);
+    return authFixture;
   }
 
   @override
