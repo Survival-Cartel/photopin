@@ -169,7 +169,6 @@ void di() {
 
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
-      getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
       searchJournalByDateTimeRangeUseCase:
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
