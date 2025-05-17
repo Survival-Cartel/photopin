@@ -16,6 +16,7 @@ import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
@@ -216,7 +217,19 @@ void di() {
     GetPlaceNameUseCase(http.Client()),
   );
 
-  getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
+  getIt.registerSingleton<AuthAndUserSaveUseCase>(
+    AuthAndUserSaveUseCase(
+      authRepository: getIt<AuthRepository>(),
+      userRepository: getIt<UserRepository>(),
+    ),
+  );
+
+  getIt.registerFactory<AuthViewModel>(
+    () => AuthViewModel(
+      authRepository: getIt<AuthRepository>(),
+      authAndUserSaveUseCase: getIt<AuthAndUserSaveUseCase>(),
+    ),
+  );
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
     (userId, _) => JournalDataSourceImpl(
