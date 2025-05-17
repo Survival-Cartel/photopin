@@ -40,19 +40,19 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
 
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
-  List<String> tripWith = [];
-
   @override
   void initState() {
     super.initState();
     titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
+    _journalId = widget.journalId;
   }
 
   @override
   void dispose() {
     titleController.dispose();
     commentController.dispose();
+    journalController.dispose();
     super.dispose();
   }
 
