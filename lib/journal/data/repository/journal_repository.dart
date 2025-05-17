@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:photopin/core/data/repository.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 
@@ -9,4 +10,5 @@ abstract interface class JournalRepository
   Future<void> saveJournal(JournalDto dto);
   Stream<List<JournalModel>> watchJournals();
   Future<void> update(JournalModel journal);
+  Future<List<JournalModel>> findJournalsByDateTimeRange(DateTimeRange range);
 }

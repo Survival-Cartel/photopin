@@ -33,6 +33,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
   final TextEditingController commentController = TextEditingController();
   final TextEditingController tripWithController = TextEditingController();
 
+  late JournalModel modifiedJournal;
+
   List<String> tripWith = [];
 
   @override
@@ -44,6 +46,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
     tripWithController.value = TextEditingValue(
       text: widget.journal.tripWith.join(', '),
     );
+
+    modifiedJournal = widget.journal;
   }
 
   @override
@@ -119,8 +123,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                         firstDate: DateTime(1999),
                         lastDate: DateTime(2100, 12, 31),
                         initialDateRange: DateTimeRange(
-                          start: widget.journal.startDate,
-                          end: widget.journal.endDate,
+                          start: modifiedJournal.startDate,
+                          end: modifiedJournal.endDate,
                         ),
                         saveText: '저장',
                         builder: (BuildContext context, Widget? child) {
@@ -137,12 +141,12 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       );
 
                       if (range != null) {
-                        final updatedJournal = widget.journal.copyWith(
+                        modifiedJournal = modifiedJournal.copyWith(
                           startDateMilli: range.start.millisecondsSinceEpoch,
                           endDateMilli: range.end.millisecondsSinceEpoch,
                         );
 
-                        widget.onTapApply(updatedJournal);
+                        setState(() {});
                       }
                     },
                     child: Row(
@@ -154,8 +158,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                           iconData: Icons.calendar_month,
                         ),
                         Text(
-                          widget.journal.startDate.formatDateRange(
-                            widget.journal.endDate,
+                          modifiedJournal.startDate.formatDateRange(
+                            modifiedJournal.endDate,
                           ),
                           style: AppFonts.smallTextRegular,
                         ),
@@ -203,6 +207,10 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                                       .map((item) => item.trim())
                                       .where((item) => item.isNotEmpty)
                                       .toList();
+
+                              modifiedJournal = modifiedJournal.copyWith(
+                                tripWith: tripWith,
+                              );
                             }
                           },
                         ),
@@ -222,7 +230,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       buttonName: 'Apply',
                       onClick: () {
                         widget.onTapApply(
-                          widget.journal.copyWith(
+                          modifiedJournal.copyWith(
                             name: titleController.text,
                             comment: commentController.text,
                             tripWith: tripWith,
