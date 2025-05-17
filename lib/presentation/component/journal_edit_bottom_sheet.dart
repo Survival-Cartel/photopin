@@ -244,7 +244,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       buttonType: ButtonType.small,
                       buttonColor: AppColors.warning,
                       iconName: Icons.cancel,
-                      buttonName: 'Cancel',
+                      buttonName: 'Delete',
                       onClick: widget.onTapDelete,
                     ),
                   ),

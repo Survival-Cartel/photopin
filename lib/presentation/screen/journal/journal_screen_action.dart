@@ -20,6 +20,9 @@ sealed class JournalScreenAction {
   const factory JournalScreenAction.onSearchDateRange({
     required DateTimeRange range,
   }) = OnSearchDateRange;
+
+  const factory JournalScreenAction.deleteJournal({required String journalId}) =
+      DeleteJournal;
 }
 
 @immutable
@@ -48,6 +51,13 @@ class OnSearchDateRange implements JournalScreenAction {
   final DateTimeRange range;
 
   const OnSearchDateRange({required this.range});
+}
+
+@immutable
+class DeleteJournal implements JournalScreenAction {
+  final String journalId;
+
+  const DeleteJournal({required this.journalId});
 }
 
 @immutable

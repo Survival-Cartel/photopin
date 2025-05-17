@@ -31,6 +31,8 @@ class JournalScreenRoot extends StatelessWidget {
                 await viewModel.onAction(action);
               case OnSearchDateRange():
                 await viewModel.onAction(action);
+              case DeleteJournal():
+                await viewModel.onAction(action);
             }
           },
         );

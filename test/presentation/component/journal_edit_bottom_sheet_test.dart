@@ -258,9 +258,9 @@ void main() {
       await tester.tap(find.text('Open Bottom Sheet'));
       await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Cancel'));
+      await tester.ensureVisible(find.text('Delete'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Cancel'));
+      await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
       expect(
