@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -28,6 +29,8 @@ class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
 class MockUpdateJournalUseCase extends Mock implements UpdateJournalUseCase {}
 
+class MockDeleteJournalUseCase extends Mock implements DeleteJournalUseCase {}
+
 class MockSearchJournalByDateTimeRangeUseCase extends Mock
     implements SearchJournalByDateTimeRangeUseCase {}
 
@@ -36,6 +39,7 @@ void main() {
   late JournalPhotoCollection mockJournalPhotoCollection;
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late UpdateJournalUseCase mockUpdateJournalUseCase;
+  late DeleteJournalUseCase mockDeleteJournalUseCase;
   late SearchJournalByDateTimeRangeUseCase
   mockSearchJournalByDateTimeRangeUseCase;
 
@@ -45,9 +49,11 @@ void main() {
     mockUpdateJournalUseCase = MockUpdateJournalUseCase();
     mockSearchJournalByDateTimeRangeUseCase =
         MockSearchJournalByDateTimeRangeUseCase();
+    mockDeleteJournalUseCase = MockDeleteJournalUseCase();
 
     viewModel = JournalViewModel(
       updateJournalUseCase: mockUpdateJournalUseCase,
+      deleteJournalUseCase: mockDeleteJournalUseCase,
       watchJournalsUserCase: mockWatchJournalsUseCase,
       searchJournalByDateTimeRangeUseCase:
           mockSearchJournalByDateTimeRangeUseCase,
