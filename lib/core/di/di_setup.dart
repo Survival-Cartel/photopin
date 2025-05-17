@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +18,9 @@ import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
+import 'package:photopin/core/service/geolocator_location_service.dart';
+import 'package:photopin/core/service/location_service.dart';
+import 'package:photopin/core/service/push_service.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
@@ -23,12 +28,18 @@ import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
+import 'package:photopin/core/usecase/link_access_notification_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
+import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source_impl.dart';
+import 'package:photopin/fcm/data/repository/token_repository.dart';
+import 'package:photopin/fcm/data/repository/token_repository_impl.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source_impl.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -40,8 +51,6 @@ import 'package:photopin/photo/data/repository/photo_repository_impl.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_view_model.dart';
 import 'package:photopin/presentation/screen/compare_map/compare_map_view_model.dart';
-import 'package:photopin/core/service/location_service.dart';
-import 'package:photopin/core/service/geolocator_location_service.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_view_model.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
@@ -59,7 +68,9 @@ final getIt = GetIt.instance;
 
 void di() {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
+  getIt.registerLazySingleton(() => FirebaseMessaging.instance);
   getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
+  getIt.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
   getIt.registerLazySingleton<FirestoreSetup>(() => FirestoreSetup());
   getIt.registerSingleton<UserDataSource>(
     UserDataSourceImpl(userStore: getIt.get<FirestoreSetup>().userFirestore()),
@@ -69,6 +80,13 @@ void di() {
 
   getIt.registerFactory<MainScreenViewModel>(
     () => MainScreenViewModel(getCurrentUserUseCase: getIt()),
+  );
+  getIt.registerLazySingleton<TokenRepository>(
+    () => TokenRepositoryImpl(getIt<FirebaseFirestore>()),
+  );
+
+  getIt.registerSingleton<FirebaseMessagingDataSource>(
+    FirebaseMessagingDataSourceImpl(getIt<FirebaseMessaging>()),
   );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
@@ -114,6 +132,9 @@ void di() {
       journalRepository: getIt<JournalRepository>(param1: userId),
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
       watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+      saveTokenUseCase: getIt<SaveTokenUseCase>(),
+      firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
     ),
   );
 
@@ -224,7 +245,9 @@ void di() {
     GetPlaceNameUseCase(http.Client()),
   );
 
-  getIt.registerFactory<AuthViewModel>(() => AuthViewModel(getIt()));
+  getIt.registerFactory<AuthViewModel>(
+    () => AuthViewModel(getIt<AuthRepository>()),
+  );
 
   getIt.registerFactoryParam<JournalDataSource, String, void>(
     (userId, _) => JournalDataSourceImpl(
@@ -275,9 +298,21 @@ void di() {
     ),
   );
 
+  getIt.registerLazySingleton<PushService>(() => PushService());
+
+  getIt.registerSingleton<LinkAccessNotificationUseCase>(
+    LinkAccessNotificationUseCase(
+      tokenRepository: getIt<TokenRepository>(),
+      pushService: getIt<PushService>(),
+    ),
+  );
+
   getIt.registerFactoryParam<CompareDialogViewModel, String, void>(
     (userId, _) => CompareDialogViewModel(
       repository: getIt<JournalRepository>(param1: userId),
+      linkAccessNotificationuseCase: getIt<LinkAccessNotificationUseCase>(),
     ),
   );
+
+  getIt.registerSingleton<SaveTokenUseCase>(SaveTokenUseCase(getIt()));
 }
