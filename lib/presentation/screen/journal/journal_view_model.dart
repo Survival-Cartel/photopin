@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -16,6 +17,7 @@ class JournalViewModel with ChangeNotifier {
 
   final WatchJournalsUseCase _watchJournalsUserCase;
   final UpdateJournalUseCase _updateJournalUseCase;
+  final DeleteJournalUseCase _deleteJournalUseCase;
   final SearchJournalByDateTimeRangeUseCase
   _searchJournalByDateTimeRangeUseCase;
 
@@ -24,10 +26,12 @@ class JournalViewModel with ChangeNotifier {
     required UpdateJournalUseCase updateJournalUseCase,
     required SearchJournalByDateTimeRangeUseCase
     searchJournalByDateTimeRangeUseCase,
+    required DeleteJournalUseCase deleteJournalUseCase,
   }) : _watchJournalsUserCase = watchJournalsUserCase,
        _updateJournalUseCase = updateJournalUseCase,
        _searchJournalByDateTimeRangeUseCase =
-           searchJournalByDateTimeRangeUseCase;
+           searchJournalByDateTimeRangeUseCase,
+       _deleteJournalUseCase = deleteJournalUseCase;
 
   JournalState get state => _state;
   bool get isLoading => _state.isLoading;
@@ -51,6 +55,8 @@ class JournalViewModel with ChangeNotifier {
         await _setSearchFilter(option);
       case OnSearchDateRange(:final DateTimeRange range):
         await _searchDateRange(range);
+      case DeleteJournal(:final String journalId):
+        await _deleteJournal(journalId);
     }
   }
 
@@ -130,6 +136,14 @@ class JournalViewModel with ChangeNotifier {
 
   Future<void> _setSearchFilter(SearchFilterOption option) async {
     _state = _state.copyWith(searchFilterOption: option);
+    notifyListeners();
+  }
+
+  Future<void> _deleteJournal(String journalId) async {
+    _state = _state.copyWith(isLoading: true);
+
+    await _deleteJournalUseCase.execute(journalId);
+
     notifyListeners();
   }
 }
