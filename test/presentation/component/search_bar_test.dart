@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/presentation/component/search_bar.dart';
 
 void main() {
@@ -9,8 +10,18 @@ void main() {
     ) async {
       // 테스트할 위젯 생성
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: SearchBarWidget(placeholder: 'Search')),
+        MaterialApp(
+          home: Scaffold(
+            body: SafeArea(
+              child: SearchBarWidget(
+                placeholder: 'Search',
+                initFilterOption: SearchFilterOption.title,
+                onDateTimeRangeSearch: (DateTimeRange range) {},
+                onChangedOption: (SearchFilterOption option) {},
+                onChanged: (String value) {},
+              ),
+            ),
+          ),
         ),
       );
 
@@ -20,8 +31,8 @@ void main() {
       // placeholder 텍스트가 올바르게 표시되는지 확인
       expect(find.text('Search'), findsOneWidget);
 
-      // 검색 아이콘이 표시되는지 확인
-      expect(find.byIcon(Icons.search), findsOneWidget);
+      // 검색 필터 아이콘이 표시되는지 확인
+      expect(find.byIcon(Icons.tune), findsOneWidget);
     });
 
     testWidgets('검색 입력 시 onChanged 콜백이 호출되는지 테스트합니다.', (
@@ -33,11 +44,16 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SearchBarWidget(
-              placeholder: 'Search',
-              onChanged: (value) {
-                searchText = value;
-              },
+            body: SafeArea(
+              child: SearchBarWidget(
+                placeholder: 'Search',
+                initFilterOption: SearchFilterOption.title,
+                onDateTimeRangeSearch: (DateTimeRange range) {},
+                onChangedOption: (SearchFilterOption option) {},
+                onChanged: (value) {
+                  searchText = value;
+                },
+              ),
             ),
           ),
         ),

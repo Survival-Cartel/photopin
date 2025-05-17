@@ -10,7 +10,7 @@ class UserDataSourceImpl implements UserDataSource {
 
   @override
   Future<void> saveUser(UserDto dto) async {
-    await userStore.add(dto);
+    await userStore.doc(dto.id).set(dto, SetOptions(merge: true));
   }
 
   @override

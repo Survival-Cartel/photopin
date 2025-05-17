@@ -17,11 +17,14 @@ class WatchJournalsUseCase {
     await for (final journals in _journalRepository.watchJournals()) {
       final Map<String, List<PhotoModel>> photoMap = {};
 
+      journals.sort((a, b) => a.startDate.compareTo(b.startDate));
+
       final photoFutures =
           journals.map((journal) async {
             final photos = await _photoRepository.findPhotosByJournalId(
               journal.id,
             );
+
             return MapEntry(journal.id, photos);
           }).toList();
 

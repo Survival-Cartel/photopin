@@ -28,6 +28,13 @@ class PermissionCheckUseCase {
             }).request();
 
         return _handleStatus(status);
+      case PermissionType.notification:
+        final PermissionStatus status =
+            await Permission.notification.onPermanentlyDeniedCallback(() {
+              openAppSettings();
+            }).request();
+
+        return _handleStatus(status);
     }
   }
 

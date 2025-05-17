@@ -8,6 +8,7 @@ import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 
 class AuthScreenRoot extends StatefulWidget {
   final AuthViewModel authViewModel;
+
   const AuthScreenRoot({super.key, required this.authViewModel});
 
   @override

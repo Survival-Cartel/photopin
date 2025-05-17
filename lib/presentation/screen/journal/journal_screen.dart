@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/journal_edit_bottom_sheet.dart';
+import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
-import 'package:photopin/presentation/component/base_tab.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/search_bar.dart';
 
-class JournalScreen extends StatelessWidget {
+class JournalScreen extends StatefulWidget {
   final JournalState state;
   final Function(JournalScreenAction action) onAction;
 
   const JournalScreen({super.key, required this.state, required this.onAction});
 
+  @override
+  State<JournalScreen> createState() => _JournalScreenState();
+}
+
+class _JournalScreenState extends State<JournalScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,34 +25,42 @@ class JournalScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Column(
           children: [
-            BaseTab(
-              labels: const ['All', 'Unread', 'Shares'],
-              activeColors: const [
-                AppColors.primary100,
-                AppColors.primary100,
-                AppColors.primary100,
-              ],
-              onToggle: (int index) {},
-            ),
             const SizedBox(height: 16),
             SearchBarWidget(
-              placeholder: 'Active Routes: ',
-              onChanged:
-                  (String query) =>
-                      onAction(JournalScreenAction.searchJournal(query: query)),
+              initFilterOption: widget.state.searchFilterOption,
+              initRange: widget.state.searchDateTimeRange,
+              onDateTimeRangeSearch: (DateTimeRange range) {
+                widget.onAction(
+                  JournalScreenAction.onSearchDateRange(range: range),
+                );
+              },
+              placeholder:
+                  widget.state.searchFilterOption == SearchFilterOption.title
+                      ? '제목을 검색하세요.'
+                      : '날짜를 검색하세요.',
+              onChangedOption: (SearchFilterOption option) {
+                widget.onAction(
+                  JournalScreenAction.setSearchFilter(option: option),
+                );
+              },
+              onChanged: (String query) {
+                widget.onAction(
+                  JournalScreenAction.searchJournal(query: query),
+                );
+              },
             ),
             const SizedBox(height: 16),
             Expanded(
               child: Builder(
                 builder: (context) {
-                  if (state.isLoading) {
+                  if (widget.state.isLoading) {
                     return const Center(
                       heightFactor: 16,
                       child: CircularProgressIndicator(),
                     );
                   }
                   return ListView.separated(
-                    itemCount: state.journals.length,
+                    itemCount: widget.state.journals.length,
                     shrinkWrap: true,
                     physics: const AlwaysScrollableScrollPhysics(),
                     separatorBuilder: (BuildContext context, int index) {
@@ -56,21 +68,26 @@ class JournalScreen extends StatelessWidget {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       String? thumbnailUrl =
-                          state
-                                      .photoMap[state.journals[index].id]
+                          widget
+                                      .state
+                                      .photoMap[widget.state.journals[index].id]
                                       ?.isNotEmpty ==
                                   true
-                              ? state
-                                  .photoMap[state.journals[index].id]!
+                              ? widget
+                                  .state
+                                  .photoMap[widget.state.journals[index].id]!
                                   .first
                                   .imageUrl
                               : null;
                       int? photoCount =
-                          state.photoMap[state.journals[index].id]?.length;
+                          widget
+                              .state
+                              .photoMap[widget.state.journals[index].id]
+                              ?.length;
 
                       return JournalCard(
                         imageUrl: thumbnailUrl,
-                        journal: state.journals[index],
+                        journal: widget.state.journals[index],
                         photoCount: photoCount ?? 0,
                         onTapEdit: (String journalId) {
                           showModalBottomSheet(
@@ -79,7 +96,7 @@ class JournalScreen extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                             builder: (BuildContext context) {
                               final JournalModel journal =
-                                  state.journals[index];
+                                  widget.state.journals[index];
 
                               return JournalEditBottomSheet(
                                 journal: journal,
@@ -88,7 +105,7 @@ class JournalScreen extends StatelessWidget {
                                 comment: journal.comment,
                                 onTapClose: () => Navigator.pop(context),
                                 onTapApply: (JournalModel journal) {
-                                  onAction(
+                                  widget.onAction(
                                     JournalScreenAction.onTapEdit(
                                       journal: journal,
                                     ),
@@ -103,7 +120,7 @@ class JournalScreen extends StatelessWidget {
                         },
                         showEditButton: true,
                         onTap:
-                            (String journalId) => onAction(
+                            (String journalId) => widget.onAction(
                               JournalScreenAction.onTapJournalCard(
                                 journalId: journalId,
                               ),

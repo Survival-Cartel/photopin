@@ -23,4 +23,24 @@ extension AuthMapper on User {
       displayName: displayName,
     );
   }
+
+  UserModel toModel() {
+    return UserModel(
+      id: uid,
+      email: email ?? 'N/A',
+      profileImg: photoURL ?? 'N/A',
+      displayName: displayName ?? 'N/A',
+    );
+  }
+}
+
+extension UserModelMapper on UserModel {
+  UserDto toDto() {
+    return UserDto(
+      id: id,
+      email: email,
+      profileImg: profileImg,
+      displayName: displayName,
+    );
+  }
 }

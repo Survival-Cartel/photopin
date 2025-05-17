@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -41,5 +42,16 @@ class JournalRepositoryImpl implements JournalRepository {
   @override
   Future<void> update(JournalModel journal) async {
     await _dataSource.update(journal.toDto());
+  }
+
+  @override
+  Future<List<JournalModel>> findJournalsByDateTimeRange(
+    DateTimeRange range,
+  ) async {
+    List<JournalDto> dtos = await _dataSource.findJournalsByDateTimeRange(
+      range,
+    );
+
+    return dtos.map((journal) => journal.toModel()).toList();
   }
 }

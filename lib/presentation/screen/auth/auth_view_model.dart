@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
+import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
 import 'package:photopin/presentation/screen/auth/auth_action.dart';
 import 'package:photopin/presentation/screen/auth/auth_state.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
 class AuthViewModel with ChangeNotifier {
   final AuthRepository _authRepository;
+  final AuthAndUserSaveUseCase _authAndUserSaveUseCase;
+
   AuthState _state = const AuthState();
   final _eventController = StreamController<Exception?>();
 
@@ -21,7 +24,11 @@ class AuthViewModel with ChangeNotifier {
 
   AuthState get state => _state;
 
-  AuthViewModel(this._authRepository);
+  AuthViewModel({
+    required AuthRepository authRepository,
+    required AuthAndUserSaveUseCase authAndUserSaveUseCase,
+  }) : _authRepository = authRepository,
+       _authAndUserSaveUseCase = authAndUserSaveUseCase;
 
   Future<void> action(AuthAction action) async {
     switch (action) {
@@ -39,9 +46,8 @@ class AuthViewModel with ChangeNotifier {
       _state = state.copyWith(isLoading: true);
       notifyListeners();
 
-      await _authRepository.login();
       _state = state.copyWith(
-        currentUser: await _authRepository.findCurrentUser(),
+        currentUser: await _authAndUserSaveUseCase.execute(),
       );
     } on Exception catch (e) {
       _addError(e);
