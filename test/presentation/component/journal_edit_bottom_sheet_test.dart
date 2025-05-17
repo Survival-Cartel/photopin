@@ -38,7 +38,7 @@ void main() {
                               title: title,
                               thumbnailUrl: imageUrl,
                               onTapApply: (JournalModel journal) {},
-                              onTapCancel: () {},
+                              onTapDelete: () {},
                               onTapClose: () {},
                               journal: journal,
                             );
@@ -94,7 +94,7 @@ void main() {
                                 title: title,
                                 thumbnailUrl: imageUrl,
                                 onTapApply: (JournalModel journal) {},
-                                onTapCancel: () {},
+                                onTapDelete: () {},
                                 onTapClose: () {
                                   tappedClose = true;
                                   Navigator.pop(context);
@@ -160,7 +160,7 @@ void main() {
                                   expectComment = journal.comment;
                                   expectTripWith = journal.tripWith;
                                 },
-                                onTapCancel: () {},
+                                onTapDelete: () {},
                                 onTapClose: () {},
                               );
                             },
@@ -214,7 +214,7 @@ void main() {
     },
   );
 
-  testWidgets('JournalEditBottomSheet의 Cancel을 탭하면 onTapCancel 콜백이 호출되야한다.', (
+  testWidgets('JournalEditBottomSheet의 Delete를 탭하면 onTapDelete 콜백이 호출되야한다.', (
     WidgetTester tester,
   ) async {
     await mockNetworkImagesFor(() async {
@@ -236,7 +236,7 @@ void main() {
                               journal: journal,
                               thumbnailUrl: imageUrl,
                               onTapApply: (JournalModel journal) {},
-                              onTapCancel: () {
+                              onTapDelete: () {
                                 Navigator.pop(context);
                               },
                               onTapClose: () {},

@@ -113,7 +113,7 @@ class _JournalScreenState extends State<JournalScreen> {
 
                                   Navigator.pop(context);
                                 },
-                                onTapCancel: () => Navigator.pop(context),
+                                onTapDelete: () => Navigator.pop(context),
                               );
                             },
                           );

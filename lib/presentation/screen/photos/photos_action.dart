@@ -4,7 +4,7 @@ sealed class PhotosAction {
   factory PhotosAction.photoFilterClick(int index) = PhotoFilterClick;
   factory PhotosAction.photoCardClick() = PhotoCardClick;
   factory PhotosAction.applyClick(PhotoModel photoModel) = PhotoApplyClick;
-  factory PhotosAction.shareClick() = PhotoShareClick;
+  factory PhotosAction.deleteClick(String photoId) = PhotoDeleteClick;
 }
 
 class PhotoFilterClick implements PhotosAction {
@@ -21,4 +21,8 @@ class PhotoApplyClick implements PhotosAction {
   PhotoApplyClick(this.photoModel);
 }
 
-class PhotoShareClick implements PhotosAction {}
+class PhotoDeleteClick implements PhotosAction {
+  final String photoId;
+
+  PhotoDeleteClick(this.photoId);
+}

@@ -82,4 +82,15 @@ class PhotoDataSourceImpl implements PhotoDataSource {
   Future<void> updatePhoto(PhotoDto photoDto) async {
     await _photoStore.doc(photoDto.id).set(photoDto, SetOptions(merge: true));
   }
+
+  @override
+  Stream<List<PhotoDto>> watchPhotos() {
+    try {
+      return _photoStore.snapshots().map(
+        (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+      );
+    } catch (e) {
+      throw FirestoreError.notFoundError;
+    }
+  }
 }

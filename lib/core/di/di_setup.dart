@@ -26,6 +26,7 @@ import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/core/usecase/get_place_name_use_case.dart';
@@ -286,6 +287,16 @@ void di() {
       getPhotoListWithJournalIdUseCase: getIt<GetPhotoListWithJournalIdUseCase>(
         param1: userId,
       ),
+      photoRepository: getIt<PhotoRepository>(param1: userId),
+      getPhotoJournalListUseCase: getIt<GetPhotoJournalListUseCase>(
+        param1: userId,
+      ),
+    ),
+  );
+
+  getIt.registerFactoryParam<GetPhotoJournalListUseCase, String, void>(
+    (userId, _) => GetPhotoJournalListUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
       photoRepository: getIt<PhotoRepository>(param1: userId),
     ),
   );

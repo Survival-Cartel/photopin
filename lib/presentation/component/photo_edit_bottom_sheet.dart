@@ -9,51 +9,50 @@ import 'package:photopin/presentation/component/base_icon_button.dart';
 import 'package:photopin/presentation/component/text_limit_input_field.dart';
 import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 
-class JournalEditBottomSheet extends EditBottomSheet {
-  final JournalModel journal;
-  final Function(JournalModel journal) onTapApply;
+class PhotoEditBottomSheet extends EditBottomSheet {
+  final List<JournalModel> journals;
+  final DateTime dateTime;
+  final String journalId;
+  final Function(String photoName, String journalId, String comment) onTapApply;
 
-  const JournalEditBottomSheet({
+  const PhotoEditBottomSheet({
     super.key,
     super.thumbnailUrl,
     required super.title,
     required super.comment,
     required super.onTapDelete,
     required super.onTapClose,
-    required this.journal,
+    required this.journals,
+    required this.dateTime,
     required this.onTapApply,
+    this.journalId = '',
   });
 
   @override
-  State<JournalEditBottomSheet> createState() => _JournalEditBottomSheetState();
+  State<PhotoEditBottomSheet> createState() => _PhotoEditBottomSheetState();
 }
 
-class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
+class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
-  final TextEditingController tripWithController = TextEditingController();
+  final TextEditingController journalController = TextEditingController();
+  String _journalId = '';
 
-  late JournalModel modifiedJournal;
-
-  List<String> tripWith = [];
+  String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
   @override
   void initState() {
     super.initState();
     titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
-
-    tripWithController.value = TextEditingValue(
-      text: widget.journal.tripWith.join(', '),
-    );
-
-    modifiedJournal = widget.journal;
+    _journalId = widget.journalId;
   }
 
   @override
   void dispose() {
     titleController.dispose();
     commentController.dispose();
+    journalController.dispose();
     super.dispose();
   }
 
@@ -99,6 +98,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                 ],
               ),
               AspectRatio(
+                // TODO: 현재는 고정으로 16:9 비율, 추후 카메라 기능 들어오면 수정
                 aspectRatio: 16 / 9,
                 child: Container(
                   decoration: BoxDecoration(
@@ -116,55 +116,19 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
               Column(
                 spacing: 8,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final DateTimeRange? range = await showDateRangePicker(
-                        context: context,
-                        firstDate: DateTime(1999),
-                        lastDate: DateTime(2100, 12, 31),
-                        initialDateRange: DateTimeRange(
-                          start: modifiedJournal.startDate,
-                          end: modifiedJournal.endDate,
-                        ),
-                        saveText: '저장',
-                        builder: (BuildContext context, Widget? child) {
-                          return Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: double.infinity,
-                                maxHeight: 600.0,
-                              ),
-                              child: child,
-                            ),
-                          );
-                        },
-                      );
-
-                      if (range != null) {
-                        modifiedJournal = modifiedJournal.copyWith(
-                          startDateMilli: range.start.millisecondsSinceEpoch,
-                          endDateMilli: range.end.millisecondsSinceEpoch,
-                        );
-
-                        setState(() {});
-                      }
-                    },
-                    child: Row(
-                      spacing: 12,
-                      children: [
-                        const BaseIcon(
-                          iconColor: AppColors.primary80,
-                          size: 16,
-                          iconData: Icons.calendar_month,
-                        ),
-                        Text(
-                          modifiedJournal.startDate.formatDateRange(
-                            modifiedJournal.endDate,
-                          ),
-                          style: AppFonts.smallTextRegular,
-                        ),
-                      ],
-                    ),
+                  Row(
+                    spacing: 12,
+                    children: [
+                      const BaseIcon(
+                        iconColor: AppColors.primary80,
+                        size: 16,
+                        iconData: Icons.calendar_month,
+                      ),
+                      Text(
+                        _formattedDateTime(),
+                        style: AppFonts.smallTextRegular,
+                      ),
+                    ],
                   ),
                   Row(
                     spacing: 12,
@@ -176,7 +140,6 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       ),
                       Expanded(
                         child: TextLimitInputField(
-                          key: const Key('comment_field'),
                           controller: commentController,
                           hintText: 'Write Comment',
                           maxLength: 30,
@@ -185,34 +148,46 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                     ],
                   ),
                   Row(
-                    spacing: 12,
                     children: [
                       const BaseIcon(
-                        iconColor: AppColors.secondary100,
+                        iconColor: AppColors.primary80,
                         size: 16,
-                        iconData: Icons.person,
+                        iconData: Icons.note,
                       ),
+                      const SizedBox(width: 12),
                       Expanded(
-                        child: TextLimitInputField(
-                          key: const Key('trip_with_field'),
-                          controller: tripWithController,
-                          hintText: '여행한 친구 "," 로 구분하여 입력해주세요.',
-                          onChange: (String value) {
-                            if (value.isEmpty) {
-                              tripWith.clear();
-                            } else {
-                              tripWith =
-                                  value
-                                      .split(',')
-                                      .map((item) => item.trim())
-                                      .where((item) => item.isNotEmpty)
-                                      .toList();
-
-                              modifiedJournal = modifiedJournal.copyWith(
-                                tripWith: tripWith,
-                              );
-                            }
+                        child: DropdownMenu<String>(
+                          controller: journalController,
+                          inputDecorationTheme: const InputDecorationTheme(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                          ),
+                          initialSelection:
+                              widget.journals.isNotEmpty
+                                  ? widget.journalId
+                                  : null,
+                          menuStyle: MenuStyle(
+                            backgroundColor: WidgetStateProperty.all(
+                              AppColors.white,
+                            ),
+                            padding: WidgetStateProperty.all(EdgeInsets.zero),
+                            elevation: WidgetStateProperty.all(2),
+                          ),
+                          onSelected: (value) {
+                            _journalId = value!;
                           },
+                          textStyle: AppFonts.smallTextRegular,
+                          dropdownMenuEntries:
+                              widget.journals.isEmpty
+                                  ? []
+                                  : List.generate(widget.journals.length, (
+                                    int index,
+                                  ) {
+                                    return DropdownMenuEntry(
+                                      label: widget.journals[index].name,
+                                      value: widget.journals[index].id,
+                                    );
+                                  }),
                         ),
                       ),
                     ],
@@ -230,11 +205,9 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       buttonName: 'Apply',
                       onClick: () {
                         widget.onTapApply(
-                          modifiedJournal.copyWith(
-                            name: titleController.text,
-                            comment: commentController.text,
-                            tripWith: tripWith,
-                          ),
+                          titleController.text,
+                          _journalId,
+                          commentController.text,
                         );
                       },
                     ),
@@ -243,8 +216,8 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                     child: BaseIconButton(
                       buttonType: ButtonType.small,
                       buttonColor: AppColors.warning,
-                      iconName: Icons.cancel,
-                      buttonName: 'Cancel',
+                      iconName: Icons.delete,
+                      buttonName: 'Delete',
                       onClick: widget.onTapDelete,
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/presentation/component/journal_card_image.dart';
 import 'package:photopin/presentation/component/map_filter.dart';
+import 'package:photopin/presentation/component/photo_edit_bottom_sheet.dart';
 import 'package:photopin/presentation/screen/photos/photos_action.dart';
 import 'package:photopin/presentation/screen/photos/photos_state.dart';
 
@@ -29,6 +30,7 @@ class PhotosScreen extends StatelessWidget {
                 onAction(PhotosAction.photoFilterClick(index));
               },
             ),
+            const SizedBox(height: 20),
             Expanded(
               child: Builder(
                 builder: (context) {
@@ -52,7 +54,7 @@ class PhotosScreen extends StatelessWidget {
                           crossAxisCount: 2, // 가로로 2개씩 표시
                           crossAxisSpacing: 10, // 가로 간격
                           mainAxisSpacing: 10, // 세로 간격
-                          childAspectRatio: 0.75, // 아이템의 가로:세로 비율
+                          childAspectRatio: 1, // 아이템의 가로:세로 비율
                         ),
                     itemCount: state.photos.length,
                     itemBuilder: (context, index) {
@@ -60,51 +62,44 @@ class PhotosScreen extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          // showModalBottomSheet(
-                          //   context: context,
-                          //   isScrollControlled: true,
-                          //   backgroundColor: Colors.transparent,
-                          //   builder: (BuildContext context) {
-                          //     return Container(
-                          //       height: 500,
-                          //       decoration: const BoxDecoration(
-                          //         color: Colors.white,
-                          //         borderRadius: BorderRadius.only(
-                          //           topLeft: Radius.circular(16),
-                          //           topRight: Radius.circular(16),
-                          //         ),
-                          //       ),
-                          //       child: EditBottomSheet(
-                          //         title: photo.name,
-                          //         thumbnailUrl: photo.imageUrl,
-                          //         dateTime: photo.dateTime,
-                          //         comment: photo.comment,
-                          //         journalId: photo.journalId,
-                          //         onTapClose: () => Navigator.pop(context),
-                          //         onTapApply: (
-                          //           photoName,
-                          //           selectJournal,
-                          //           newComment,
-                          //         ) {
-                          //           // 여기서 photo를 업데이트하는 적절한 액션을 생성
-                          //           // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
-                          //           onAction(
-                          //             PhotosAction.applyClick(
-                          //               photo.copyWith(
-                          //                 name: photoName,
-                          //                 comment: newComment,
-                          //                 journalId: selectJournal,
-                          //               ),
-                          //             ),
-                          //           );
-                          //           Navigator.pop(context);
-                          //         },
-                          //         onTapCancel: () => Navigator.pop(context),
-                          //         journals: state.journals,
-                          //       ),
-                          //     );
-                          //   },
-                          // );
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (BuildContext context) {
+                              return PhotoEditBottomSheet(
+                                title: photo.name,
+                                thumbnailUrl: photo.imageUrl,
+                                dateTime: photo.dateTime,
+                                comment: photo.comment,
+                                journalId: photo.journalId,
+                                onTapClose: () => Navigator.pop(context),
+                                onTapApply: (
+                                  photoName,
+                                  selectJournal,
+                                  newComment,
+                                ) {
+                                  // 여기서 photo를 업데이트하는 적절한 액션을 생성
+                                  // 예: onAction(PhotosAction.updatePhotoComment(photo.id, newComment));
+                                  onAction(
+                                    PhotosAction.applyClick(
+                                      photo.copyWith(
+                                        name: photoName,
+                                        comment: newComment,
+                                        journalId: selectJournal,
+                                      ),
+                                    ),
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                onTapDelete: () {
+                                  onAction(PhotosAction.deleteClick(photo.id));
+                                  Navigator.pop(context);
+                                },
+                                journals: state.journals,
+                              );
+                            },
+                          );
                         },
                         child: JournalCardImage(
                           imageUrl: photo.imageUrl,

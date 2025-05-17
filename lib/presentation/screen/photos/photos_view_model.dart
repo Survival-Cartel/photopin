@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/domain/photo_journal_list_model.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/get_photo_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_with_journal_id_use_case.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
@@ -13,6 +17,9 @@ class PhotosViewModel with ChangeNotifier {
   final GetJournalListUseCase _getJournalListUseCase;
   final GetPhotoListWithJournalIdUseCase _getPhotoListWithJournalIdUseCase;
   final PhotoRepository _photoRepository;
+  final GetPhotoJournalListUseCase _getPhotoJournalListUseCase;
+
+  StreamSubscription<PhotoJournalListModel>? _listStream;
   PhotosState _state = PhotosState();
 
   PhotosViewModel({
@@ -20,12 +27,20 @@ class PhotosViewModel with ChangeNotifier {
     required GetJournalListUseCase getJournalListUseCase,
     required GetPhotoListWithJournalIdUseCase getPhotoListWithJournalIdUseCase,
     required PhotoRepository photoRepository,
+    required GetPhotoJournalListUseCase getPhotoJournalListUseCase,
   }) : _getPhotoListUseCase = getPhotoListUseCase,
        _getJournalListUseCase = getJournalListUseCase,
        _getPhotoListWithJournalIdUseCase = getPhotoListWithJournalIdUseCase,
-       _photoRepository = photoRepository;
+       _photoRepository = photoRepository,
+       _getPhotoJournalListUseCase = getPhotoJournalListUseCase;
 
   PhotosState get state => _state;
+
+  @override
+  void dispose() {
+    _listStream?.cancel();
+    super.dispose();
+  }
 
   Future<void> _photoApplyClick(PhotoModel photoModel) async {
     await _photoRepository.updatePhoto(photoModel);
@@ -67,20 +82,22 @@ class PhotosViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _photoDeleteClick(String photoId) async {
+    await _photoRepository.deletePhoto(photoId);
+  }
+
   Future<void> init() async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    List<PhotoModel> photos = await _getPhotoListUseCase.execute();
-    final JournalPhotoCollection collection =
-        await _getJournalListUseCase.execute();
-
-    _state = _state.copyWith(
-      photos: photos,
-      journals: collection.journals,
-      isLoading: false,
-    );
-    notifyListeners();
+    _listStream = _getPhotoJournalListUseCase.execute().listen((collection) {
+      _state = _state.copyWith(
+        photos: collection.photos,
+        journals: collection.journals,
+        isLoading: false,
+      );
+      notifyListeners();
+    });
   }
 
   Future<void> onAction(PhotosAction action) async {
@@ -92,9 +109,8 @@ class PhotosViewModel with ChangeNotifier {
         throw UnimplementedError();
       case PhotoApplyClick():
         _photoApplyClick(action.photoModel);
-      case PhotoShareClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case PhotoDeleteClick():
+        _photoDeleteClick(action.photoId);
     }
   }
 }

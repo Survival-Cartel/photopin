@@ -7,4 +7,5 @@ abstract interface class PhotoDataSource {
   Future<void> savePhoto(PhotoDto dto);
   Future<void> deletePhoto(String photoId);
   Future<void> updatePhoto(PhotoDto photoDto);
+  Stream<List<PhotoDto>> watchPhotos();
 }
