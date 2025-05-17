@@ -33,7 +33,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<UserCredential> login() async {
+  Future<UserDto?> login() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -52,7 +52,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     );
 
     // Once signed in, return the UserCredential
-    return await auth.signInWithCredential(credential);
+    return (await auth.signInWithCredential(credential)).user?.toDto();
   }
 
   @override
