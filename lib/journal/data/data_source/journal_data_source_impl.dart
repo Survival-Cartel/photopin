@@ -98,6 +98,7 @@ class JournalDataSourceImpl implements JournalDataSource {
       final snapshot = await _journalStore
           .where('startDate', isGreaterThanOrEqualTo: range.start)
           .where('endDate', isLessThanOrEqualTo: range.end)
+          .orderBy('startDate')
           .get()
           .timeout(
             const Duration(seconds: 8),
