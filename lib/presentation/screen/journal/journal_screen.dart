@@ -113,7 +113,15 @@ class _JournalScreenState extends State<JournalScreen> {
 
                                   Navigator.pop(context);
                                 },
-                                onTapDelete: () => Navigator.pop(context),
+                                onTapDelete: () {
+                                  widget.onAction(
+                                    JournalScreenAction.deleteJournal(
+                                      journalId: journal.id,
+                                    ),
+                                  );
+
+                                  Navigator.pop(context);
+                                },
                               );
                             },
                           );
