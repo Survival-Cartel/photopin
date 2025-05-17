@@ -20,4 +20,9 @@ class UserRepositoryImpl implements UserRepository {
     UserDto dto = await _dataSource.findUserById(id);
     return dto.toModel();
   }
+
+  @override
+  Future<void> saveUser(UserModel user) async {
+    await _dataSource.saveUser(user.toDto());
+  }
 }
