@@ -208,7 +208,9 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                                       .where((item) => item.isNotEmpty)
                                       .toList();
 
-                              modifiedJournal.copyWith(tripWith: tripWith);
+                              modifiedJournal = modifiedJournal.copyWith(
+                                tripWith: tripWith,
+                              );
                             }
                           },
                         ),
