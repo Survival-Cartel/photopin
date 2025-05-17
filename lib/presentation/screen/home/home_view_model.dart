@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
+import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -20,6 +22,7 @@ class HomeViewModel with ChangeNotifier {
   final GetJournalListUseCase getJournalListUseCase;
   final WatchJournalsUseCase _watchJournalsUserCase;
   final PermissionCheckUseCase _permissionCheckUseCase;
+  final SaveTokenUseCase _saveTokenUseCase;
 
   StreamSubscription<JournalPhotoCollection>? _streamSubscription;
   HomeState _state = HomeState();
@@ -30,9 +33,11 @@ class HomeViewModel with ChangeNotifier {
     required this.getJournalListUseCase,
     required WatchJournalsUseCase watchJournalsUserCase,
     required PermissionCheckUseCase permissionCheckUseCase,
+    required SaveTokenUseCase saveTokenUseCase,
   }) : _journalRepository = journalRepository,
        _watchJournalsUserCase = watchJournalsUserCase,
-       _permissionCheckUseCase = permissionCheckUseCase;
+       _permissionCheckUseCase = permissionCheckUseCase,
+       _saveTokenUseCase = saveTokenUseCase;
 
   HomeState get state => _state;
 
@@ -88,6 +93,14 @@ class HomeViewModel with ChangeNotifier {
 
     _state = _state.copyWith(currentUser: user);
     notifyListeners();
+
+    final token = await FirebaseMessaging.instance.getToken();
+    if (token != null) {
+      await _saveTokenUseCase.execute(user.id, token);
+    }
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+      _saveTokenUseCase.execute(user.id, newToken);
+    });
 
     _streamSubscription = _watchJournalsUserCase.execute().listen((collection) {
       _state = state.copyWith(

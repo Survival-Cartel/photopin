@@ -8,7 +8,9 @@ import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
+import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/repository/token_repository.dart';
 import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_view_model.dart';
@@ -27,6 +29,21 @@ class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 class MockPermissionCheckUseCase extends Mock
     implements PermissionCheckUseCase {}
 
+class StubTokenRepository implements TokenRepository {
+  bool called = false;
+  String? lastUserId, lastToken;
+
+  @override
+  Future<void> saveToken(String userId, String token) async {
+    called = true;
+    lastUserId = userId;
+    lastToken = token;
+  }
+
+  @override
+  Future<String?> fetchToken(String userId) async => null;
+}
+
 void main() {
   late HomeViewModel viewModel;
   late MockGetCurrentUserUseCase mockGetCurrentUserUseCase;
@@ -34,6 +51,8 @@ void main() {
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late JournalPhotoCollection testCollection;
   late MockPermissionCheckUseCase mockPermissionCheckUseCase;
+  late StubTokenRepository tokenRepository;
+  late SaveTokenUseCase saveTokenUseCase;
 
   setUpAll(() {
     // 이 시점에는 모든 타입이 등록됩니다
@@ -46,6 +65,9 @@ void main() {
     mockGetJournalListUseCase = MockGetJournalListUseCase();
     mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     mockPermissionCheckUseCase = MockPermissionCheckUseCase();
+    tokenRepository = StubTokenRepository();
+    saveTokenUseCase = SaveTokenUseCase(tokenRepository);
+
     when(
       () => mockPermissionCheckUseCase.execute(any()),
     ).thenAnswer((_) async => PermissionAllowStatus.allow);
@@ -58,6 +80,7 @@ void main() {
       getJournalListUseCase: mockGetJournalListUseCase,
       watchJournalsUserCase: mockWatchJournalsUseCase,
       permissionCheckUseCase: mockPermissionCheckUseCase,
+      saveTokenUseCase: saveTokenUseCase,
     );
 
     // 가정: JournalPhotoCollection 구조에 맞게 테스트 데이터 생성
