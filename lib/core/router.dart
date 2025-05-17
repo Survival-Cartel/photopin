@@ -168,6 +168,11 @@ final appRouter = GoRouter(
 
                     viewModel.init();
 
+                    viewModel.notifyDeepLinkAccess(
+                      targetUserId: compareUserId,
+                      journalId: compareJournalId,
+                    );
+
                     return CompareDialogScreenRoot(
                       viewModel: viewModel,
                       compareUserId: compareUserId,

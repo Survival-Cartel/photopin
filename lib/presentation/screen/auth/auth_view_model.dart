@@ -8,6 +8,7 @@ import 'package:photopin/user/domain/model/user_model.dart';
 
 class AuthViewModel with ChangeNotifier {
   final AuthRepository _authRepository;
+
   AuthState _state = const AuthState();
   final _eventController = StreamController<Exception?>();
 
@@ -40,9 +41,8 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
 
       await _authRepository.login();
-      _state = state.copyWith(
-        currentUser: await _authRepository.findCurrentUser(),
-      );
+      final UserModel user = await _authRepository.findCurrentUser();
+      _state = state.copyWith(currentUser: user);
     } on Exception catch (e) {
       _addError(e);
     } finally {

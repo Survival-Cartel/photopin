@@ -19,6 +19,7 @@ void main() {
   setUpAll(() {
     dataSource = FakeAuthDataSource();
     repository = AuthRepositoryImpl(dataSource: dataSource);
+
     viewModel = AuthViewModel(repository);
   });
 
