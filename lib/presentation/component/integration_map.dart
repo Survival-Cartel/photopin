@@ -58,22 +58,31 @@ class _IntegrationMapState extends State<IntegrationMap> {
         models.expand((model) => model.photos).toList();
 
     if (allPhotos.isEmpty) {
-      return const LatLng(37.513, 127.1027); // 기본 위치 (강남)
+      return const LatLng(37.513, 127.1027);
     }
 
-    final double avgLatitude =
-        allPhotos
-            .map((photo) => photo.location.latitude)
-            .reduce((a, b) => a + b) /
-        allPhotos.length;
+    final bool isCompare = widget.models.length > 1;
 
-    final double avgLongitude =
-        allPhotos
-            .map((photo) => photo.location.longitude)
-            .reduce((a, b) => a + b) /
-        allPhotos.length;
+    if (isCompare) {
+      final double avgLatitude =
+          allPhotos
+              .map((photo) => photo.location.latitude)
+              .reduce((a, b) => a + b) /
+          allPhotos.length;
 
-    return LatLng(avgLatitude, avgLongitude);
+      final double avgLongitude =
+          allPhotos
+              .map((photo) => photo.location.longitude)
+              .reduce((a, b) => a + b) /
+          allPhotos.length;
+
+      return LatLng(avgLatitude, avgLongitude);
+    }
+
+    return LatLng(
+      models.first.photos.first.location.latitude,
+      models.first.photos.first.location.longitude,
+    );
   }
 
   /// 클러스터 매니저 초기화
