@@ -9,30 +9,30 @@ class PermissionCheckUseCase {
     switch (permission) {
       case PermissionType.camera:
         final PermissionStatus status =
-        await Permission.camera.onPermanentlyDeniedCallback(() {
-          openAppSettings();
-        }).request();
+            await Permission.camera.onPermanentlyDeniedCallback(() {
+              openAppSettings();
+            }).request();
 
         return _handleStatus(status);
       case PermissionType.photos:
         final PermissionStatus status =
-        await Permission.photos.onPermanentlyDeniedCallback(() {
-          openAppSettings();
-        }).request();
+            await Permission.photos.onPermanentlyDeniedCallback(() {
+              openAppSettings();
+            }).request();
 
         return _handleStatus(status);
       case PermissionType.location:
         final PermissionStatus status =
-        await Permission.location.onPermanentlyDeniedCallback(() {
-          openAppSettings();
-        }).request();
+            await Permission.location.onPermanentlyDeniedCallback(() {
+              openAppSettings();
+            }).request();
 
         return _handleStatus(status);
       case PermissionType.notification:
         final PermissionStatus status =
-        await Permission.notification.onPermanentlyDeniedCallback(() {
-          openAppSettings();
-        }).request();
+            await Permission.notification.onPermanentlyDeniedCallback(() {
+              openAppSettings();
+            }).request();
 
         return _handleStatus(status);
     }

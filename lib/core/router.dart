@@ -156,22 +156,21 @@ final appRouter = GoRouter(
                   path: '${Routes.compare}/:userId/:journalId',
                   builder: (BuildContext context, GoRouterState state) {
                     final String compareUserId =
-                    state.pathParameters['userId']!;
+                        state.pathParameters['userId']!;
                     final String compareJournalId =
-                    state.pathParameters['journalId']!;
+                        state.pathParameters['journalId']!;
 
                     final String myUserId =
                         getIt<FirebaseAuth>().currentUser!.uid;
 
                     final CompareDialogViewModel viewModel =
-                    getIt<CompareDialogViewModel>(param1: myUserId);
-
+                        getIt<CompareDialogViewModel>(param1: myUserId);
 
                     viewModel.init();
 
                     viewModel.notifyDeepLinkAccess(
-                        targetUserId: compareUserId,
-                        journalId: compareJournalId
+                      targetUserId: compareUserId,
+                      journalId: compareJournalId,
                     );
 
                     return CompareDialogScreenRoot(

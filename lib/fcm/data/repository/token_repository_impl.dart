@@ -18,7 +18,8 @@ class TokenRepositoryImpl implements TokenRepository {
 
   @override
   Future<void> saveToken(String userId, String token) async {
-    await _firebaseFirestore.collection('tokens').doc(userId).set(
-        {'token': token});
+    await _firebaseFirestore.collection('tokens').doc(userId).set({
+      'token': token,
+    });
   }
 }
