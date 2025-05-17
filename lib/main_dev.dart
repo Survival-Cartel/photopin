@@ -100,7 +100,7 @@ void main() async {
   // 3) 로컬 알림 초기화
   const androidInit = AndroidInitializationSettings('photopin_icon');
   await flutterLocalNotificationsPlugin.initialize(
-    InitializationSettings(android: androidInit),
+    const InitializationSettings(android: androidInit),
     onDidReceiveNotificationResponse: (resp) {
       if (resp.payload != null) {
         debugPrint('Notification tapped: ${resp.payload}');

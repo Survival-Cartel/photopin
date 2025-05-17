@@ -76,16 +76,16 @@ void main() {
     saveTokenUseCase = SaveTokenUseCase(tokenRepository);
 
     when(
-          () => mockPermissionCheckUseCase.execute(any()),
+      () => mockPermissionCheckUseCase.execute(any()),
     ).thenAnswer((_) async => PermissionAllowStatus.allow);
 
     when(
-          () => mockFirebaseMessagingDataSource.fetchToken(),
+      () => mockFirebaseMessagingDataSource.fetchToken(),
     ).thenAnswer((_) async => 'mock_token');
 
     when(
-          () => mockFirebaseMessagingDataSource.tokenRefreshStream(),
-    ).thenAnswer((_) => Stream.empty());
+      () => mockFirebaseMessagingDataSource.tokenRefreshStream(),
+    ).thenAnswer((_) => const Stream.empty());
 
     viewModel = HomeViewModel(
       getCurrentUserUseCase: mockGetCurrentUserUseCase,
@@ -109,7 +109,7 @@ void main() {
       final testUser = userModelFixtures[0]; // A 사용자 사용
 
       when(
-            () => mockGetCurrentUserUseCase.execute(),
+        () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) async => testUser);
       when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
         yield testCollection;
@@ -131,7 +131,7 @@ void main() {
       // given
       final testUser = userModelFixtures[1]; // B 사용자 사용
       when(
-            () => mockGetCurrentUserUseCase.execute(),
+        () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) async => testUser);
 
       // when
@@ -149,7 +149,7 @@ void main() {
     test('FindJounals 액션 실행 시 저널 정보만 갱신한다', () async {
       // given
       when(
-            () => mockGetJournalListUseCase.execute(),
+        () => mockGetJournalListUseCase.execute(),
       ).thenAnswer((_) async => testCollection);
 
       // when
@@ -174,7 +174,7 @@ void main() {
       });
 
       when(
-            () => mockGetCurrentUserUseCase.execute(),
+        () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) => completer.future);
 
       // when
@@ -208,11 +208,11 @@ void main() {
     test('미구현 액션 호출 시 UnimplementedError를 발생시킨다', () async {
       // when, then
       expect(
-            () => viewModel.onAction(RecentActivityClick()),
+        () => viewModel.onAction(RecentActivityClick()),
         throwsA(isA<UnimplementedError>()),
       );
       expect(
-            () => viewModel.onAction(SeeAllClick()),
+        () => viewModel.onAction(SeeAllClick()),
         throwsA(isA<UnimplementedError>()),
       );
     });
@@ -224,7 +224,7 @@ void main() {
       expect(() => viewModel.onAction(NewJournalClick()), returnsNormally);
       expect(() => viewModel.onAction(ShareClick()), returnsNormally);
       expect(
-            () => viewModel.onAction(const MyJournalClick('journal-id')),
+        () => viewModel.onAction(const MyJournalClick('journal-id')),
         returnsNormally,
       );
     });
@@ -238,7 +238,7 @@ void main() {
       });
 
       when(
-            () => mockGetCurrentUserUseCase.execute(),
+        () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) async => userModelFixtures[0]);
 
       // when
@@ -259,7 +259,7 @@ void main() {
       // 현재 구현에서는 MyJournalClick이 아무 처리를 하지 않지만
       // 정상적으로 호출되는지 확인합니다
       expect(
-            () => viewModel.onAction(const MyJournalClick(journalId)),
+        () => viewModel.onAction(const MyJournalClick(journalId)),
         returnsNormally,
       );
     });

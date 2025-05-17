@@ -17,7 +17,6 @@ class AuthScreenRoot extends StatefulWidget {
 
 class _AuthScreenRootState extends State<AuthScreenRoot> {
   StreamSubscription? _errorSubscription;
-  bool _tokenSaved = false;
 
   @override
   void initState() {

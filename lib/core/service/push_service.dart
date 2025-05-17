@@ -30,10 +30,8 @@ class PushService {
       );
 
       if (response.statusCode == 200) return true;
-      print('PushService 실패: ${response.statusCode} ${response.body}');
       return false;
     } catch (e) {
-      print('PushService 오류: $e');
       return false;
     }
   }
