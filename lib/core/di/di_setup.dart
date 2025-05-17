@@ -38,6 +38,7 @@ import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case
 import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
+import 'package:photopin/core/usecase/watch_journal_photo_collection_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source_impl.dart';
@@ -197,13 +198,23 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<WatchPhotoCollectionUseCase, String, void>(
+    (userId, _) => WatchPhotoCollectionUseCase(
+      getPhotoJournalListUseCase: getIt<GetPhotoJournalListUseCase>(
+        param1: userId,
+      ),
+    ),
+  );
+
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
+      watchJournalPhotoCollectionUseCase: getIt<WatchPhotoCollectionUseCase>(
+        param1: userId,
+      ),
       deleteJournalUseCase: getIt<DeleteJournalUseCase>(param1: userId),
       searchJournalByDateTimeRangeUseCase:
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
     ),
   );
 
