@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -33,6 +34,8 @@ import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source_impl.dart';
 import 'package:photopin/fcm/data/repository/token_repository.dart';
 import 'package:photopin/fcm/data/repository/token_repository_impl.dart';
 import 'package:photopin/journal/data/data_source/journal_data_source.dart';
@@ -63,6 +66,7 @@ final getIt = GetIt.instance;
 
 void di() {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
+  getIt.registerLazySingleton(() => FirebaseMessaging.instance);
   getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
   getIt.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
   getIt.registerLazySingleton<FirestoreSetup>(() => FirestoreSetup());
@@ -77,6 +81,10 @@ void di() {
   );
   getIt.registerLazySingleton<TokenRepository>(
     () => TokenRepositoryImpl(getIt<FirebaseFirestore>()),
+  );
+
+  getIt.registerSingleton<FirebaseMessagingDataSource>(
+    FirebaseMessagingDataSourceImpl(getIt<FirebaseMessaging>()),
   );
 
   // userId 마다 firestore에서 받아오는 photo collection 이 달라져야함으로 싱글톤이 의미가 없음.
@@ -124,6 +132,7 @@ void di() {
       watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
       permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
       saveTokenUseCase: getIt<SaveTokenUseCase>(),
+      firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
     ),
   );
 
