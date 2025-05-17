@@ -13,7 +13,7 @@ sealed class JournalScreenAction {
     required String journalId,
   }) = OnTapJournalCard;
 
-  const factory JournalScreenAction.setSerchFilter({
+  const factory JournalScreenAction.setSearchFilter({
     required SearchFilterOption option,
   }) = SetSearchFilter;
 

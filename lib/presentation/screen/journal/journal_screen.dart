@@ -40,7 +40,7 @@ class _JournalScreenState extends State<JournalScreen> {
                       : '날짜를 검색하세요.',
               onChangedOption: (SearchFilterOption option) {
                 widget.onAction(
-                  JournalScreenAction.setSerchFilter(option: option),
+                  JournalScreenAction.setSearchFilter(option: option),
                 );
               },
               onChanged: (String query) {
