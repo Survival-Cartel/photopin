@@ -10,6 +10,7 @@ import 'package:photopin/user/domain/model/user_model.dart';
 class AuthViewModel with ChangeNotifier {
   final AuthRepository _authRepository;
   final AuthAndUserSaveUseCase _authAndUserSaveUseCase;
+
   AuthState _state = const AuthState();
   final _eventController = StreamController<Exception?>();
 

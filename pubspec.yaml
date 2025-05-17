@@ -69,6 +69,8 @@ dependencies:
   flutter_dotenv: ^5.2.1
   widget_to_marker: ^1.0.6
   google_maps_cluster_manager_2: ^3.2.0
+  firebase_messaging: ^15.2.5
+  flutter_local_notifications: ^19.2.0
 
 dev_dependencies:
   flutter_test:

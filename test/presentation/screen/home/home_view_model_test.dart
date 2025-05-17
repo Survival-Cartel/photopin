@@ -3,12 +3,18 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/permission_allow_status.dart';
+import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_use_case.dart';
-import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
-import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
+import 'package:photopin/core/usecase/permission_check_use_case.dart';
+import 'package:photopin/core/usecase/save_token_use_case.dart';
+import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
+import 'package:photopin/fcm/data/repository/token_repository.dart';
+import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
+import 'package:photopin/presentation/screen/home/home_view_model.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
 import '../../../journal/data/data_source/fake_journal_data_source.dart';
@@ -21,22 +27,57 @@ class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
 class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
+class MockPermissionCheckUseCase extends Mock
+    implements PermissionCheckUseCase {}
+
+class MockTokenRepository extends Mock implements TokenRepository {}
+
+class MockFirebaseMessagingDataSource extends Mock
+    implements FirebaseMessagingDataSource {}
+
 void main() {
   late HomeViewModel viewModel;
   late MockGetCurrentUserUseCase mockGetCurrentUserUseCase;
   late MockGetJournalListUseCase mockGetJournalListUseCase;
   late WatchJournalsUseCase mockWatchJournalsUseCase;
   late JournalPhotoCollection testCollection;
+  late MockPermissionCheckUseCase mockPermissionCheckUseCase;
+  late MockTokenRepository mockTokenRepository;
+  late SaveTokenUseCase saveTokenUseCase;
+  late MockFirebaseMessagingDataSource mockFirebaseMessagingDataSource;
 
   setUpAll(() {
     // 이 시점에는 모든 타입이 등록됩니다
     registerFallbackValue(FindUser());
+    registerFallbackValue(PermissionType.notification);
   });
 
   setUp(() {
     mockGetCurrentUserUseCase = MockGetCurrentUserUseCase();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
     mockWatchJournalsUseCase = MockWatchJournalsUseCase();
+    mockPermissionCheckUseCase = MockPermissionCheckUseCase();
+    mockFirebaseMessagingDataSource = MockFirebaseMessagingDataSource();
+
+    mockTokenRepository = MockTokenRepository();
+    saveTokenUseCase = SaveTokenUseCase(mockTokenRepository);
+
+    when(
+      () => mockTokenRepository.saveToken(any(), any()),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockPermissionCheckUseCase.execute(any()),
+    ).thenAnswer((_) async => PermissionAllowStatus.allow);
+
+    when(
+      () => mockFirebaseMessagingDataSource.fetchToken(),
+    ).thenAnswer((_) async => 'mock_token');
+
+    when(
+      () => mockFirebaseMessagingDataSource.tokenRefreshStream(),
+    ).thenAnswer((_) => const Stream.empty());
+
     viewModel = HomeViewModel(
       getCurrentUserUseCase: mockGetCurrentUserUseCase,
       journalRepository: JournalRepositoryImpl(
@@ -44,6 +85,9 @@ void main() {
       ),
       getJournalListUseCase: mockGetJournalListUseCase,
       watchJournalsUserCase: mockWatchJournalsUseCase,
+      permissionCheckUseCase: mockPermissionCheckUseCase,
+      saveTokenUseCase: saveTokenUseCase,
+      firebaseMessagingDataSource: mockFirebaseMessagingDataSource,
     );
 
     // 가정: JournalPhotoCollection 구조에 맞게 테스트 데이터 생성
