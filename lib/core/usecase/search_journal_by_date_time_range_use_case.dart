@@ -11,8 +11,7 @@ class SearchJournalByDateTimeRangeUseCase {
 
   Future<List<JournalModel>> execute(DateTimeRange range) async {
     List<JournalModel> journals = await _journalRepository
-          .findJournalsByDateTimeRange(range)
-      ..sort((a, b) => a.startDate.compareTo(b.startDate));
+        .findJournalsByDateTimeRange(range);
 
     return journals;
   }
