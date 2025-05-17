@@ -32,6 +32,7 @@ import 'package:photopin/core/usecase/link_access_notification_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
+import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
@@ -174,9 +175,16 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<UpdateJournalUseCase, String, void>(
+    (userId, _) => UpdateJournalUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
+      updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
       watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
     ),
   );

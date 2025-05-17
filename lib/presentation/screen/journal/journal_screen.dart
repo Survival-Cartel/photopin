@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/journal_edit_bottom_sheet.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 import 'package:photopin/presentation/component/base_tab.dart';
@@ -70,6 +72,36 @@ class JournalScreen extends StatelessWidget {
                         imageUrl: thumbnailUrl,
                         journal: state.journals[index],
                         photoCount: photoCount ?? 0,
+                        onTapEdit: (String journalId) {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (BuildContext context) {
+                              final JournalModel journal =
+                                  state.journals[index];
+
+                              return JournalEditBottomSheet(
+                                journal: journal,
+                                title: journal.name,
+                                thumbnailUrl: thumbnailUrl,
+                                comment: journal.comment,
+                                onTapClose: () => Navigator.pop(context),
+                                onTapApply: (JournalModel journal) {
+                                  onAction(
+                                    JournalScreenAction.onTapEdit(
+                                      journal: journal,
+                                    ),
+                                  );
+
+                                  Navigator.pop(context);
+                                },
+                                onTapCancel: () => Navigator.pop(context),
+                              );
+                            },
+                          );
+                        },
+                        showEditButton: true,
                         onTap:
                             (String journalId) => onAction(
                               JournalScreenAction.onTapJournalCard(

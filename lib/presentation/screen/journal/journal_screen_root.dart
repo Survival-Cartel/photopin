@@ -23,6 +23,8 @@ class JournalScreenRoot extends StatelessWidget {
                 await viewModel.onAction(action);
               case OnTapJournalCard():
                 context.push('${Routes.map}/${action.journalId}');
+              case OnTapEdit():
+                await viewModel.onAction(action);
             }
           },
         );
