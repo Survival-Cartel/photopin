@@ -132,10 +132,12 @@ void di() {
 
   getIt.registerFactoryParam<HomeViewModel, String, void>(
     (userId, _) => HomeViewModel(
+      watchPhotoCollectionUseCase: getIt<WatchPhotoCollectionUseCase>(
+        param1: userId,
+      ),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
       journalRepository: getIt<JournalRepository>(param1: userId),
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
       permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
       saveTokenUseCase: getIt<SaveTokenUseCase>(),
       firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
