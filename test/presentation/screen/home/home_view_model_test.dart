@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/permission_allow_status.dart';
 import 'package:photopin/core/enums/permission_type.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
@@ -88,6 +89,7 @@ void main() {
       permissionCheckUseCase: mockPermissionCheckUseCase,
       saveTokenUseCase: saveTokenUseCase,
       firebaseMessagingDataSource: mockFirebaseMessagingDataSource,
+      streamController: StreamController<StreamEvent>(),
     );
 
     // 가정: JournalPhotoCollection 구조에 맞게 테스트 데이터 생성
