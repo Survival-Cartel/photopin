@@ -204,6 +204,7 @@ void di() {
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
       watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 
