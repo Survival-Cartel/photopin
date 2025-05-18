@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:photopin/core/stream_event/stream_event.dart';
 
-mixin EventNotifier on ChangeNotifier {
-  late StreamController<StreamEvent> streamController;
+abstract class EventNotifier with ChangeNotifier {
+  StreamController<StreamEvent> streamController;
 
-  void initStreamController(StreamController<StreamEvent> event) {
-    streamController = event;
-  }
+  EventNotifier({
+    required this.streamController,
+  });
 
   void addEvent(StreamEvent event) {
     streamController.add(event);
@@ -19,4 +19,6 @@ mixin EventNotifier on ChangeNotifier {
     streamController.close();
     super.dispose();
   }
+
+
 }
