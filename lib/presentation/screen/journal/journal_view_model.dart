@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/action_type.dart';
+import 'package:photopin/core/enums/error_type.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
+import 'package:photopin/core/mixins/event_notifier.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
@@ -10,7 +14,7 @@ import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
 
-class JournalViewModel with ChangeNotifier {
+class JournalViewModel extends EventNotifier {
   JournalState _state = JournalState();
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
@@ -20,6 +24,7 @@ class JournalViewModel with ChangeNotifier {
   _searchJournalByDateTimeRangeUseCase;
 
   JournalViewModel({
+    required super.streamController,
     required WatchJournalsUseCase watchJournalsUserCase,
     required UpdateJournalUseCase updateJournalUseCase,
     required SearchJournalByDateTimeRangeUseCase
@@ -30,6 +35,7 @@ class JournalViewModel with ChangeNotifier {
            searchJournalByDateTimeRangeUseCase;
 
   JournalState get state => _state;
+
   bool get isLoading => _state.isLoading;
 
   @override
@@ -122,7 +128,12 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    await _updateJournalUseCase.execute(journal);
+    try {
+      await _updateJournalUseCase.execute(journal);
+      addEvent(const StreamEvent.success(ActionType.journalUpdate));
+    } catch (e) {
+      addEvent(const StreamEvent.error(ErrorType.journalUpdate));
+    }
 
     _state = _state.copyWith(isLoading: false);
     notifyListeners();
