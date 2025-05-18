@@ -1,20 +1,20 @@
-import 'package:photopin/core/enums/stream_event_error.dart';
-import 'package:photopin/core/enums/stream_event_success.dart';
+import 'package:photopin/core/enums/action_type.dart';
+import 'package:photopin/core/enums/error_type.dart';
 
 sealed class StreamEvent {
-  const factory StreamEvent.success(StreamEventSuccess success) = Success;
+  const factory StreamEvent.success(ActionType success) = Success;
 
-  const factory StreamEvent.error(StreamEventError error) = Error;
+  const factory StreamEvent.error(ErrorType error) = Error;
 }
 
 class Success implements StreamEvent {
-  final StreamEventSuccess success;
+  final ActionType success;
 
   const Success(this.success);
 }
 
 class Error implements StreamEvent {
-  final StreamEventError error;
+  final ErrorType error;
 
   const Error(this.error);
 }
