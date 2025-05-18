@@ -11,7 +11,11 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<void> deletePhoto(String photoId) async {
-    await _photoDataSource.deletePhoto(photoId);
+    try {
+      await _photoDataSource.deletePhoto(photoId);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -53,12 +57,20 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<void> savePhoto(PhotoModel model) async {
-    await _photoDataSource.savePhoto(model.toDto());
+    try {
+      await _photoDataSource.savePhoto(model.toDto());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> updatePhoto(PhotoModel photoModel) async {
-    await _photoDataSource.updatePhoto(photoModel.toDto());
+    try {
+      await _photoDataSource.updatePhoto(photoModel.toDto());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
