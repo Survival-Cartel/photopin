@@ -1,4 +1,4 @@
-enum StreamEventSuccess {
+enum ActionType {
   journalCreate('저널이 생성되었습니다.'),
   journalDelete('저널이 삭제되었습니다.'),
   journalUpdate('저널이 수정되었습니다.'),
@@ -9,5 +9,5 @@ enum StreamEventSuccess {
 
   final String message;
 
-  const StreamEventSuccess(this.message);
+  const ActionType(this.message);
 }
