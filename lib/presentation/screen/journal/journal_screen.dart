@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/presentation/component/confirm_dialog.dart';
 import 'package:photopin/presentation/component/journal_edit_bottom_sheet.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
@@ -114,10 +115,28 @@ class _JournalScreenState extends State<JournalScreen> {
                                   Navigator.pop(context);
                                 },
                                 onTapDelete: () {
-                                  widget.onAction(
-                                    JournalScreenAction.deleteJournal(
-                                      journalId: journal.id,
-                                    ),
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return ConfirmDialog(
+                                        title: '저널 삭제',
+                                        content:
+                                            '"${journal.name}" 저널을 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다.',
+                                        confirmText: '삭제',
+                                        cancelText: '취소',
+                                        onTapCancel:
+                                            () => Navigator.pop(context),
+                                        onTapConfirm: () {
+                                          widget.onAction(
+                                            JournalScreenAction.deleteJournal(
+                                              journalId: journal.id,
+                                            ),
+                                          );
+
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
                                   );
 
                                   Navigator.pop(context);
