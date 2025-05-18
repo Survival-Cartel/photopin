@@ -105,6 +105,7 @@ void di() {
   getIt.registerFactoryParam<PhotoRepository, String, void>(
     (userId, _) => PhotoRepositoryImpl(
       photoDataSource: getIt<PhotoDataSource>(param1: userId),
+      storageDataSource: getIt<StorageDataSource>(param1: userId),
     ),
   );
 
