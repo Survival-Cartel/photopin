@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/action_type.dart';
 import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/mixins/event_notifier.dart';
 import 'package:photopin/core/stream_event/stream_event.dart';
@@ -18,7 +18,7 @@ import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
-class HomeViewModel with ChangeNotifier, EventNotifier {
+class HomeViewModel extends EventNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
@@ -31,6 +31,7 @@ class HomeViewModel with ChangeNotifier, EventNotifier {
   HomeState _state = HomeState();
 
   HomeViewModel({
+    required super.streamController,
     required this.getCurrentUserUseCase,
     required JournalRepository journalRepository,
     required this.getJournalListUseCase,
@@ -38,14 +39,11 @@ class HomeViewModel with ChangeNotifier, EventNotifier {
     required PermissionCheckUseCase permissionCheckUseCase,
     required SaveTokenUseCase saveTokenUseCase,
     required FirebaseMessagingDataSource firebaseMessagingDataSource,
-    required StreamController<StreamEvent> streamController,
   }) : _journalRepository = journalRepository,
        _watchJournalsUserCase = watchJournalsUserCase,
        _permissionCheckUseCase = permissionCheckUseCase,
        _firebaseMessagingDataSource = firebaseMessagingDataSource,
-       _saveTokenUseCase = saveTokenUseCase {
-    initStreamController(streamController);
-  }
+       _saveTokenUseCase = saveTokenUseCase;
 
   HomeState get state => _state;
 
@@ -67,6 +65,7 @@ class HomeViewModel with ChangeNotifier, EventNotifier {
 
   Future<void> _newJournalSave({required JournalModel journal}) async {
     await _journalRepository.saveJournal(journal.toDto());
+    addEvent(const StreamEvent.success(ActionType.journalCreate));
   }
 
   Future<void> _findJournals() async {
