@@ -103,7 +103,10 @@ void di() {
   );
 
   getIt.registerFactoryParam<SavePhotoUseCase, String, void>(
-    (userId, _) => SavePhotoUseCase(getIt<PhotoRepository>(param1: userId)),
+    (userId, _) => SavePhotoUseCase(
+      getIt<PhotoRepository>(param1: userId),
+      getIt<StreamController<StreamEvent>>(),
+    ),
   );
 
   getIt.registerFactoryParam<PhotoRepository, String, void>(
@@ -296,6 +299,7 @@ void di() {
       getPhotoJournalListUseCase: getIt<GetPhotoJournalListUseCase>(
         param1: userId,
       ),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 
