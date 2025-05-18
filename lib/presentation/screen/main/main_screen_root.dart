@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:alert_info/alert_info.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/styles/app_color.dart';
-import 'package:photopin/core/styles/app_font.dart';
 import 'package:photopin/presentation/screen/main/main_screen.dart';
 import 'package:photopin/presentation/screen/main/main_view_model.dart';
 
@@ -30,27 +30,22 @@ class _MainScreenRootState extends State<MainScreenRoot> {
   void initState() {
     super.initState();
     _streamSubscription = widget.streamController.stream.listen((e) {
-      switch (e) {
-        case Success():
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                e.success.message,
-                style: AppFonts.mediumTextBold.copyWith(color: AppColors.black),
-              ),
-              backgroundColor: AppColors.secondary100,
-            ),
-          );
-        case Error():
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                e.error.message,
-                style: AppFonts.mediumTextBold.copyWith(color: AppColors.black),
-              ),
-              backgroundColor: AppColors.warningBackground,
-            ),
-          );
+      if (mounted) {
+        switch (e) {
+          case Success():
+            AlertInfo.show(
+              context: context,
+              text: e.success.message,
+              icon: Icons.check,
+            );
+          case Error():
+            AlertInfo.show(
+              context: context,
+              text: e.error.message,
+              icon: Icons.warning_amber,
+              iconColor: AppColors.warning,
+            );
+        }
       }
     });
   }
