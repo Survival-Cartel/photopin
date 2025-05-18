@@ -1,4 +1,4 @@
-enum StreamEventError implements Exception {
+enum ErrorType implements Exception {
   journalCreate('저널이 생성에 실패하였습니다.'),
   journalDelete('저널 삭제에 실패하였습니다.'),
   journalUpdate('저널 수정이 실패하였습니다.'),
@@ -9,5 +9,5 @@ enum StreamEventError implements Exception {
 
   final String message;
 
-  const StreamEventError(this.message);
+  const ErrorType(this.message);
 }
