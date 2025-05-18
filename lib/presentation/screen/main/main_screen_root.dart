@@ -14,6 +14,7 @@ class MainScreenRoot extends StatefulWidget {
   final StreamController<StreamEvent> streamController;
 
   const MainScreenRoot({
+    super.key,
     required this.viewModel,
     required this.navigationShell,
     required this.streamController,
@@ -37,6 +38,7 @@ class _MainScreenRootState extends State<MainScreenRoot> {
               context: context,
               text: e.success.message,
               icon: Icons.check,
+              typeInfo: TypeInfo.success,
             );
           case Error():
             AlertInfo.show(
@@ -44,6 +46,7 @@ class _MainScreenRootState extends State<MainScreenRoot> {
               text: e.error.message,
               icon: Icons.warning_amber,
               iconColor: AppColors.warning,
+              typeInfo: TypeInfo.error,
             );
         }
       }
