@@ -99,8 +99,13 @@ class _RangeSliderState extends State<DateRangeSlider> {
 
     DateTime selStart, selEnd;
     if (isDayTrip) {
-      selStart = widget.startDate.add(Duration(hours: _startOffset!.toInt()));
-      selEnd = widget.startDate
+      final baseDate = DateTime(
+        widget.startDate.year,
+        widget.startDate.month,
+        widget.startDate.day,
+      );
+      selStart = baseDate.add(Duration(hours: _startOffset!.toInt()));
+      selEnd = baseDate
           .add(Duration(hours: _endOffset!.toInt()))
           .add(const Duration(minutes: 59, seconds: 59, milliseconds: 999));
     } else {
