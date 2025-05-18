@@ -9,7 +9,7 @@ import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
 import 'package:photopin/journal/data/mapper/journal_mapper.dart';
 import 'package:photopin/journal/data/repository/journal_repository.dart';
@@ -22,7 +22,8 @@ class HomeViewModel extends EventNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
-  final WatchJournalsUseCase _watchJournalsUserCase;
+  final WatchPhotoCollectionUseCase _watchPhotoCollectionUseCase;
+
   final PermissionCheckUseCase _permissionCheckUseCase;
   final SaveTokenUseCase _saveTokenUseCase;
   final FirebaseMessagingDataSource _firebaseMessagingDataSource;
@@ -32,17 +33,17 @@ class HomeViewModel extends EventNotifier {
 
   HomeViewModel({
     required super.streamController,
+    required WatchPhotoCollectionUseCase watchPhotoCollectionUseCase,
     required this.getCurrentUserUseCase,
     required JournalRepository journalRepository,
     required this.getJournalListUseCase,
-    required WatchJournalsUseCase watchJournalsUserCase,
     required PermissionCheckUseCase permissionCheckUseCase,
     required SaveTokenUseCase saveTokenUseCase,
     required FirebaseMessagingDataSource firebaseMessagingDataSource,
   }) : _journalRepository = journalRepository,
-       _watchJournalsUserCase = watchJournalsUserCase,
        _permissionCheckUseCase = permissionCheckUseCase,
        _firebaseMessagingDataSource = firebaseMessagingDataSource,
+       _watchPhotoCollectionUseCase = watchPhotoCollectionUseCase,
        _saveTokenUseCase = saveTokenUseCase;
 
   HomeState get state => _state;
@@ -109,7 +110,9 @@ class HomeViewModel extends EventNotifier {
       _saveTokenUseCase.execute(user.id, newToken);
     });
 
-    _streamSubscription = _watchJournalsUserCase.execute().listen((collection) {
+    _streamSubscription = _watchPhotoCollectionUseCase.execute().listen((
+      collection,
+    ) {
       _state = state.copyWith(
         journals: collection.journals,
         photoMap: collection.photoMap,

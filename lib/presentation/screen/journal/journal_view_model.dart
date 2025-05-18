@@ -7,9 +7,10 @@ import 'package:photopin/core/enums/error_type.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
 import 'package:photopin/core/mixins/event_notifier.dart';
 import 'package:photopin/core/stream_event/stream_event.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
@@ -18,21 +19,24 @@ class JournalViewModel extends EventNotifier {
   JournalState _state = JournalState();
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
-  final WatchJournalsUseCase _watchJournalsUserCase;
+  final WatchPhotoCollectionUseCase _watchPhotoCollectionUseCase;
   final UpdateJournalUseCase _updateJournalUseCase;
+  final DeleteJournalUseCase _deleteJournalUseCase;
   final SearchJournalByDateTimeRangeUseCase
   _searchJournalByDateTimeRangeUseCase;
 
   JournalViewModel({
     required super.streamController,
-    required WatchJournalsUseCase watchJournalsUserCase,
     required UpdateJournalUseCase updateJournalUseCase,
+    required WatchPhotoCollectionUseCase watchPhotoCollectionUseCase,
     required SearchJournalByDateTimeRangeUseCase
     searchJournalByDateTimeRangeUseCase,
-  }) : _watchJournalsUserCase = watchJournalsUserCase,
-       _updateJournalUseCase = updateJournalUseCase,
+    required DeleteJournalUseCase deleteJournalUseCase,
+  }) : _updateJournalUseCase = updateJournalUseCase,
+       _watchPhotoCollectionUseCase = watchPhotoCollectionUseCase,
        _searchJournalByDateTimeRangeUseCase =
-           searchJournalByDateTimeRangeUseCase;
+           searchJournalByDateTimeRangeUseCase,
+       _deleteJournalUseCase = deleteJournalUseCase;
 
   JournalState get state => _state;
 
@@ -57,6 +61,8 @@ class JournalViewModel extends EventNotifier {
         await _setSearchFilter(option);
       case OnSearchDateRange(:final DateTimeRange range):
         await _searchDateRange(range);
+      case DeleteJournal(:final String journalId):
+        await _deleteJournal(journalId);
     }
   }
 
@@ -64,24 +70,27 @@ class JournalViewModel extends EventNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    _journalSubscription = _watchJournalsUserCase.execute().listen((
-      collection,
-    ) {
-      _state = _state.copyWith(
-        journals:
-            collection.journals
-                .where(
-                  (journal) => journal.name.toLowerCase().contains(
-                    query.trim().toLowerCase(),
-                  ),
-                )
-                .toList(),
-        photoMap: collection.photoMap,
-        isLoading: false,
-      );
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
+      (collection) {
+        _state = _state.copyWith(
+          journals:
+              collection.journals
+                  .where(
+                    (journal) => journal.name.toLowerCase().contains(
+                      query.trim().toLowerCase(),
+                    ),
+                  )
+                  .toList(),
+          photoMap: collection.photoMap,
+          isLoading: false,
+        );
 
-      notifyListeners();
-    });
+        notifyListeners();
+      },
+      onDone: () {
+        _journalSubscription!.cancel();
+      },
+    );
   }
 
   Future<void> _searchDateRange(DateTimeRange range) async {
@@ -96,6 +105,7 @@ class JournalViewModel extends EventNotifier {
       journals: journals,
       isLoading: false,
     );
+
     notifyListeners();
   }
 
@@ -103,25 +113,20 @@ class JournalViewModel extends EventNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    // final JournalPhotoCollection collection =
-    //     await _getJournalListUseCase.execute();
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
+      (JournalPhotoCollection collection) {
+        _state = _state.copyWith(
+          journals: collection.journals,
+          photoMap: collection.photoMap,
+          isLoading: false,
+        );
 
-    // _state = _state.copyWith(
-    //   journals: collection.journals,
-    //   photoMap: collection.photoMap,
-    //   isLoading: false,
-    // );
-    //
-    _journalSubscription = _watchJournalsUserCase.execute().listen((
-      collection,
-    ) {
-      _state = _state.copyWith(
-        journals: collection.journals,
-        photoMap: collection.photoMap,
-        isLoading: false,
-      );
-      notifyListeners();
-    });
+        notifyListeners();
+      },
+      onDone: () {
+        _journalSubscription!.cancel();
+      },
+    );
   }
 
   Future<void> _update(JournalModel journal) async {
@@ -141,6 +146,21 @@ class JournalViewModel extends EventNotifier {
 
   Future<void> _setSearchFilter(SearchFilterOption option) async {
     _state = _state.copyWith(searchFilterOption: option);
+    notifyListeners();
+  }
+
+  Future<void> _deleteJournal(String journalId) async {
+    _state = _state.copyWith(isLoading: true);
+    notifyListeners();
+
+    try {
+      await _deleteJournalUseCase.execute(journalId);
+      addEvent(const StreamEvent.success(ActionType.journalDelete));
+    } catch (e) {
+      addEvent(const StreamEvent.error(ErrorType.journalDelete));
+    }
+
+    _state = _state.copyWith(isLoading: false);
     notifyListeners();
   }
 }

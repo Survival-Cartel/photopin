@@ -59,7 +59,7 @@ class JournalCard extends StatelessWidget {
                         backgroundColor: AppColors.black.withValues(alpha: 0.4),
                         child: const Icon(
                           Icons.edit,
-                          color: AppColors.primary60,
+                          color: AppColors.white,
                           size: 20,
                         ),
                       ),

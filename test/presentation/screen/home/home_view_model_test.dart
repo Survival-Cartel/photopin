@@ -11,6 +11,7 @@ import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
 import 'package:photopin/fcm/data/repository/token_repository.dart';
 import 'package:photopin/journal/data/repository/journal_repository_impl.dart';
@@ -28,6 +29,9 @@ class MockGetJournalListUseCase extends Mock implements GetJournalListUseCase {}
 
 class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
+class MockWatchPhotoCollectionUseCase extends Mock
+    implements WatchPhotoCollectionUseCase {}
+
 class MockPermissionCheckUseCase extends Mock
     implements PermissionCheckUseCase {}
 
@@ -40,12 +44,12 @@ void main() {
   late HomeViewModel viewModel;
   late MockGetCurrentUserUseCase mockGetCurrentUserUseCase;
   late MockGetJournalListUseCase mockGetJournalListUseCase;
-  late WatchJournalsUseCase mockWatchJournalsUseCase;
   late JournalPhotoCollection testCollection;
   late MockPermissionCheckUseCase mockPermissionCheckUseCase;
   late MockTokenRepository mockTokenRepository;
   late SaveTokenUseCase saveTokenUseCase;
   late MockFirebaseMessagingDataSource mockFirebaseMessagingDataSource;
+  late MockWatchPhotoCollectionUseCase mockWatchPhotoCollectionUseCase;
 
   setUpAll(() {
     // 이 시점에는 모든 타입이 등록됩니다
@@ -56,9 +60,9 @@ void main() {
   setUp(() {
     mockGetCurrentUserUseCase = MockGetCurrentUserUseCase();
     mockGetJournalListUseCase = MockGetJournalListUseCase();
-    mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     mockPermissionCheckUseCase = MockPermissionCheckUseCase();
     mockFirebaseMessagingDataSource = MockFirebaseMessagingDataSource();
+    mockWatchPhotoCollectionUseCase = MockWatchPhotoCollectionUseCase();
 
     mockTokenRepository = MockTokenRepository();
     saveTokenUseCase = SaveTokenUseCase(mockTokenRepository);
@@ -84,8 +88,8 @@ void main() {
       journalRepository: JournalRepositoryImpl(
         dataSource: FakeJournalDataSource(),
       ),
+      watchPhotoCollectionUseCase: mockWatchPhotoCollectionUseCase,
       getJournalListUseCase: mockGetJournalListUseCase,
-      watchJournalsUserCase: mockWatchJournalsUseCase,
       permissionCheckUseCase: mockPermissionCheckUseCase,
       saveTokenUseCase: saveTokenUseCase,
       firebaseMessagingDataSource: mockFirebaseMessagingDataSource,
@@ -104,7 +108,9 @@ void main() {
       when(
         () => mockGetCurrentUserUseCase.execute(),
       ).thenAnswer((_) async => testUser);
-      when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
+      when(() => mockWatchPhotoCollectionUseCase.execute()).thenAnswer((
+        _,
+      ) async* {
         yield testCollection;
       });
 
@@ -117,7 +123,7 @@ void main() {
       expect(viewModel.state.journals, testCollection.journals);
       expect(viewModel.state.photoMap, testCollection.photoMap);
       verify(() => mockGetCurrentUserUseCase.execute()).called(1);
-      verify(() => mockWatchJournalsUseCase.execute()).called(1);
+      verify(() => mockWatchPhotoCollectionUseCase.execute()).called(1);
     });
 
     test('FindUser 액션 실행 시 사용자 정보만 갱신한다', () async {

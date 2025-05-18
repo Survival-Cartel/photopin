@@ -25,6 +25,7 @@ import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/push_service.dart';
 import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
@@ -40,6 +41,7 @@ import 'package:photopin/core/usecase/save_token_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source.dart';
 import 'package:photopin/fcm/data/data_source/firebase_messaging_data_source_impl.dart';
@@ -112,6 +114,7 @@ void di() {
   getIt.registerFactoryParam<PhotoRepository, String, void>(
     (userId, _) => PhotoRepositoryImpl(
       photoDataSource: getIt<PhotoDataSource>(param1: userId),
+      storageDataSource: getIt<StorageDataSource>(param1: userId),
     ),
   );
 
@@ -137,10 +140,12 @@ void di() {
 
   getIt.registerFactoryParam<HomeViewModel, String, void>(
     (userId, _) => HomeViewModel(
+      watchPhotoCollectionUseCase: getIt<WatchPhotoCollectionUseCase>(
+        param1: userId,
+      ),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
       journalRepository: getIt<JournalRepository>(param1: userId),
       getJournalListUseCase: getIt<GetJournalListUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
       permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
       saveTokenUseCase: getIt<SaveTokenUseCase>(),
       firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
@@ -198,12 +203,29 @@ void di() {
     ),
   );
 
+  getIt.registerFactoryParam<DeleteJournalUseCase, String, void>(
+    (userId, _) => DeleteJournalUseCase(
+      journalRepository: getIt<JournalRepository>(param1: userId),
+    ),
+  );
+
+  getIt.registerFactoryParam<WatchPhotoCollectionUseCase, String, void>(
+    (userId, _) => WatchPhotoCollectionUseCase(
+      getPhotoJournalListUseCase: getIt<GetPhotoJournalListUseCase>(
+        param1: userId,
+      ),
+    ),
+  );
+
   getIt.registerFactoryParam<JournalViewModel, String, void>(
     (userId, _) => JournalViewModel(
+      watchPhotoCollectionUseCase: getIt<WatchPhotoCollectionUseCase>(
+        param1: userId,
+      ),
+      deleteJournalUseCase: getIt<DeleteJournalUseCase>(param1: userId),
       searchJournalByDateTimeRangeUseCase:
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
-      watchJournalsUserCase: getIt<WatchJournalsUseCase>(param1: userId),
       streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
