@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/enums/search_filter_option.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
-import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
 import 'package:photopin/presentation/screen/journal/journal_state.dart';
@@ -14,20 +15,23 @@ class JournalViewModel with ChangeNotifier {
   JournalState _state = JournalState();
   StreamSubscription<JournalPhotoCollection>? _journalSubscription;
 
-  final WatchJournalsUseCase _watchJournalsUserCase;
+  final WatchPhotoCollectionUseCase _watchPhotoCollectionUseCase;
   final UpdateJournalUseCase _updateJournalUseCase;
+  final DeleteJournalUseCase _deleteJournalUseCase;
   final SearchJournalByDateTimeRangeUseCase
   _searchJournalByDateTimeRangeUseCase;
 
   JournalViewModel({
-    required WatchJournalsUseCase watchJournalsUserCase,
     required UpdateJournalUseCase updateJournalUseCase,
+    required WatchPhotoCollectionUseCase watchPhotoCollectionUseCase,
     required SearchJournalByDateTimeRangeUseCase
     searchJournalByDateTimeRangeUseCase,
-  }) : _watchJournalsUserCase = watchJournalsUserCase,
-       _updateJournalUseCase = updateJournalUseCase,
+    required DeleteJournalUseCase deleteJournalUseCase,
+  }) : _updateJournalUseCase = updateJournalUseCase,
+       _watchPhotoCollectionUseCase = watchPhotoCollectionUseCase,
        _searchJournalByDateTimeRangeUseCase =
-           searchJournalByDateTimeRangeUseCase;
+           searchJournalByDateTimeRangeUseCase,
+       _deleteJournalUseCase = deleteJournalUseCase;
 
   JournalState get state => _state;
   bool get isLoading => _state.isLoading;
@@ -51,6 +55,8 @@ class JournalViewModel with ChangeNotifier {
         await _setSearchFilter(option);
       case OnSearchDateRange(:final DateTimeRange range):
         await _searchDateRange(range);
+      case DeleteJournal(:final String journalId):
+        await _deleteJournal(journalId);
     }
   }
 
@@ -58,24 +64,27 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    _journalSubscription = _watchJournalsUserCase.execute().listen((
-      collection,
-    ) {
-      _state = _state.copyWith(
-        journals:
-            collection.journals
-                .where(
-                  (journal) => journal.name.toLowerCase().contains(
-                    query.trim().toLowerCase(),
-                  ),
-                )
-                .toList(),
-        photoMap: collection.photoMap,
-        isLoading: false,
-      );
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
+      (collection) {
+        _state = _state.copyWith(
+          journals:
+              collection.journals
+                  .where(
+                    (journal) => journal.name.toLowerCase().contains(
+                      query.trim().toLowerCase(),
+                    ),
+                  )
+                  .toList(),
+          photoMap: collection.photoMap,
+          isLoading: false,
+        );
 
-      notifyListeners();
-    });
+        notifyListeners();
+      },
+      onDone: () {
+        _journalSubscription!.cancel();
+      },
+    );
   }
 
   Future<void> _searchDateRange(DateTimeRange range) async {
@@ -90,6 +99,7 @@ class JournalViewModel with ChangeNotifier {
       journals: journals,
       isLoading: false,
     );
+
     notifyListeners();
   }
 
@@ -97,25 +107,20 @@ class JournalViewModel with ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    // final JournalPhotoCollection collection =
-    //     await _getJournalListUseCase.execute();
+    _journalSubscription = _watchPhotoCollectionUseCase.execute().listen(
+      (JournalPhotoCollection collection) {
+        _state = _state.copyWith(
+          journals: collection.journals,
+          photoMap: collection.photoMap,
+          isLoading: false,
+        );
 
-    // _state = _state.copyWith(
-    //   journals: collection.journals,
-    //   photoMap: collection.photoMap,
-    //   isLoading: false,
-    // );
-    //
-    _journalSubscription = _watchJournalsUserCase.execute().listen((
-      collection,
-    ) {
-      _state = _state.copyWith(
-        journals: collection.journals,
-        photoMap: collection.photoMap,
-        isLoading: false,
-      );
-      notifyListeners();
-    });
+        notifyListeners();
+      },
+      onDone: () {
+        _journalSubscription!.cancel();
+      },
+    );
   }
 
   Future<void> _update(JournalModel journal) async {
@@ -130,6 +135,14 @@ class JournalViewModel with ChangeNotifier {
 
   Future<void> _setSearchFilter(SearchFilterOption option) async {
     _state = _state.copyWith(searchFilterOption: option);
+    notifyListeners();
+  }
+
+  Future<void> _deleteJournal(String journalId) async {
+    _state = _state.copyWith(isLoading: true);
+
+    await _deleteJournalUseCase.execute(journalId);
+
     notifyListeners();
   }
 }

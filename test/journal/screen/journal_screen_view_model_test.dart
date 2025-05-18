@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/watch_journals_use_case.dart';
+import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/journal/journal_screen_action.dart';
@@ -28,32 +30,41 @@ class MockWatchJournalsUseCase extends Mock implements WatchJournalsUseCase {}
 
 class MockUpdateJournalUseCase extends Mock implements UpdateJournalUseCase {}
 
+class MockDeleteJournalUseCase extends Mock implements DeleteJournalUseCase {}
+
+class MockWatchPhotoCollectionUseCase extends Mock
+    implements WatchPhotoCollectionUseCase {}
+
 class MockSearchJournalByDateTimeRangeUseCase extends Mock
     implements SearchJournalByDateTimeRangeUseCase {}
 
 void main() {
   late JournalViewModel viewModel;
   late JournalPhotoCollection mockJournalPhotoCollection;
-  late WatchJournalsUseCase mockWatchJournalsUseCase;
   late UpdateJournalUseCase mockUpdateJournalUseCase;
+  late WatchPhotoCollectionUseCase mockPhotoCollectionUseCase;
+  late DeleteJournalUseCase mockDeleteJournalUseCase;
   late SearchJournalByDateTimeRangeUseCase
   mockSearchJournalByDateTimeRangeUseCase;
 
   setUp(() {
     mockJournalPhotoCollection = MockJournalPhotoCollection();
-    mockWatchJournalsUseCase = MockWatchJournalsUseCase();
     mockUpdateJournalUseCase = MockUpdateJournalUseCase();
     mockSearchJournalByDateTimeRangeUseCase =
         MockSearchJournalByDateTimeRangeUseCase();
+    mockDeleteJournalUseCase = MockDeleteJournalUseCase();
+    mockPhotoCollectionUseCase = MockWatchPhotoCollectionUseCase();
 
     viewModel = JournalViewModel(
       updateJournalUseCase: mockUpdateJournalUseCase,
-      watchJournalsUserCase: mockWatchJournalsUseCase,
+      watchPhotoCollectionUseCase: mockPhotoCollectionUseCase,
+      deleteJournalUseCase: mockDeleteJournalUseCase,
+
       searchJournalByDateTimeRangeUseCase:
           mockSearchJournalByDateTimeRangeUseCase,
     );
 
-    when(() => mockWatchJournalsUseCase.execute()).thenAnswer((_) async* {
+    when(() => mockPhotoCollectionUseCase.execute()).thenAnswer((_) async* {
       yield mockJournalPhotoCollection;
     });
   });
@@ -82,7 +93,7 @@ void main() {
       );
       expect(viewModel.state.journals, equals([journalModelFixtures[0]]));
 
-      verify(() => mockWatchJournalsUseCase.execute()).called(1);
+      verify(() => mockPhotoCollectionUseCase.execute()).called(1);
     });
 
     test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
@@ -101,7 +112,7 @@ void main() {
       expect(states.last.isLoading, false);
       expect(states.last.journals, equals([journalModelFixtures[0]]));
 
-      verify(() => mockWatchJournalsUseCase.execute()).called(1);
+      verify(() => mockPhotoCollectionUseCase.execute()).called(1);
     });
   });
 
@@ -133,7 +144,7 @@ void main() {
           contains(journalModelFixtures[0].name),
         );
 
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
 
       test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
@@ -149,7 +160,7 @@ void main() {
           viewModel.state.journals.first.name,
           contains(journalModelFixtures[0].name),
         );
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
 
       test('인자로 전달한 이름으로 저널을 필터링하고 상태를 업데이트해야한다.', () async {
@@ -165,7 +176,7 @@ void main() {
           viewModel.state.journals.first.name,
           contains(journalModelFixtures[0].name),
         );
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
 
       test('존재하지 않는 저널 이름으로 검색 시 비어있는 저널로 상태를 업데이트해야한다.', () async {
@@ -176,7 +187,7 @@ void main() {
         expect(viewModel.state.isLoading, false);
         expect(viewModel.state.journals.length, 0);
         expect(viewModel.state.journals.isEmpty, true);
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
 
       test('비어있는 문자열(Empty String)으로 검색 시 전체 리스트를 반환해야한다.', () async {
@@ -189,7 +200,7 @@ void main() {
           viewModel.state.journals.length,
           mockJournalPhotoCollection.journals.length,
         );
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
 
       test('메서드 호출 시 로딩 상태를 2번 변경하고 리스너에게 알려야한다.', () async {
@@ -217,7 +228,7 @@ void main() {
           contains(journalModelFixtures[0].name),
         );
 
-        verify(() => mockWatchJournalsUseCase.execute()).called(1);
+        verify(() => mockPhotoCollectionUseCase.execute()).called(1);
       });
     });
   });
