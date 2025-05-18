@@ -141,6 +141,7 @@ void di() {
       permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
       saveTokenUseCase: getIt<SaveTokenUseCase>(),
       firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 
