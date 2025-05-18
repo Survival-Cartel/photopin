@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source.dart';
 import 'package:photopin/photo/data/mapper/photo_mapper.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
@@ -25,7 +26,7 @@ class PhotoRepositoryImpl implements PhotoRepository {
       }
     } catch (e) {
       // 에러 처리
-      print('Photo 삭제 중 오류 발생: $e');
+      debugPrint('$e');
       rethrow;
     }
   }
