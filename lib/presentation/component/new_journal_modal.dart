@@ -74,6 +74,7 @@ class _NewJournalModalState extends State<NewJournalModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.white,
       content: SizedBox(
         height: 360,
         child: Column(

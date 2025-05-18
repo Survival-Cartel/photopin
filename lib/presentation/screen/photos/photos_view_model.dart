@@ -1,8 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
 import 'package:photopin/core/domain/photo_journal_list_model.dart';
+import 'package:photopin/core/enums/action_type.dart';
+import 'package:photopin/core/enums/error_type.dart';
+import 'package:photopin/core/mixins/event_notifier.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/get_photo_list_use_case.dart';
@@ -12,7 +15,7 @@ import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/screen/photos/photos_action.dart';
 import 'package:photopin/presentation/screen/photos/photos_state.dart';
 
-class PhotosViewModel with ChangeNotifier {
+class PhotosViewModel extends EventNotifier {
   final GetPhotoListUseCase _getPhotoListUseCase;
   final GetJournalListUseCase _getJournalListUseCase;
   final GetPhotoListWithJournalIdUseCase _getPhotoListWithJournalIdUseCase;
@@ -23,6 +26,7 @@ class PhotosViewModel with ChangeNotifier {
   PhotosState _state = PhotosState();
 
   PhotosViewModel({
+    required super.streamController,
     required GetPhotoListUseCase getPhotoListUseCase,
     required GetJournalListUseCase getJournalListUseCase,
     required GetPhotoListWithJournalIdUseCase getPhotoListWithJournalIdUseCase,
@@ -43,7 +47,12 @@ class PhotosViewModel with ChangeNotifier {
   }
 
   Future<void> _photoApplyClick(PhotoModel photoModel) async {
-    await _photoRepository.updatePhoto(photoModel);
+    try {
+      await _photoRepository.updatePhoto(photoModel);
+      addEvent(const StreamEvent.success(ActionType.photoUpdate));
+    } catch (e) {
+      addEvent(const StreamEvent.error(ErrorType.photoUpdate));
+    }
   }
 
   Future<void> _photoFilterClick(int index) async {
@@ -83,7 +92,12 @@ class PhotosViewModel with ChangeNotifier {
   }
 
   Future<void> _photoDeleteClick(String photoId) async {
-    await _photoRepository.deletePhoto(photoId);
+    try {
+      await _photoRepository.deletePhoto(photoId);
+      addEvent(const StreamEvent.success(ActionType.photoDelete));
+    } catch (e) {
+      addEvent(const StreamEvent.error(ErrorType.photoDelete));
+    }
   }
 
   Future<void> init() async {
@@ -105,8 +119,7 @@ class PhotosViewModel with ChangeNotifier {
       case PhotoFilterClick():
         _photoFilterClick(action.index);
       case PhotoCardClick():
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        break;
       case PhotoApplyClick():
         _photoApplyClick(action.photoModel);
       case PhotoDeleteClick():

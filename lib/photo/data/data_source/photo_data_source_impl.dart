@@ -67,20 +67,32 @@ class PhotoDataSourceImpl implements PhotoDataSource {
 
   @override
   Future<void> deletePhoto(String photoId) async {
-    await _photoStore.doc(photoId).delete();
+    try {
+      await _photoStore.doc(photoId).delete();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> savePhoto(PhotoDto dto) async {
-    final DocumentReference<PhotoDto> photodoc = await _photoStore.add(dto);
-    final String docId = photodoc.id;
+    try {
+      final DocumentReference<PhotoDto> photodoc = await _photoStore.add(dto);
+      final String docId = photodoc.id;
 
-    await _photoStore.doc(docId).update({'id': docId});
+      await _photoStore.doc(docId).update({'id': docId});
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> updatePhoto(PhotoDto photoDto) async {
-    await _photoStore.doc(photoDto.id).set(photoDto, SetOptions(merge: true));
+    try {
+      await _photoStore.doc(photoDto.id).set(photoDto, SetOptions(merge: true));
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

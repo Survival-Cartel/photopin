@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
@@ -62,6 +65,7 @@ void main() {
 
       searchJournalByDateTimeRangeUseCase:
           mockSearchJournalByDateTimeRangeUseCase,
+      streamController: StreamController<StreamEvent>(),
     );
 
     when(() => mockPhotoCollectionUseCase.execute()).thenAnswer((_) async* {

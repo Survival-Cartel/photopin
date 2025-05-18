@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:photopin/core/domain/journal_photo_collection.dart';
+import 'package:photopin/core/enums/action_type.dart';
 import 'package:photopin/core/enums/permission_type.dart';
+import 'package:photopin/core/mixins/event_notifier.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/core/usecase/get_current_user_use_case.dart';
 import 'package:photopin/core/usecase/get_journal_list_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
@@ -16,7 +18,7 @@ import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 import 'package:photopin/user/domain/model/user_model.dart';
 
-class HomeViewModel with ChangeNotifier {
+class HomeViewModel extends EventNotifier {
   final GetCurrentUserUseCase getCurrentUserUseCase;
   final JournalRepository _journalRepository;
   final GetJournalListUseCase getJournalListUseCase;
@@ -30,6 +32,7 @@ class HomeViewModel with ChangeNotifier {
   HomeState _state = HomeState();
 
   HomeViewModel({
+    required super.streamController,
     required WatchPhotoCollectionUseCase watchPhotoCollectionUseCase,
     required this.getCurrentUserUseCase,
     required JournalRepository journalRepository,
@@ -63,6 +66,7 @@ class HomeViewModel with ChangeNotifier {
 
   Future<void> _newJournalSave({required JournalModel journal}) async {
     await _journalRepository.saveJournal(journal.toDto());
+    addEvent(const StreamEvent.success(ActionType.journalCreate));
   }
 
   Future<void> _findJournals() async {

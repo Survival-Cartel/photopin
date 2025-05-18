@@ -46,17 +46,25 @@ class JournalDataSourceImpl implements JournalDataSource {
 
   @override
   Future<void> deleteJournal(String journalId) async {
-    await _journalStore.doc(journalId).delete();
+    try {
+      await _journalStore.doc(journalId).delete();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> saveJournal(JournalDto dto) async {
-    final DocumentReference<JournalDto> journaldoc = await _journalStore.add(
-      dto,
-    );
-    final String docId = journaldoc.id;
+    try {
+      final DocumentReference<JournalDto> journaldoc = await _journalStore.add(
+        dto,
+      );
+      final String docId = journaldoc.id;
 
-    await _journalStore.doc(docId).update({'id': docId});
+      await _journalStore.doc(docId).update({'id': docId});
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -87,7 +95,11 @@ class JournalDataSourceImpl implements JournalDataSource {
 
   @override
   Future<void> update(JournalDto journal) async {
-    await _journalStore.doc(journal.id).set(journal, SetOptions(merge: true));
+    try {
+      await _journalStore.doc(journal.id).set(journal, SetOptions(merge: true));
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

@@ -27,28 +27,32 @@ class SavePictureInFirebaseUseCase {
        _savePhotoUseCase = savePhotoUseCase;
 
   Future<void> execute(ImageData imageData, ImageMime imageMime) async {
-    final Location? location = await _getCurrentLocationUseCase.execute();
+    try {
+      final Location? location = await _getCurrentLocationUseCase.execute();
 
-    if (location != null) {
-      final String downloadUrl = await _uploadFileInStorageUseCase.execute(
-        uuid.generate(),
-        imageData.bytes,
-        imageMime,
-      );
+      if (location != null) {
+        final String downloadUrl = await _uploadFileInStorageUseCase.execute(
+          uuid.generate(),
+          imageData.bytes,
+          imageMime,
+        );
 
-      final String placeName = await _getPlaceNameUseCase.execute(
-        location: location,
-      );
+        final String placeName = await _getPlaceNameUseCase.execute(
+          location: location,
+        );
 
-      PhotoDto dto = PhotoDto(
-        name: placeName,
-        imageUrl: downloadUrl,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
-      );
+        PhotoDto dto = PhotoDto(
+          name: placeName,
+          imageUrl: downloadUrl,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          dateTimeMilli: DateTime.now().millisecondsSinceEpoch,
+        );
 
-      _savePhotoUseCase.execute(dto);
+        _savePhotoUseCase.execute(dto);
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

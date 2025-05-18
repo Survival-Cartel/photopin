@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:photopin/camera/presentation/camera_launcher_screen_root.dart';
 import 'package:photopin/camera/presentation/camera_view_model.dart';
 import 'package:photopin/core/di/di_setup.dart';
 import 'package:photopin/core/routes.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/presentation/screen/auth/auth_screen_root.dart';
 import 'package:photopin/presentation/screen/auth/auth_view_model.dart';
 import 'package:photopin/presentation/screen/compare_dialog/compare_dialog_screen_root.dart';
@@ -133,6 +136,7 @@ final appRouter = GoRouter(
         return MainScreenRoot(
           navigationShell: navigationShell,
           viewModel: mainScreenViewModel,
+          streamController: getIt<StreamController<StreamEvent>>(),
         );
       },
       branches: [

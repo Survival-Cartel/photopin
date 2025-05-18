@@ -24,12 +24,20 @@ class JournalRepositoryImpl implements JournalRepository {
 
   @override
   Future<void> saveJournal(JournalDto dto) async {
-    await _dataSource.saveJournal(dto);
+    try {
+      await _dataSource.saveJournal(dto);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> deleteJournal(String journalId) async {
-    await _dataSource.deleteJournal(journalId);
+    try {
+      await _dataSource.deleteJournal(journalId);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -41,7 +49,11 @@ class JournalRepositoryImpl implements JournalRepository {
 
   @override
   Future<void> update(JournalModel journal) async {
-    await _dataSource.update(journal.toDto());
+    try {
+      await _dataSource.update(journal.toDto());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

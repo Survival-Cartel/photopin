@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,10 +20,11 @@ import 'package:photopin/camera/usecase/launch_camera_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_device_use_case.dart';
 import 'package:photopin/camera/usecase/save_picture_in_firebase_use_case.dart';
 import 'package:photopin/core/firebase/firestore_setup.dart';
-import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
 import 'package:photopin/core/service/geolocator_location_service.dart';
 import 'package:photopin/core/service/location_service.dart';
 import 'package:photopin/core/service/push_service.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
+import 'package:photopin/core/usecase/auth_and_user_save_use_case.dart';
 import 'package:photopin/core/usecase/delete_journal_use_case.dart';
 import 'package:photopin/core/usecase/get_compare_model_use_case.dart';
 import 'package:photopin/core/usecase/get_current_location_use_case.dart';
@@ -34,8 +37,8 @@ import 'package:photopin/core/usecase/get_place_name_use_case.dart';
 import 'package:photopin/core/usecase/link_access_notification_use_case.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/core/usecase/save_photo_use_case.dart';
-import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/save_token_use_case.dart';
+import 'package:photopin/core/usecase/search_journal_by_date_time_range_use_case.dart';
 import 'package:photopin/core/usecase/update_journal_use_case.dart';
 import 'package:photopin/core/usecase/upload_file_in_storage_use_case.dart';
 import 'package:photopin/core/usecase/watch_photo_collection_use_case.dart';
@@ -71,6 +74,7 @@ import 'package:photopin/user/data/repository/user_repository_impl.dart';
 final getIt = GetIt.instance;
 
 void di() {
+  getIt.registerSingleton(StreamController<StreamEvent>());
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
   getIt.registerLazySingleton(() => FirebaseMessaging.instance);
   getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
@@ -101,7 +105,10 @@ void di() {
   );
 
   getIt.registerFactoryParam<SavePhotoUseCase, String, void>(
-    (userId, _) => SavePhotoUseCase(getIt<PhotoRepository>(param1: userId)),
+    (userId, _) => SavePhotoUseCase(
+      getIt<PhotoRepository>(param1: userId),
+      getIt<StreamController<StreamEvent>>(),
+    ),
   );
 
   getIt.registerFactoryParam<PhotoRepository, String, void>(
@@ -142,6 +149,7 @@ void di() {
       permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
       saveTokenUseCase: getIt<SaveTokenUseCase>(),
       firebaseMessagingDataSource: getIt<FirebaseMessagingDataSource>(),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 
@@ -218,6 +226,7 @@ void di() {
       searchJournalByDateTimeRangeUseCase:
           getIt<SearchJournalByDateTimeRangeUseCase>(param1: userId),
       updateJournalUseCase: getIt<UpdateJournalUseCase>(param1: userId),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 
@@ -313,6 +322,7 @@ void di() {
       getPhotoJournalListUseCase: getIt<GetPhotoJournalListUseCase>(
         param1: userId,
       ),
+      streamController: getIt<StreamController<StreamEvent>>(),
     ),
   );
 

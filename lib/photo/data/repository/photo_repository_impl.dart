@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:photopin/photo/data/data_source/photo_data_source.dart';
 import 'package:photopin/photo/data/mapper/photo_mapper.dart';
 import 'package:photopin/photo/data/repository/photo_repository.dart';
@@ -25,8 +24,6 @@ class PhotoRepositoryImpl implements PhotoRepository {
         await _storageDataSource.deleteFile(photo.imageUrl);
       }
     } catch (e) {
-      // 에러 처리
-      debugPrint('$e');
       rethrow;
     }
   }
@@ -70,12 +67,20 @@ class PhotoRepositoryImpl implements PhotoRepository {
 
   @override
   Future<void> savePhoto(PhotoModel model) async {
-    await _photoDataSource.savePhoto(model.toDto());
+    try {
+      await _photoDataSource.savePhoto(model.toDto());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> updatePhoto(PhotoModel photoModel) async {
-    await _photoDataSource.updatePhoto(photoModel.toDto());
+    try {
+      await _photoDataSource.updatePhoto(photoModel.toDto());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
