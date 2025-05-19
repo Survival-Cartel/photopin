@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photopin/core/enums/error_type.dart';
+import 'package:photopin/core/stream_event/stream_event.dart';
 import 'package:photopin/journal/domain/model/journal_model.dart';
 import 'package:photopin/presentation/component/alert_share_link.dart';
 import 'package:photopin/presentation/component/new_journal_modal.dart';
@@ -32,10 +34,21 @@ class HomeScreenRoot extends StatelessWidget {
                     return NewJournalModal(
                       userName: viewModel.state.currentUser.displayName,
                       onSave: ({required JournalModel journal}) {
-                        viewModel.onAction(
-                          HomeAction.newJournalSave(journal: journal),
-                        );
-                        context.pop();
+                        if (journal.name == '' ||
+                            journal.comment == '' ||
+                            journal.startDateMilli == 0 ||
+                            journal.endDateMilli == 0) {
+                          viewModel.addEvent(
+                            const StreamEvent.error(
+                              ErrorType.journalCreateElement,
+                            ),
+                          );
+                        } else {
+                          viewModel.onAction(
+                            HomeAction.newJournalSave(journal: journal),
+                          );
+                          context.pop();
+                        }
                       },
                     );
                   },
@@ -64,7 +77,9 @@ class HomeScreenRoot extends StatelessWidget {
                             },
                           );
                         } else {
-                          context.pop();
+                          viewModel.addEvent(
+                            const StreamEvent.error(ErrorType.journalShare),
+                          );
                         }
                       },
                     );
