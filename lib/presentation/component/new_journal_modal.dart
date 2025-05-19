@@ -137,34 +137,16 @@ class _NewJournalModalState extends State<NewJournalModal> {
                   final String title = titleController.text;
                   final String comment = commentController.text;
 
-                  if (title == '' ||
-                      comment == '' ||
-                      startDate == null ||
-                      endDate == null) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext dialogContext) {
-                        Timer(const Duration(seconds: 1), () {
-                          Navigator.of(dialogContext).pop();
-                        });
-                        return const AlertDialog(
-                          content: Text('! 저장 실패 ! \n모든 입력을 완성해주세요.'),
-                        );
-                      },
-                    );
-                    return;
-                  } else {
-                    final JournalModel journal = JournalModel(
-                      id: '',
-                      name: title,
-                      tripWith: tripWith,
-                      startDateMilli: startDate!.millisecondsSinceEpoch,
-                      endDateMilli: endDate!.millisecondsSinceEpoch,
-                      comment: comment,
-                    );
+                  final JournalModel journal = JournalModel(
+                    id: '',
+                    name: title,
+                    tripWith: tripWith,
+                    startDateMilli: startDate?.millisecondsSinceEpoch ?? 0,
+                    endDateMilli: endDate?.millisecondsSinceEpoch ?? 0,
+                    comment: comment,
+                  );
 
-                    widget.onSave(journal: journal);
-                  }
+                  widget.onSave(journal: journal);
                 },
                 buttonColor: AppColors.primary80,
               ),
