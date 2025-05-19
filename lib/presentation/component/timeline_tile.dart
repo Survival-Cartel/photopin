@@ -35,19 +35,28 @@ class TimeLineTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                color: switch (dateTime.formQuaterDivide()) {
-                  TimelineDivide.morning => AppColors.secondary80,
-                  TimelineDivide.day => AppColors.marker50,
-                  TimelineDivide.night => AppColors.marker40,
-                  TimelineDivide.dawn => AppColors.marker80,
-                  TimelineDivide.unknown => AppColors.primary60,
-                },
+            switch (dateTime.formQuaterDivide()) {
+              TimelineDivide.morning => const Icon(
+                Icons.wb_twilight,
+                color: AppColors.marker90,
               ),
-            ),
+              TimelineDivide.day => const Icon(
+                Icons.light_mode,
+                color: AppColors.marker50,
+              ),
+              TimelineDivide.night => const Icon(
+                Icons.nightlight_round,
+                color: AppColors.marker40,
+              ),
+              TimelineDivide.dawn => const Icon(
+                Icons.nights_stay,
+                color: AppColors.marker80,
+              ),
+              TimelineDivide.unknown => const Icon(
+                Icons.help_outline,
+                color: AppColors.secondary80,
+              ),
+            },
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -56,7 +65,7 @@ class TimeLineTile extends StatelessWidget {
                 children: [
                   Text(title, style: AppFonts.smallTextRegular),
                   Text(
-                    'Visited at ${dateTime.formOnlyTime()}',
+                    dateTime.formOnlyTime(),
                     style: AppFonts.smallerTextRegular.copyWith(
                       color: AppColors.gray3,
                     ),

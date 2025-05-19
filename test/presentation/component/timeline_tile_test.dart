@@ -7,7 +7,7 @@ import 'package:photopin/presentation/component/timeline_tile.dart';
 
 void main() {
   group('timeline tile component 테스트 : ', () {
-    final Color morningColor = AppColors.secondary80;
+    final Color morningColor = AppColors.marker90;
     final Color dayColor = AppColors.marker50;
     final Color nightColor = AppColors.marker40;
     final Color dawnColor = AppColors.marker80;
@@ -79,22 +79,16 @@ void main() {
         );
 
         // 색상 막대 Container 찾기
-        final colorBarFinder = find.descendant(
+        final colorIconFinder = find.descendant(
           of: find.byType(Row),
-          matching: find.byWidgetPredicate(
-            (widget) =>
-                widget is Container && widget.constraints?.maxWidth == 8,
-          ),
+          matching: find.byWidgetPredicate((widget) => widget is Icon),
         );
 
-        final Container colorBarContainer = tester.widget<Container>(
-          colorBarFinder,
-        );
-        final BoxDecoration decoration =
-            colorBarContainer.decoration as BoxDecoration;
+        final Icon colorIcon = tester.widget<Icon>(colorIconFinder);
+        final Color decoration = colorIcon.color as Color;
 
         // 시간대에 따른 색상 확인
-        expect(decoration.color, testCase['expectedColor']);
+        expect(decoration, testCase['expectedColor']);
 
         // 다음 테스트를 위해 현재 위젯 정리
         await tester.pumpAndSettle();
