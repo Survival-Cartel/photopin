@@ -40,18 +40,9 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
 
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
-  // 초기값을 저장할 변수들 추가
-  late String _initialTitle;
-  late String _initialComment;
-  late String _initialJournalId;
-
   @override
   void initState() {
     super.initState();
-    _initialTitle = widget.title;
-    _initialComment = widget.comment;
-    _initialJournalId = widget.journalId;
-
     titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
     _journalId = widget.journalId;
@@ -59,9 +50,10 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
 
   // 변경사항이 있는지 확인하는 메서드
   bool _hasChanges() {
-    return titleController.text != _initialTitle ||
-        commentController.text != _initialComment ||
-        _journalId != _initialJournalId;
+    // 현재 편집된 값들로 새로운 PhotoModel 생성 (실제 생성은 하지 않고 비교만)
+    return widget.title != titleController.text ||
+        widget.comment != commentController.text ||
+        widget.journalId != _journalId;
   }
 
   @override
@@ -174,6 +166,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       Expanded(
                         child: DropdownMenu<String>(
                           controller: journalController,
+                          enabled: widget.journals.isNotEmpty,
                           inputDecorationTheme: const InputDecorationTheme(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
@@ -181,7 +174,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                           initialSelection:
                               widget.journals.isNotEmpty
                                   ? widget.journalId
-                                  : null,
+                                  : '',
                           menuStyle: MenuStyle(
                             backgroundColor: WidgetStateProperty.all(
                               AppColors.white,
@@ -193,8 +186,21 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                             _journalId = value!;
                           },
                           textStyle: AppFonts.smallTextRegular,
-                          dropdownMenuEntries:
-                              _getFilteredJournalEntries(), // 새로운 메서드 호출
+                          dropdownMenuEntries: [
+                            ...List.generate(widget.journals.length, (
+                              int index,
+                            ) {
+                              return DropdownMenuEntry(
+                                label: widget.journals[index].name,
+                                value: widget.journals[index].id,
+                              );
+                            }),
+                            if (widget.journals.isEmpty)
+                              const DropdownMenuEntry(
+                                label: '새로운 journal 생성해주세요!',
+                                value: '',
+                              ),
+                          ], // 새로운 메서드 호출
                         ),
                       ),
                     ],
@@ -242,27 +248,5 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
       },
       onClosing: () {},
     );
-  }
-
-  List<DropdownMenuEntry<String>> _getFilteredJournalEntries() {
-    if (widget.journals.isEmpty) return [];
-
-    // 사진 날짜가 저널 기간에 포함되는 저널만 필터링
-    final filteredJournals =
-        widget.journals.where((journal) {
-          return widget.dateTime.isAfter(
-                journal.startDate.subtract(const Duration(days: 1)),
-              ) &&
-              widget.dateTime.isBefore(
-                journal.endDate.add(const Duration(days: 1)),
-              );
-        }).toList();
-
-    return List.generate(filteredJournals.length, (int index) {
-      return DropdownMenuEntry(
-        label: filteredJournals[index].name,
-        value: filteredJournals[index].id,
-      );
-    });
   }
 }
