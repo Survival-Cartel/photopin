@@ -18,27 +18,30 @@ class CompareDialogScreenRoot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: viewModel,
-      builder: (context, _) {
-        return CompareDialogScreen(
-          state: viewModel.state,
-          onAction: (action) {
-            switch (action) {
-              case OnApply():
-                if (action.journalId == '') {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListenableBuilder(
+        listenable: viewModel,
+        builder: (context, _) {
+          return CompareDialogScreen(
+            state: viewModel.state,
+            onAction: (action) {
+              switch (action) {
+                case OnApply():
+                  if (action.journalId == '') {
+                    context.push(
+                      '${Routes.map}/$compareUserId/$compareJournalId',
+                    );
+                    return;
+                  }
                   context.push(
-                    '${Routes.map}/$compareUserId/$compareJournalId',
+                    '${Routes.compareMap}/$compareUserId/$compareJournalId/${action.journalId}',
                   );
-                  return;
-                }
-                context.push(
-                  '${Routes.compareMap}/$compareUserId/$compareJournalId/${action.journalId}',
-                );
-            }
-          },
-        );
-      },
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
