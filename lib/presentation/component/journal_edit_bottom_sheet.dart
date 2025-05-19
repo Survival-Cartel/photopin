@@ -11,7 +11,7 @@ import 'package:photopin/presentation/component/edit_bottom_sheet.dart';
 
 class JournalEditBottomSheet extends EditBottomSheet {
   final JournalModel journal;
-  final Function(JournalModel journal) onTapApply;
+  final Function(JournalModel journal, bool isChanged) onTapApply;
 
   const JournalEditBottomSheet({
     super.key,
@@ -32,6 +32,7 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final TextEditingController tripWithController = TextEditingController();
+  bool hasChanges = false;
 
   late JournalModel modifiedJournal;
 
@@ -84,6 +85,9 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       controller: titleController,
                       hintText: 'Write Title',
                       maxLength: 30,
+                      onChange: (String value) {
+                        modifiedJournal = modifiedJournal.copyWith(name: value);
+                      },
                     ),
                   ),
                   GestureDetector(
@@ -179,6 +183,11 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                           key: const Key('comment_field'),
                           controller: commentController,
                           hintText: 'Write Comment',
+                          onChange: (String value) {
+                            modifiedJournal = modifiedJournal.copyWith(
+                              comment: value,
+                            );
+                          },
                           maxLength: 30,
                         ),
                       ),
@@ -229,13 +238,11 @@ class _JournalEditBottomSheetState extends State<JournalEditBottomSheet> {
                       iconName: Icons.edit,
                       buttonName: 'Apply',
                       onClick: () {
-                        widget.onTapApply(
-                          modifiedJournal.copyWith(
-                            name: titleController.text,
-                            comment: commentController.text,
-                            tripWith: tripWith,
-                          ),
-                        );
+                        if (widget.journal != modifiedJournal) {
+                          hasChanges = true;
+                        }
+
+                        widget.onTapApply(modifiedJournal, hasChanges);
                       },
                     ),
                   ),
