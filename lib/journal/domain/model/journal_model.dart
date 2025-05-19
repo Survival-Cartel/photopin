@@ -26,7 +26,15 @@ class JournalModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is JournalModel && other.id == id;
+    return other is JournalModel &&
+        other.id == id &&
+        other.name == name &&
+        other.tripWith == tripWith &&
+        other.startDate == startDate &&
+        other.endDate == endDate &&
+        other.comment == comment &&
+        other.startDateMilli == startDateMilli &&
+        other.endDateMilli == endDateMilli;
   }
 
   @override
