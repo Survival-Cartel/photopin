@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photopin/journal/domain/model/journal_model.dart';
+import 'package:photopin/photo/domain/model/photo_model.dart';
 import 'package:photopin/presentation/component/confirm_dialog.dart';
 import 'package:photopin/presentation/component/journal_card_image.dart';
 import 'package:photopin/presentation/component/map_filter.dart';
@@ -74,6 +76,7 @@ class PhotosScreen extends StatelessWidget {
                                 dateTime: photo.dateTime,
                                 comment: photo.comment,
                                 journalId: photo.journalId,
+                                journals: _getFilteredJournalEntries(photo),
                                 onTapClose: () => Navigator.pop(context),
                                 onTapApply: (
                                   photoName,
@@ -115,10 +118,8 @@ class PhotosScreen extends StatelessWidget {
                                       );
                                     },
                                   );
-
                                   Navigator.pop(context);
                                 },
-                                journals: state.journals,
                               );
                             },
                           );
@@ -138,5 +139,21 @@ class PhotosScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<JournalModel> _getFilteredJournalEntries(PhotoModel photoModel) {
+    if (state.journals.isEmpty) return [];
+
+    // 사진 날짜가 저널 기간에 포함되는 저널만 필터링
+    final filteredJournals =
+        state.journals.where((journal) {
+          return photoModel.dateTime.isAfter(
+                journal.startDate.subtract(const Duration(days: 1)),
+              ) &&
+              photoModel.dateTime.isBefore(
+                journal.endDate.add(const Duration(days: 1)),
+              );
+        }).toList();
+    return filteredJournals;
   }
 }
