@@ -40,12 +40,28 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
 
   String _formattedDateTime() => widget.dateTime.formatDateTimeString();
 
+  // 초기값을 저장할 변수들 추가
+  late String _initialTitle;
+  late String _initialComment;
+  late String _initialJournalId;
+
   @override
   void initState() {
     super.initState();
+    _initialTitle = widget.title;
+    _initialComment = widget.comment;
+    _initialJournalId = widget.journalId;
+
     titleController.value = TextEditingValue(text: widget.title);
     commentController.value = TextEditingValue(text: widget.comment);
     _journalId = widget.journalId;
+  }
+
+  // 변경사항이 있는지 확인하는 메서드
+  bool _hasChanges() {
+    return titleController.text != _initialTitle ||
+        commentController.text != _initialComment ||
+        _journalId != _initialJournalId;
   }
 
   @override
@@ -195,11 +211,17 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       iconName: Icons.edit,
                       buttonName: 'Apply',
                       onClick: () {
-                        widget.onTapApply(
-                          titleController.text,
-                          _journalId,
-                          commentController.text,
-                        );
+                        if (_hasChanges()) {
+                          // 변경사항이 있을 때만 onTapApply 호출
+                          widget.onTapApply(
+                            titleController.text,
+                            _journalId,
+                            commentController.text,
+                          );
+                        } else {
+                          // 변경사항이 없으면 그냥 바텀시트 닫기
+                          widget.onTapClose();
+                        }
                       },
                     ),
                   ),
