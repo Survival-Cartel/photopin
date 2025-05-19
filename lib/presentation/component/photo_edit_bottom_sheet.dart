@@ -156,7 +156,8 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: DropdownMenu<String>(
+                        child: // PhotoEditBottomSheet의 DropdownMenu 부분을 다음과 같이 변경
+                            DropdownMenu<String>(
                           controller: journalController,
                           inputDecorationTheme: const InputDecorationTheme(
                             contentPadding: EdgeInsets.zero,
@@ -178,16 +179,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                           },
                           textStyle: AppFonts.smallTextRegular,
                           dropdownMenuEntries:
-                              widget.journals.isEmpty
-                                  ? []
-                                  : List.generate(widget.journals.length, (
-                                    int index,
-                                  ) {
-                                    return DropdownMenuEntry(
-                                      label: widget.journals[index].name,
-                                      value: widget.journals[index].id,
-                                    );
-                                  }),
+                              _getFilteredJournalEntries(), // 새로운 메서드 호출
                         ),
                       ),
                     ],
@@ -229,5 +221,27 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
       },
       onClosing: () {},
     );
+  }
+
+  List<DropdownMenuEntry<String>> _getFilteredJournalEntries() {
+    if (widget.journals.isEmpty) return [];
+
+    // 사진 날짜가 저널 기간에 포함되는 저널만 필터링
+    final filteredJournals =
+        widget.journals.where((journal) {
+          return widget.dateTime.isAfter(
+                journal.startDate.subtract(const Duration(days: 1)),
+              ) &&
+              widget.dateTime.isBefore(
+                journal.endDate.add(const Duration(days: 1)),
+              );
+        }).toList();
+
+    return List.generate(filteredJournals.length, (int index) {
+      return DropdownMenuEntry(
+        label: filteredJournals[index].name,
+        value: filteredJournals[index].id,
+      );
+    });
   }
 }
