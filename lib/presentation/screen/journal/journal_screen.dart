@@ -105,12 +105,17 @@ class _JournalScreenState extends State<JournalScreen> {
                                 thumbnailUrl: thumbnailUrl,
                                 comment: journal.comment,
                                 onTapClose: () => Navigator.pop(context),
-                                onTapApply: (JournalModel journal) {
-                                  widget.onAction(
-                                    JournalScreenAction.onTapEdit(
-                                      journal: journal,
-                                    ),
-                                  );
+                                onTapApply: (
+                                  JournalModel journal,
+                                  bool isChanged,
+                                ) {
+                                  if (isChanged == true) {
+                                    widget.onAction(
+                                      JournalScreenAction.onTapEdit(
+                                        journal: journal,
+                                      ),
+                                    );
+                                  }
 
                                   Navigator.pop(context);
                                 },
