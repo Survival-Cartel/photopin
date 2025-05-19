@@ -156,8 +156,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: // PhotoEditBottomSheet의 DropdownMenu 부분을 다음과 같이 변경
-                            DropdownMenu<String>(
+                        child: DropdownMenu<String>(
                           controller: journalController,
                           inputDecorationTheme: const InputDecorationTheme(
                             contentPadding: EdgeInsets.zero,
