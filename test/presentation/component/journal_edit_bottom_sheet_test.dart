@@ -37,7 +37,8 @@ void main() {
                               comment: comment,
                               title: title,
                               thumbnailUrl: imageUrl,
-                              onTapApply: (JournalModel journal) {},
+                              onTapApply:
+                                  (JournalModel journal, bool isChanged) {},
                               onTapDelete: () {},
                               onTapClose: () {},
                               journal: journal,
@@ -93,7 +94,8 @@ void main() {
                                 journal: journal,
                                 title: title,
                                 thumbnailUrl: imageUrl,
-                                onTapApply: (JournalModel journal) {},
+                                onTapApply:
+                                    (JournalModel journal, bool isChanged) {},
                                 onTapDelete: () {},
                                 onTapClose: () {
                                   tappedClose = true;
@@ -136,6 +138,7 @@ void main() {
       await mockNetworkImagesFor(() async {
         String expectJournalName = 'N/A';
         String expectComment = 'N/A';
+        bool expectChange = false;
         List<String> expectTripWith = [];
 
         await tester.pumpWidget(
@@ -155,10 +158,14 @@ void main() {
                                 title: title,
                                 journal: journal,
                                 thumbnailUrl: imageUrl,
-                                onTapApply: (JournalModel journal) {
+                                onTapApply: (
+                                  JournalModel journal,
+                                  bool isChanged,
+                                ) {
                                   expectJournalName = journal.name;
                                   expectComment = journal.comment;
                                   expectTripWith = journal.tripWith;
+                                  expectChange = true;
                                 },
                                 onTapDelete: () {},
                                 onTapClose: () {},
@@ -209,6 +216,7 @@ void main() {
 
         expect(expectJournalName, journal.name);
         expect(expectComment, 'Sagrada');
+        expect(expectChange, true);
         expect(expectTripWith, ['최태호', '아우아']);
       });
     },
@@ -235,7 +243,8 @@ void main() {
                               title: title,
                               journal: journal,
                               thumbnailUrl: imageUrl,
-                              onTapApply: (JournalModel journal) {},
+                              onTapApply:
+                                  (JournalModel journal, bool isChanged) {},
                               onTapDelete: () {
                                 Navigator.pop(context);
                               },
