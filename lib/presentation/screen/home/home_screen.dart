@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photopin/core/styles/app_color.dart';
 import 'package:photopin/core/styles/app_font.dart';
+import 'package:photopin/presentation/component/banner_ad.dart';
 import 'package:photopin/presentation/component/journal_card.dart';
 import 'package:photopin/presentation/component/main_icon_card.dart';
-import 'package:photopin/presentation/component/recent_activity_tile.dart';
 import 'package:photopin/presentation/screen/home/home_action.dart';
 import 'package:photopin/presentation/screen/home/home_state.dart';
 
@@ -77,32 +76,33 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        Text('Recent Activity', style: AppFonts.largeTextBold),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            onAction(HomeAction.seeAllClick());
-                          },
-                          child: Text(
-                            'See all',
-                            style: AppFonts.smallTextRegular.copyWith(
-                              color: AppColors.primary100,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    RecentActivityTile(
-                      title: 'Link shared: Paris Trip',
-                      dateTime: DateTime.now(),
-                      onTap: () {
-                        onAction(HomeAction.recentActivityClick());
-                      },
-                      iconData: CupertinoIcons.link,
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Text('Recent Activity', style: AppFonts.largeTextBold),
+                    //     const Spacer(),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         onAction(HomeAction.seeAllClick());
+                    //       },
+                    //       child: Text(
+                    //         'See all',
+                    //         style: AppFonts.smallTextRegular.copyWith(
+                    //           color: AppColors.primary100,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 12),
+                    // RecentActivityTile(
+                    //   title: 'Link shared: Paris Trip',
+                    //   dateTime: DateTime.now(),
+                    //   onTap: () {
+                    //     onAction(HomeAction.recentActivityClick());
+                    //   },
+                    //   iconData: CupertinoIcons.link,
+                    // ),
+                    BannerAd(path: 'assets/images/gupae.png'),
                     const SizedBox(height: 24),
                     Text('Your Journals', style: AppFonts.largeTextBold),
                     const SizedBox(height: 12),
