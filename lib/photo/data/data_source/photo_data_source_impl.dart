@@ -30,6 +30,7 @@ class PhotoDataSourceImpl implements PhotoDataSource {
     final List<PhotoDto> photoDtos = [];
 
     await _photoStore
+        .orderBy('dateTime', descending: true)
         .get()
         .then((snapshot) {
           for (var doc in snapshot.docs) {
@@ -50,7 +51,7 @@ class PhotoDataSourceImpl implements PhotoDataSource {
 
     await _photoStore
         .where('journalId', isEqualTo: journalId)
-        .orderBy('dateTime')
+        .orderBy('dateTime', descending: true)
         .get()
         .then((snapshot) {
           for (var doc in snapshot.docs) {
