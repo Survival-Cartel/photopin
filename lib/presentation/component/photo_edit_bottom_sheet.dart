@@ -48,6 +48,14 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
     _journalId = widget.journalId;
   }
 
+  // 변경사항이 있는지 확인하는 메서드
+  bool _hasChanges() {
+    // 현재 편집된 값들로 새로운 PhotoModel 생성 (실제 생성은 하지 않고 비교만)
+    return widget.title != titleController.text ||
+        widget.comment != commentController.text ||
+        widget.journalId != _journalId;
+  }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -158,6 +166,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       Expanded(
                         child: DropdownMenu<String>(
                           controller: journalController,
+                          enabled: widget.journals.isNotEmpty,
                           inputDecorationTheme: const InputDecorationTheme(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
@@ -165,7 +174,7 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                           initialSelection:
                               widget.journals.isNotEmpty
                                   ? widget.journalId
-                                  : null,
+                                  : '',
                           menuStyle: MenuStyle(
                             backgroundColor: WidgetStateProperty.all(
                               AppColors.white,
@@ -177,17 +186,21 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                             _journalId = value!;
                           },
                           textStyle: AppFonts.smallTextRegular,
-                          dropdownMenuEntries:
-                              widget.journals.isEmpty
-                                  ? []
-                                  : List.generate(widget.journals.length, (
-                                    int index,
-                                  ) {
-                                    return DropdownMenuEntry(
-                                      label: widget.journals[index].name,
-                                      value: widget.journals[index].id,
-                                    );
-                                  }),
+                          dropdownMenuEntries: [
+                            ...List.generate(widget.journals.length, (
+                              int index,
+                            ) {
+                              return DropdownMenuEntry(
+                                label: widget.journals[index].name,
+                                value: widget.journals[index].id,
+                              );
+                            }),
+                            if (widget.journals.isEmpty)
+                              const DropdownMenuEntry(
+                                label: '새로운 journal 생성해주세요!',
+                                value: '',
+                              ),
+                          ], // 새로운 메서드 호출
                         ),
                       ),
                     ],
@@ -204,11 +217,17 @@ class _PhotoEditBottomSheetState extends State<PhotoEditBottomSheet> {
                       iconName: Icons.edit,
                       buttonName: 'Apply',
                       onClick: () {
-                        widget.onTapApply(
-                          titleController.text,
-                          _journalId,
-                          commentController.text,
-                        );
+                        if (_hasChanges()) {
+                          // 변경사항이 있을 때만 onTapApply 호출
+                          widget.onTapApply(
+                            titleController.text,
+                            _journalId,
+                            commentController.text,
+                          );
+                        } else {
+                          // 변경사항이 없으면 그냥 바텀시트 닫기
+                          widget.onTapClose();
+                        }
                       },
                     ),
                   ),
