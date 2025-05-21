@@ -102,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                     //   },
                     //   iconData: CupertinoIcons.link,
                     // ),
-                    BannerAd(path: 'assets/images/gupae.png'),
+                    const BannerAd(path: 'assets/images/gupae.png'),
                     const SizedBox(height: 24),
                     Text('Your Journals', style: AppFonts.largeTextBold),
                     const SizedBox(height: 12),

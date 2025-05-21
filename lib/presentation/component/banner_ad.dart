@@ -7,7 +7,7 @@ class BannerAd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 110,
       child: Image.asset(path, fit: BoxFit.cover),
