@@ -24,6 +24,8 @@ class _SettingsScreenRootState extends State<SettingsScreenRoot> {
           onAction: (SettingsAction action) async {
             final result = await widget.viewModel.onAction(action);
 
+            if (!context.mounted) return;
+
             switch (action) {
               case CameraPermissionRequest():
                 switch (result) {
