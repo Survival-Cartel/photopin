@@ -334,7 +334,10 @@ void di() {
   );
 
   getIt.registerSingleton<SettingsViewModel>(
-    SettingsViewModel(permissionCheckUseCase: getIt<PermissionCheckUseCase>()),
+    SettingsViewModel(
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+      authRepository: getIt<AuthRepository>(),
+    ),
   );
 
   getIt.registerFactoryParam<GetCompareModelUseCase, String, void>(
