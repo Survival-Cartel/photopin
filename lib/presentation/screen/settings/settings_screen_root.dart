@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/settings/settings_action.dart';
 import 'package:photopin/presentation/screen/settings/settings_screen.dart';
 import 'package:photopin/presentation/screen/settings/settings_view_model.dart';
@@ -27,6 +29,9 @@ class _SettingsScreenRootState extends State<SettingsScreenRoot> {
                 widget.viewModel.onAction(action);
               case LocationPermissionRequest():
                 widget.viewModel.onAction(action);
+              case Logout():
+                widget.viewModel.onAction(action);
+                context.go(Routes.login);
             }
           },
         );

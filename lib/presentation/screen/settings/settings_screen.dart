@@ -38,6 +38,12 @@ class SettingsScreen extends StatelessWidget {
                   onClick: () => onAction(LocationPermissionRequest()),
                   buttonType: ButtonType.small,
                 ),
+                const SizedBox(height: 12),
+                BaseButton(
+                  buttonName: '로그아웃',
+                  onClick: () => onAction(SettingsAction.logout()),
+                  buttonType: ButtonType.small,
+                ),
               ],
             ),
           ),
