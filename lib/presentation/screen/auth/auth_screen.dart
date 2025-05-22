@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/presentation/screen/auth/auth_action.dart';
 import 'package:photopin/presentation/screen/auth/auth_state.dart';
 
@@ -9,6 +11,13 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 로그인 성공 시 자동으로 홈으로 이동
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!state.isLoading && state.currentUser.email.isNotEmpty) {
+        context.go(Routes.home);
+      }
+    });
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
