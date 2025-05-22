@@ -6,8 +6,13 @@ import 'package:photopin/presentation/screen/settings/settings_action.dart';
 
 class SettingsScreen extends StatelessWidget {
   final Function(SettingsAction action) onAction;
+  final void Function() logout;
 
-  const SettingsScreen({super.key, required this.onAction});
+  const SettingsScreen({
+    super.key,
+    required this.onAction,
+    required this.logout,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,9 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 BaseButton(
                   buttonName: '로그아웃',
-                  onClick: () => onAction(SettingsAction.logout()),
+                  onClick: () {
+                    logout();
+                  },
                   buttonType: ButtonType.small,
                 ),
               ],
