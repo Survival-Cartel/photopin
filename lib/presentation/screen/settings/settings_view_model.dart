@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:photopin/auth/data/repository/auth_repository.dart';
+import 'package:photopin/core/enums/permission_allow_status.dart';
 import 'package:photopin/core/enums/permission_type.dart';
 import 'package:photopin/core/usecase/permission_check_use_case.dart';
 import 'package:photopin/presentation/screen/settings/settings_action.dart';
@@ -16,20 +17,18 @@ class SettingsViewModel with ChangeNotifier {
   }) : _permissionCheckUseCase = permissionCheckUseCase,
        _authRepository = authRepository;
 
-  Future<void> _logout() async {
+  Future<void> logout() async {
     await _authRepository.logout();
   }
 
-  Future<void> onAction(SettingsAction action) async {
+  Future<PermissionAllowStatus> onAction(SettingsAction action) async {
     switch (action) {
       case CameraPermissionRequest():
-        await _permissionCheckUseCase.execute(PermissionType.camera);
+        return await _permissionCheckUseCase.execute(PermissionType.camera);
       case PhotoPermissionRequest():
-        await _permissionCheckUseCase.execute(PermissionType.photos);
+        return await _permissionCheckUseCase.execute(PermissionType.photos);
       case LocationPermissionRequest():
-        await _permissionCheckUseCase.execute(PermissionType.location);
-      case Logout():
-        await _logout();
+        return await _permissionCheckUseCase.execute(PermissionType.location);
     }
   }
 }
