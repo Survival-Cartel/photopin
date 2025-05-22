@@ -74,7 +74,7 @@ import 'package:photopin/user/data/repository/user_repository_impl.dart';
 final getIt = GetIt.instance;
 
 void di() {
-  getIt.registerSingleton(StreamController<StreamEvent>());
+  getIt.registerSingleton(StreamController<StreamEvent>.broadcast());
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
   getIt.registerLazySingleton(() => FirebaseMessaging.instance);
   getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
@@ -334,7 +334,10 @@ void di() {
   );
 
   getIt.registerSingleton<SettingsViewModel>(
-    SettingsViewModel(permissionCheckUseCase: getIt<PermissionCheckUseCase>()),
+    SettingsViewModel(
+      permissionCheckUseCase: getIt<PermissionCheckUseCase>(),
+      authRepository: getIt<AuthRepository>(),
+    ),
   );
 
   getIt.registerFactoryParam<GetCompareModelUseCase, String, void>(

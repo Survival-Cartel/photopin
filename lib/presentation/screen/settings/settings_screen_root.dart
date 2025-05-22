@@ -1,5 +1,7 @@
 import 'package:alert_info/alert_info.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:photopin/core/routes.dart';
 import 'package:photopin/core/enums/permission_allow_status.dart';
 import 'package:photopin/presentation/screen/settings/settings_action.dart';
 import 'package:photopin/presentation/screen/settings/settings_screen.dart';
@@ -109,6 +111,11 @@ class _SettingsScreenRootState extends State<SettingsScreenRoot> {
                     );
                 }
             }
+          },
+          logout: () async {
+            await widget.viewModel.logout();
+            if (!context.mounted) return;
+            context.go(Routes.login);
           },
         );
       },

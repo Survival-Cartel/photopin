@@ -99,9 +99,10 @@ class PhotoDataSourceImpl implements PhotoDataSource {
   @override
   Stream<List<PhotoDto>> watchPhotos() {
     try {
-      return _photoStore.snapshots().map(
-        (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
-      );
+      return _photoStore
+          .orderBy('dateTime', descending: true)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
     } catch (e) {
       throw FirestoreError.notFoundError;
     }
