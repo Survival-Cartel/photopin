@@ -21,7 +21,7 @@ class _SettingsScreenRootState extends State<SettingsScreenRoot> {
       listenable: widget.viewModel,
       builder: (BuildContext context, child) {
         return SettingsScreen(
-          onAction: (SettingsAction action) {
+          onAction: (SettingsAction action) async {
             switch (action) {
               case CameraPermissionRequest():
                 widget.viewModel.onAction(action);
@@ -30,7 +30,7 @@ class _SettingsScreenRootState extends State<SettingsScreenRoot> {
               case LocationPermissionRequest():
                 widget.viewModel.onAction(action);
               case Logout():
-                widget.viewModel.onAction(action);
+                await widget.viewModel.onAction(action);
                 context.go(Routes.login);
             }
           },
