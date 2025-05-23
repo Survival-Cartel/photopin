@@ -265,7 +265,7 @@ class _IntegrationMapState extends State<IntegrationMap> {
       },
       onCameraMove: _clusterManager.onCameraMove,
       onCameraIdle: _onCameraIdle,
-      initialZoomLevel: 8,
+      initialZoomLevel: 11.5,
       markers: _markers,
       polylines: _buildPolylines(),
       polyLineColor: AppColors.secondary100,
