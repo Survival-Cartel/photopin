@@ -147,6 +147,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white38),
       ),
+      debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
     );
   }
